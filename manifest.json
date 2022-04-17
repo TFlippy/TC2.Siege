@@ -1,0 +1,23 @@
+{
+  "version": "0.1.41.1",
+  "guid": "ac2ed303-ee45-4653-9db1-249255963c2c",
+  "identifier": "TC2.Siege",
+  "name": "Siege",
+  "description": "Survive against overwhelming waves of enemies.",
+  "url": "https://github.com/TFlippy/TC2.Siege",
+  "git": "https://github.com/TFlippy/TC2.Siege.git",
+  "authors": [
+    "TFlippy"
+  ],
+  "dependencies": [
+    {
+      "identifier": "TC2.Core",
+      "required": true
+    },
+    {
+      "identifier": "TC2.Base",
+      "required": true
+    }
+  ],
+  "tags": []
+}
