@@ -8,10 +8,10 @@ namespace TC2.Siege
 		public delegate void GetAllTargetsQuery(ISystem.Info info, Entity entity, [Source.Owned] in Siege.Target target, [Source.Owned] in Transform.Data transform);
 
 		[IGamemode.Data("Siege", "")]
-		public partial struct Gamemode : IGamemode
+		public partial struct Gamemode: IGamemode
 		{
 			[Flags]
-			public enum Flags : uint
+			public enum Flags: uint
 			{
 				None = 0,
 			}
@@ -75,23 +75,36 @@ namespace TC2.Siege
 		}
 
 		[IComponent.Data(Net.SendType.Unreliable)]
-		public partial struct Target : IComponent
+		public partial struct Target: IComponent
 		{
 			public byte faction_id;
 		}
 
 		[IComponent.Data(Net.SendType.Unreliable)]
-		public partial struct Planner : IComponent
+		public partial struct Planner: IComponent
 		{
 			[Flags]
-			public enum Flags : uint
+			public enum Flags: uint
 			{
 				None = 0,
 
 				Ready = 1 << 0
 			}
 
+			public enum Status: uint
+			{
+				Undefined = 0,
+
+				Forming,
+
+				Searching,
+				Approaching,
+				Attacking,
+
+			}
+
 			public Siege.Planner.Flags flags;
+			public Siege.Planner.Status status;
 
 			[Save.Ignore, Net.Ignore] public float next_update;
 		}
@@ -109,7 +122,72 @@ namespace TC2.Siege
 			shipment.flags.SetFlag(Shipment.Flags.Unpack, true);
 
 			var items = shipment.items.AsSpan();
-			items.Add(Shipment.Item.Prefab("crowbar", flags: Shipment.Item.Flags.Pickup));
+
+			var random = XorRandom.New();
+
+			switch (random.NextIntRange(0, 10))
+			{
+				case 0:
+				{
+					items.Add(Shipment.Item.Prefab("club", flags: Shipment.Item.Flags.Pickup));
+				}
+				break;
+
+				case 1:
+				{
+					items.Add(Shipment.Item.Prefab("axe", flags: Shipment.Item.Flags.Pickup));
+				}
+				break;
+
+				case 2:
+				{
+					items.Add(Shipment.Item.Prefab("machete", flags: Shipment.Item.Flags.Pickup));
+				}
+				break;
+
+				case 3:
+				{
+					items.Add(Shipment.Item.Prefab("blunderbuss", flags: Shipment.Item.Flags.Pickup));
+					items.Add(Shipment.Item.Resource("ammo_musket.shot", 50));
+				}
+				break;
+
+				case 4:
+				{
+					items.Add(Shipment.Item.Prefab("smg", flags: Shipment.Item.Flags.Pickup));
+					items.Add(Shipment.Item.Resource("ammo_lc", 200));
+				}
+				break;
+
+				case 5:
+				{
+					items.Add(Shipment.Item.Prefab("revolver", flags: Shipment.Item.Flags.Pickup));
+					items.Add(Shipment.Item.Resource("ammo_lc", 50));
+				}
+				break;
+
+				case 6:
+				{
+					items.Add(Shipment.Item.Prefab("derringer", flags: Shipment.Item.Flags.Pickup));
+					items.Add(Shipment.Item.Resource("ammo_musket", 50));
+				}
+				break;
+
+				case 7:
+				case 8:
+				case 9:
+				{
+					items.Add(Shipment.Item.Prefab("crankgun", flags: Shipment.Item.Flags.Pickup));
+					items.Add(Shipment.Item.Resource("ammo_hc", 200));
+				}
+				break;
+
+				default:
+				{
+					items.Add(Shipment.Item.Prefab("crowbar", flags: Shipment.Item.Flags.Pickup));
+				}
+				break;
+			}
 
 			//items.Add(Shipment.Item.Prefab("blunderbuss", flags: Shipment.Item.Flags.Pickup));
 			//items.Add(Shipment.Item.Resource("ammo_musket.shot", 32));
@@ -130,6 +208,7 @@ namespace TC2.Siege
 					if (i == selection.units.Length - 1)
 					{
 						planner.flags.SetFlag(Siege.Planner.Flags.Ready, true);
+						planner.status = Siege.Planner.Status.Searching;
 					}
 
 					break;
@@ -149,47 +228,58 @@ namespace TC2.Siege
 
 				//App.WriteLine(info.GetRegion().GetTotalTagCount("kobold"));
 
-				if (planner.flags.HasAll(Siege.Planner.Flags.Ready))
+				switch (planner.status)
 				{
-					App.WriteLine("raid ready");
-					var arg = (ent_search: entity, faction_id: (byte)2, position: transform.position, ent_root: default(Entity), ent_target: default(Entity), target_dist_nearest_sq: float.MaxValue, target_position: default(Vector2));
-
-					region.Query<Siege.GetAllTargetsQuery>(Func).Execute(ref arg);
-					static void Func(ISystem.Info info, Entity entity, in Siege.Target target, in Transform.Data transform)
+					case Siege.Planner.Status.Searching:
+					default:
 					{
-						ref var arg = ref info.GetParameter<(Entity ent_search, byte faction_id, Vector2 position, Entity ent_root, Entity ent_target, float target_dist_nearest_sq, Vector2 target_position)>();
-						if (!arg.IsNull())
+						if (planner.flags.HasAll(Siege.Planner.Flags.Ready))
 						{
-							ref var region = ref info.GetRegion();
 
-							var dist_sq = Vector2.DistanceSquared(transform.position, arg.position);
-							if ((target.faction_id == 0 || target.faction_id != arg.faction_id) && dist_sq < arg.target_dist_nearest_sq)
+							//App.WriteLine("raid ready");
+							var arg = (ent_search: entity, faction_id: (byte)2, position: transform.position, ent_root: default(Entity), ent_target: default(Entity), target_dist_nearest_sq: float.MaxValue, target_position: default(Vector2));
+
+							region.Query<Siege.GetAllTargetsQuery>(Func).Execute(ref arg);
+							static void Func(ISystem.Info info, Entity entity, in Siege.Target target, in Transform.Data transform)
 							{
-								if (arg.ent_root.id == 0)
+								ref var arg = ref info.GetParameter<(Entity ent_search, byte faction_id, Vector2 position, Entity ent_root, Entity ent_target, float target_dist_nearest_sq, Vector2 target_position)>();
+								if (!arg.IsNull())
 								{
-									arg.ent_root = arg.ent_search.GetRoot(Relation.Type.Child);
-								}
+									ref var region = ref info.GetRegion();
 
-								var ent_root = entity.GetRoot(Relation.Type.Child);
-								if (ent_root != arg.ent_root && ent_root.GetRoot(Relation.Type.Instance) != arg.ent_root)
-								{
-									arg.ent_target = entity;
-									arg.target_dist_nearest_sq = dist_sq;
-									arg.target_position = transform.position;
+									var dist_sq = Vector2.DistanceSquared(transform.position, arg.position);
+									if ((target.faction_id == 0 || target.faction_id != arg.faction_id) && dist_sq < arg.target_dist_nearest_sq)
+									{
+										if (arg.ent_root.id == 0)
+										{
+											arg.ent_root = arg.ent_search.GetRoot(Relation.Type.Child);
+										}
+
+										var ent_root = entity.GetRoot(Relation.Type.Child);
+										if (ent_root != arg.ent_root && ent_root.GetRoot(Relation.Type.Instance) != arg.ent_root)
+										{
+											arg.ent_target = entity;
+											arg.target_dist_nearest_sq = dist_sq;
+											arg.target_position = transform.position;
+										}
+									}
 								}
 							}
+
+							if (arg.ent_target.IsValid())
+							{
+								selection.order_type = Commandable.OrderType.Attack;
+
+								control.mouse.position = arg.target_position; // Maths.MoveTowards(control.mouse.position, arg.target_position, new Vector2(4.00f));
+								control.mouse.SetKeyPressed(Mouse.Key.Right, true);
+
+								planner.next_update = info.WorldTime + 5.00f;
+							}
+
+							planner.status = Siege.Planner.Status.Attacking;
 						}
 					}
-
-					if (arg.ent_target.IsValid())
-					{
-						selection.order_type = Commandable.OrderType.Attack;
-
-						control.mouse.position = arg.target_position; // Maths.MoveTowards(control.mouse.position, arg.target_position, new Vector2(4.00f));
-						control.mouse.SetKeyPressed(Mouse.Key.Right, true);
-
-						planner.next_update = info.WorldTime + 5.00f;
-					}
+					break;
 				}
 			}
 		}

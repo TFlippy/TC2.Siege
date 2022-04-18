@@ -65,7 +65,7 @@
 			prefab: "monument"
 			name: "Defender Test"
 			faction_id: 1
-			position: [189.375, 32.125]
+			position: [169.250, 43.625]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
@@ -73,7 +73,7 @@
 			prefab: "spawner"
 			name: "Attacker Spawn"
 			faction_id: 2
-			position: [137.750, 42.250]
+			position: [75.000, 58.000]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
