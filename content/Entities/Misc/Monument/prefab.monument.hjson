@@ -1,0 +1,71 @@
+$name: "Monument"
+$desc: ""
+$tags: []
+
+body:
+{
+	type: static
+	
+	@shape.box:
+	{
+		size: [6.000, 6.000]
+		offset: [0.000, 0.000]
+		friction: 0.500
+		elasticity: 0.500
+		material: stone
+		layer: entity, building
+		mask: world
+	}
+}
+
+health:
+{
+	max: 10000.000
+}
+
+threat:
+{
+	priority: 2.000
+}
+
+siege.target:
+{
+
+}
+
+animated.renderer:
+{
+	sprite:
+	{
+		texture: "monument"
+	}
+	z: -400.000
+	mask: "monument.mask"
+}
+
+transform:
+{
+
+}
+
+faction.colorable:
+{
+	
+}
+
+nameable:
+{
+
+}
+
+claimable:
+{
+	flags: no_menu
+}
+
+claimer:
+{
+	radius: 64.000
+	strength: 50.000
+	falloff: 1.000
+}

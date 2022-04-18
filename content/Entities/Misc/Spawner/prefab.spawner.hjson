@@ -1,0 +1,78 @@
+$name: "Spawner"
+$desc: ""
+$tags: []
+
+body:
+{
+	type: static
+	
+	@shape.box:
+	{
+		size: [6.000, 6.000]
+		offset: [0.000, 0.000]
+		friction: 0.500
+		elasticity: 0.500
+		layer: entity, building, ignore_melee
+		mask: world
+	}
+}
+
+animated.renderer:
+{
+	sprite:
+	{
+		texture: "ruins"
+	}
+	z: -400.000
+}
+
+transform:
+{
+
+}
+
+spawner:
+{
+	prefab: "kobold.male"
+	interval: 5.000
+	interval_count_modifier: 1.000
+	max_count: 4
+	filter_tag: "kobold"
+}
+
+faction.colorable:
+{
+	
+}
+
+nameable:
+{
+	name: "Attacker Spawn"
+}
+
+claimable:
+{
+	flags: no_menu
+}
+
+claimer:
+{
+	radius: 64.000
+	strength: 50.000
+	falloff: 1.000
+}
+
+control:
+{
+
+}
+
+selection:
+{
+
+}
+
+siege.planner:
+{
+
+}

@@ -1,0 +1,81 @@
+{
+	$name: "Bouda"
+	$desc: "TODO: Desc"
+	$tag: "siege"
+	$features: []
+	
+	entities:
+	[
+		{
+			prefab: "background.plains"
+			position: [363.500, 67.250]
+			rotation: 0.000
+			scale: [3.500, 3.500]
+		}
+		{
+			prefab: "background.forest"
+			position: [414.125, 49.750]
+			rotation: 0.000
+			scale: [8.000, 8.000]
+		}
+		{
+			prefab: "background.mountains"
+			position: [399.500, 21.125]
+			rotation: 0.000
+			scale: [12.000, 12.000]
+		}
+		{
+			prefab: "background.ridge"
+			position: [493.625, 2.875]
+			rotation: 0.000
+			scale: [16.000, 16.000]
+		}
+		{
+			prefab: "background.nostalgia"
+			position: [465.250, -26.375]
+			rotation: 0.000
+			scale: [24.000, 24.000]
+		}
+		{
+			prefab: "background.sea"
+			position: [448.750, -10.500]
+			rotation: 0.000
+			scale: [48.000, 48.000]
+		}
+		{
+			prefab: "ruins"
+			name: "Mountains"
+			position: [205.250, 30.375]
+			rotation: 0.000
+			scale: [1.000, 1.000]
+		}
+		{
+			prefab: "mount.heavy"
+			position: [233.250, 43.750]
+			rotation: 0.000
+			scale: [1.000, 1.000]
+		}
+		{
+			prefab: "mount.heavy"
+			position: [151.375, 40.750]
+			rotation: 0.000
+			scale: [-1.000, 1.000]
+		}
+		{
+			prefab: "monument"
+			name: "Defender Test"
+			faction_id: 1
+			position: [189.375, 32.125]
+			rotation: 0.000
+			scale: [1.000, 1.000]
+		}
+		{
+			prefab: "spawner"
+			name: "Attacker Spawn"
+			faction_id: 2
+			position: [137.750, 42.250]
+			rotation: 0.000
+			scale: [1.000, 1.000]
+		}
+	]
+}
