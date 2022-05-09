@@ -100,7 +100,6 @@ namespace TC2.Siege
 				Searching,
 				Approaching,
 				Attacking,
-
 			}
 
 			public Siege.Planner.Flags flags;
@@ -116,81 +115,90 @@ namespace TC2.Siege
 		{
 			App.WriteLine($"spawn event {data.ent_target}");
 
+			var random = XorRandom.New();
 			var loadout = new Loadout.Data();
 
 			ref var shipment = ref loadout.shipments[0];
 			shipment.flags.SetFlag(Shipment.Flags.Unpack, true);
 
-			var items = shipment.items.AsSpan();
+			var items_span = shipment.items.AsSpan();
 
-			var random = XorRandom.New();
-
+			// TODO: add proper .hjson loot tables
 			switch (random.NextIntRange(0, 10))
 			{
 				case 0:
 				{
-					items.Add(Shipment.Item.Prefab("club", flags: Shipment.Item.Flags.Pickup));
+					items_span.Add(Shipment.Item.Prefab("club", flags: Shipment.Item.Flags.Pickup));
 				}
 				break;
 
 				case 1:
 				{
-					items.Add(Shipment.Item.Prefab("axe", flags: Shipment.Item.Flags.Pickup));
+					items_span.Add(Shipment.Item.Prefab("axe", flags: Shipment.Item.Flags.Pickup));
 				}
 				break;
 
 				case 2:
 				{
-					items.Add(Shipment.Item.Prefab("machete", flags: Shipment.Item.Flags.Pickup));
+					items_span.Add(Shipment.Item.Prefab("machete", flags: Shipment.Item.Flags.Pickup));
 				}
 				break;
 
 				case 3:
 				{
-					items.Add(Shipment.Item.Prefab("blunderbuss", flags: Shipment.Item.Flags.Pickup));
-					items.Add(Shipment.Item.Resource("ammo_musket.shot", 50));
+					items_span.Add(Shipment.Item.Prefab("blunderbuss", flags: Shipment.Item.Flags.Pickup));
+					items_span.Add(Shipment.Item.Resource("ammo_musket.shot", 50));
 				}
 				break;
 
 				case 4:
 				{
-					items.Add(Shipment.Item.Prefab("smg", flags: Shipment.Item.Flags.Pickup));
-					items.Add(Shipment.Item.Resource("ammo_lc", 200));
+					items_span.Add(Shipment.Item.Prefab("smg", flags: Shipment.Item.Flags.Pickup));
+					items_span.Add(Shipment.Item.Resource("ammo_lc", 200));
 				}
 				break;
 
 				case 5:
 				{
-					items.Add(Shipment.Item.Prefab("revolver", flags: Shipment.Item.Flags.Pickup));
-					items.Add(Shipment.Item.Resource("ammo_lc", 50));
+					items_span.Add(Shipment.Item.Prefab("revolver", flags: Shipment.Item.Flags.Pickup));
+					items_span.Add(Shipment.Item.Resource("ammo_lc", 50));
 				}
 				break;
 
 				case 6:
 				{
-					items.Add(Shipment.Item.Prefab("derringer", flags: Shipment.Item.Flags.Pickup));
-					items.Add(Shipment.Item.Resource("ammo_musket", 50));
+					items_span.Add(Shipment.Item.Prefab("derringer", flags: Shipment.Item.Flags.Pickup));
+					items_span.Add(Shipment.Item.Resource("ammo_musket", 50));
 				}
 				break;
 
 				case 7:
+				{
+					items_span.Add(Shipment.Item.Prefab("scattergun", flags: Shipment.Item.Flags.Pickup));
+					items_span.Add(Shipment.Item.Resource("ammo_sg.grenade", 32));
+				}
+				break;
+
 				case 8:
+				{
+					items_span.Add(Shipment.Item.Prefab("bazooka", flags: Shipment.Item.Flags.Pickup));
+					items_span.Add(Shipment.Item.Resource("ammo_rocket", 4));
+				}
+				break;
+
 				case 9:
 				{
-					items.Add(Shipment.Item.Prefab("crankgun", flags: Shipment.Item.Flags.Pickup));
-					items.Add(Shipment.Item.Resource("ammo_hc", 200));
+					items_span.Add(Shipment.Item.Prefab("pump_shotgun", flags: Shipment.Item.Flags.Pickup));
+					items_span.Add(Shipment.Item.Resource("ammo_sg.grenade", 32));
 				}
 				break;
 
 				default:
 				{
-					items.Add(Shipment.Item.Prefab("crowbar", flags: Shipment.Item.Flags.Pickup));
+					items_span.Add(Shipment.Item.Prefab("crowbar", flags: Shipment.Item.Flags.Pickup));
 				}
 				break;
 			}
-
-			//items.Add(Shipment.Item.Prefab("blunderbuss", flags: Shipment.Item.Flags.Pickup));
-			//items.Add(Shipment.Item.Resource("ammo_musket.shot", 32));
 
 			ref var loadout_new = ref data.ent_target.GetOrAddComponent<Loadout.Data>(sync: false, ignore_mask: true);
 			if (!loadout_new.IsNull())
@@ -226,7 +234,7 @@ namespace TC2.Siege
 
 				ref var region = ref info.GetRegion();
 
-				//App.WriteLine(info.GetRegion().GetTotalTagCount("kobold"));
+				//App.WriteLine(region.GetTotalTagCount("kobold"));
 
 				switch (planner.status)
 				{
@@ -235,7 +243,6 @@ namespace TC2.Siege
 					{
 						if (planner.flags.HasAll(Siege.Planner.Flags.Ready))
 						{
-
 							//App.WriteLine("raid ready");
 							var arg = (ent_search: entity, faction_id: (byte)2, position: transform.position, ent_root: default(Entity), ent_target: default(Entity), target_dist_nearest_sq: float.MaxValue, target_position: default(Vector2));
 
