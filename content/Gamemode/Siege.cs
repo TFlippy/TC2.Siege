@@ -39,10 +39,10 @@ namespace TC2.Siege
 
 				Constants.World.enable_autosave = false;
 
-				Constants.Respawn.token_count_min = 1.00f;
-				Constants.Respawn.token_count_max = 20.00f;
-				Constants.Respawn.token_count_default = 3.00f;
-				Constants.Respawn.token_refill_amount = 0.05f;
+				Constants.Respawn.token_count_min = 10.00f;
+				Constants.Respawn.token_count_max = 50.00f;
+				Constants.Respawn.token_count_default = 30.00f;
+				Constants.Respawn.token_refill_amount = 0.50f;
 
 				Constants.Respawn.respawn_cooldown_base = 5.00f;
 				Constants.Respawn.respawn_cooldown_token_modifier = 0.00f;
@@ -84,16 +84,17 @@ namespace TC2.Siege
 				{
 					default,
 
-#region Soldier
-					new("Machete", "", origin: Character.Origin.Soldier)
+#region Soldier			
+					new("Armor", "", origin: Character.Origin.Soldier)
 					{
-						cost = 0.20f,
+						cost = 2.50f,
 
-						shipment = new Shipment.Data("Machete", Shipment.Flags.Unpack)
+						shipment = new Shipment.Data("Armor", Shipment.Flags.Unpack)
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("machete")
+								[0] = Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip),
+								[1] = Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip),
 							}
 						}
 					},
@@ -111,6 +112,19 @@ namespace TC2.Siege
 						}
 					},
 
+					new("Machete", "", origin: Character.Origin.Soldier)
+					{
+						cost = 0.20f,
+
+						shipment = new Shipment.Data("Machete", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("machete")
+							}
+						}
+					},				
+
 					new("Pistol", "", origin: Character.Origin.Soldier)
 					{
 						cost = 0.30f,
@@ -119,7 +133,7 @@ namespace TC2.Siege
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("pistol"),
+								[0] = Shipment.Item.Prefab("pistol", flags: Shipment.Item.Flags.Pickup),
 								[1] = Shipment.Item.Resource("ammo_lc", 60)
 							}
 						}
@@ -133,7 +147,7 @@ namespace TC2.Siege
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("rifle"),
+								[0] = Shipment.Item.Prefab("rifle", flags: Shipment.Item.Flags.Pickup),
 								[1] = Shipment.Item.Resource("ammo_hc", 60)
 							}
 						}
@@ -147,7 +161,7 @@ namespace TC2.Siege
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("smg"),
+								[0] = Shipment.Item.Prefab("smg", flags: Shipment.Item.Flags.Pickup),
 								[1] = Shipment.Item.Resource("ammo_lc", 150)
 							}
 						}
@@ -161,7 +175,7 @@ namespace TC2.Siege
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("battle_rifle"),
+								[0] = Shipment.Item.Prefab("battle_rifle", flags: Shipment.Item.Flags.Pickup),
 								[1] = Shipment.Item.Resource("ammo_hc", 90)
 							}
 						}
@@ -182,6 +196,20 @@ namespace TC2.Siege
 #endregion
 
 #region Engineer
+					new("Armor", "", origin: Character.Origin.Engineer)
+					{
+						cost = 2.50f,
+
+						shipment = new Shipment.Data("Armor", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip),
+								[1] = Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip),
+							}
+						}
+					},
+
 					new("Crowbar", "", origin: Character.Origin.Engineer)
 					{
 						cost = 0.30f,
@@ -249,6 +277,20 @@ namespace TC2.Siege
 						}
 					},
 
+					new("Scattergun (Grenades)", "", origin: Character.Origin.Soldier)
+					{
+						cost = 2.50f,
+
+						shipment = new Shipment.Data("Scattergun", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("scattergun"),
+								[1] = Shipment.Item.Resource("ammo_sg.grenade", 32),
+							}
+						}
+					},
+
 					new("Tools", "", origin: Character.Origin.Engineer)
 					{
 						cost = 0.70f,
@@ -273,7 +315,7 @@ namespace TC2.Siege
 							{
 								[0] = Shipment.Item.Prefab("machine_gun"),
 								[1] = Shipment.Item.Resource("ammo_mg", 500),
-								[2] = Shipment.Item.Prefab("mount")
+								[2] = Shipment.Item.Prefab("mount.tripod")
 							}
 						}
 					},
@@ -293,15 +335,16 @@ namespace TC2.Siege
 #endregion
 
 #region Medic
-					new("Knife", "", origin: Character.Origin.Doctor)
+					new("Armor", "", origin: Character.Origin.Doctor)
 					{
-						cost = 0.20f,
+						cost = 2.50f,
 
-						shipment = new Shipment.Data("Knife", Shipment.Flags.Unpack)
+						shipment = new Shipment.Data("Armor", Shipment.Flags.Unpack)
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("knife")
+								[0] = Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip),
+								[1] = Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip),
 							}
 						}
 					},
@@ -315,6 +358,19 @@ namespace TC2.Siege
 							items =
 							{
 								[0] = Shipment.Item.Prefab("shield")
+							}
+						}
+					},
+
+					new("Knife", "", origin: Character.Origin.Doctor)
+					{
+						cost = 0.20f,
+
+						shipment = new Shipment.Data("Knife", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("knife")
 							}
 						}
 					},
@@ -341,7 +397,7 @@ namespace TC2.Siege
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("rifle"),
+								[0] = Shipment.Item.Prefab("rifle", flags: Shipment.Item.Flags.Pickup),
 								[1] = Shipment.Item.Resource("ammo_hc", 40)
 							}
 						}
@@ -355,7 +411,7 @@ namespace TC2.Siege
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("machine_pistol"),
+								[0] = Shipment.Item.Prefab("machine_pistol", flags: Shipment.Item.Flags.Pickup),
 								[1] = Shipment.Item.Resource("ammo_lc", 150),
 							}
 						}
@@ -470,26 +526,30 @@ namespace TC2.Siege
 			{
 				// Melee
 				case 0:
-				case 1:
 				{
+					//if (random.NextBool(0.50f))
+					//{
+					//	items_span.Add(Shipment.Item.Prefab("club", flags: Shipment.Item.Flags.Pickup));
+					//}
+					//else if (random.NextBool(0.50f))
+					//{
+					//	items_span.Add(Shipment.Item.Prefab("axe", flags: Shipment.Item.Flags.Pickup));
+					//}
+					
 					if (random.NextBool(0.50f))
 					{
-						items_span.Add(Shipment.Item.Prefab("club", flags: Shipment.Item.Flags.Pickup));
+						items_span.Add(Shipment.Item.Prefab("chainsaw", flags: Shipment.Item.Flags.Pickup));
 					}
 					else if (random.NextBool(0.50f))
 					{
-						items_span.Add(Shipment.Item.Prefab("axe", flags: Shipment.Item.Flags.Pickup));
-					}
-					else if (random.NextBool(0.50f))
-					{
-						items_span.Add(Shipment.Item.Prefab("machete", flags: Shipment.Item.Flags.Pickup));
+						items_span.Add(Shipment.Item.Prefab("shield", flags: Shipment.Item.Flags.Pickup));
 					}
 					else
 					{
-						items_span.Add(Shipment.Item.Prefab("crowbar", flags: Shipment.Item.Flags.Pickup));
+						items_span.Add(Shipment.Item.Prefab("drill", flags: Shipment.Item.Flags.Pickup));
 					}
 
-					if (random.NextBool(0.50f))
+					//if (random.NextBool(0.75f))
 					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip));
 					}
@@ -497,8 +557,9 @@ namespace TC2.Siege
 				break;
 
 				// Shotgunner
+				case 1:
+				case 2:
 				case 3:
-				case 4:
 				{
 					if (random.NextBool(0.50f))
 					{
@@ -521,7 +582,7 @@ namespace TC2.Siege
 						items_span.Add(Shipment.Item.Resource("ammo_sg.buck", 32));
 					}
 
-					if (random.NextBool(0.75f))
+					if (random.NextBool(0.10f))
 					{
 						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip));
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip));
@@ -530,6 +591,7 @@ namespace TC2.Siege
 				break;
 
 				// Light
+				case 4:
 				case 5:
 				case 6:
 				case 7:
@@ -565,7 +627,7 @@ namespace TC2.Siege
 						items_span.Add(Shipment.Item.Resource("ammo_hc", 80));
 					}
 
-					if (random.NextBool(0.40f))
+					if (random.NextBool(0.20f))
 					{
 						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip));
 					}
@@ -578,21 +640,21 @@ namespace TC2.Siege
 				{
 					if (random.NextBool(0.50f))
 					{
-						items_span.Add(Shipment.Item.Prefab("machine_gun", flags: Shipment.Item.Flags.Pickup));
-						items_span.Add(Shipment.Item.Resource("ammo_mg", 200));
+						items_span.Add(Shipment.Item.Prefab("auto_shotgun", flags: Shipment.Item.Flags.Pickup));
+						items_span.Add(Shipment.Item.Resource("ammo_sg.slug", 64));
 					}
 					else if (random.NextBool(0.50f))
 					{
-						items_span.Add(Shipment.Item.Prefab("crankgun", flags: Shipment.Item.Flags.Pickup));
-						items_span.Add(Shipment.Item.Resource("ammo_hc", 80));
+						items_span.Add(Shipment.Item.Prefab("battle_rifle", flags: Shipment.Item.Flags.Pickup));
+						items_span.Add(Shipment.Item.Resource("ammo_hc.hv", 80));
 					}
 					else
 					{
-						items_span.Add(Shipment.Item.Prefab("revolver", flags: Shipment.Item.Flags.Pickup));
-						items_span.Add(Shipment.Item.Resource("ammo_lc", 50));
+						items_span.Add(Shipment.Item.Prefab("auto_shotgun", flags: Shipment.Item.Flags.Pickup));
+						items_span.Add(Shipment.Item.Resource("ammo_sg.grenade", 64));
 					}
 
-					//if (random.NextBool(1.00f))
+					if (random.NextBool(1.00f))
 					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip));
 						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip));
@@ -606,7 +668,7 @@ namespace TC2.Siege
 					if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("bazooka", flags: Shipment.Item.Flags.Pickup));
-						items_span.Add(Shipment.Item.Resource("ammo_rocket", 4));
+						items_span.Add(Shipment.Item.Resource("ammo_rocket.hv", 16));
 					}
 					else if (random.NextBool(0.50f))
 					{
@@ -616,10 +678,10 @@ namespace TC2.Siege
 					else
 					{
 						items_span.Add(Shipment.Item.Prefab("pump_shotgun", flags: Shipment.Item.Flags.Pickup));
-						items_span.Add(Shipment.Item.Resource("ammo_sg.buck", 32));
+						items_span.Add(Shipment.Item.Resource("ammo_sg.grenade", 32));
 					}
 
-					if (random.NextBool(0.30f))
+					if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip));
 						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip));

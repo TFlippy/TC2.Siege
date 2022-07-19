@@ -11,61 +11,68 @@
 			position: [363.500, 67.250]
 			rotation: 0.000
 			scale: [3.500, 3.500]
+			z: 4.000
+			color: "0xffffffff"
 		}
 		{
 			prefab: "background.forest"
 			position: [414.125, 49.750]
 			rotation: 0.000
 			scale: [8.000, 8.000]
+			z: 16.000
+			color: "0xffffffff"
 		}
 		{
 			prefab: "background.mountains"
 			position: [399.500, 21.125]
 			rotation: 0.000
 			scale: [12.000, 12.000]
+			z: 24.000
+			color: "0xffffffff"
 		}
 		{
 			prefab: "background.ridge"
 			position: [493.625, 2.875]
 			rotation: 0.000
 			scale: [16.000, 16.000]
+			z: 32.000
+			color: "0xffffffff"
 		}
 		{
 			prefab: "background.nostalgia"
 			position: [465.250, -26.375]
 			rotation: 0.000
 			scale: [24.000, 24.000]
+			z: 64.000
+			color: "0xffffffff"
 		}
 		{
 			prefab: "background.sea"
 			position: [448.750, -10.500]
 			rotation: 0.000
 			scale: [48.000, 48.000]
+			z: 96.000
+			color: "0xffffffff"
 		}
 		{
 			prefab: "ruins"
 			name: "Mountains"
-			position: [205.250, 30.375]
+			position: [152.125, 40.875]
 			rotation: 0.000
 			scale: [1.000, 1.000]
-		}
-		{
-			prefab: "mount.heavy"
-			position: [233.250, 43.750]
-			rotation: 0.000
-			scale: [1.000, 1.000]
-		}
-		{
-			prefab: "mount.heavy"
-			position: [151.375, 40.750]
-			rotation: 0.000
-			scale: [-1.000, 1.000]
 		}
 		{
 			prefab: "monument"
 			name: "Defender Test"
 			faction_id: 1
-			position: [169.250, 43.625]
+			position: [193.625, 32.375]
+			rotation: 0.000
+			scale: [1.000, 1.000]
+		}
+		{
+			prefab: "ruins"
+			name: "Ruins"
+			position: [234.9745, 41.56139]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
@@ -73,7 +80,15 @@
 			prefab: "spawner"
 			name: "Attacker Spawn"
 			faction_id: 2
-			position: [75.000, 58.000]
+			position: [15.95138, 60.3159]
+			rotation: 0.000
+			scale: [1.000, 1.000]
+		}
+		{
+			prefab: "spawner"
+			name: "Attacker Spawn"
+			faction_id: 2
+			position: [369.3125, 57.23431]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}

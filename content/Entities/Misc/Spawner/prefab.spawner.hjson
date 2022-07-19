@@ -34,9 +34,9 @@ transform:
 spawner:
 {
 	prefab: "kobold.male"
-	interval: 10.000
+	interval: 7.000
 	interval_count_modifier: 1.000
-	max_count: 10
+	max_count: 20
 	filter_tag: "kobold"
 }
 
