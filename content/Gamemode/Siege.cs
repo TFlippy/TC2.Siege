@@ -1,4 +1,5 @@
-﻿using TC2.Base.Components;
+﻿using Keg.Engine.Game;
+using TC2.Base.Components;
 
 namespace TC2.Siege
 {
@@ -452,8 +453,8 @@ namespace TC2.Siege
 			{
 				ref var region = ref info.GetRegion();
 
-				ref var faction_1 = ref Faction.Create(ref region, 1, "DEF", "Defenders", 0xff0000ff, 0xff0000ff);
-				ref var faction_2 = ref Faction.Create(ref region, 2, "ATT", "Attackers", 0xffff0000, 0xffff0000);
+				ref var faction_1 = ref Faction.Create(ref region, 1, "DEF", "Defenders", 0xff639417, 0xff639417);
+				ref var faction_2 = ref Faction.Create(ref region, 2, "ATT", "Attackers", 0xff000000, 0xffff0000);
 
 				// TODO: replace with ECS event methods
 				Player.OnCreate += OnCreatePlayer;
@@ -486,7 +487,7 @@ namespace TC2.Siege
 			{
 				None = 0,
 
-				Ready = 1 << 0
+				//Ready = 1 << 0
 			}
 
 			public enum Status: uint
@@ -526,6 +527,7 @@ namespace TC2.Siege
 			{
 				// Melee
 				case 0:
+				case 1:
 				{
 					//if (random.NextBool(0.50f))
 					//{
@@ -538,7 +540,7 @@ namespace TC2.Siege
 					
 					if (random.NextBool(0.50f))
 					{
-						items_span.Add(Shipment.Item.Prefab("chainsaw", flags: Shipment.Item.Flags.Pickup));
+						items_span.Add(Shipment.Item.Prefab("drill", flags: Shipment.Item.Flags.Pickup));
 					}
 					else if (random.NextBool(0.50f))
 					{
@@ -557,7 +559,6 @@ namespace TC2.Siege
 				break;
 
 				// Shotgunner
-				case 1:
 				case 2:
 				case 3:
 				{
@@ -582,9 +583,13 @@ namespace TC2.Siege
 						items_span.Add(Shipment.Item.Resource("ammo_sg.buck", 32));
 					}
 
-					if (random.NextBool(0.10f))
+					if (random.NextBool(0.15f))
 					{
 						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip));
+					}
+
+					if (random.NextBool(0.15f))
+					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip));
 					}
 				}
@@ -618,13 +623,13 @@ namespace TC2.Siege
 					}
 					else if (random.NextBool(0.50f))
 					{
-						items_span.Add(Shipment.Item.Prefab("revolver", flags: Shipment.Item.Flags.Pickup));
-						items_span.Add(Shipment.Item.Resource("ammo_lc", 50));
+						items_span.Add(Shipment.Item.Prefab("battle_rifle", flags: Shipment.Item.Flags.Pickup));
+						items_span.Add(Shipment.Item.Resource("ammo_hc", 80));
 					}
 					else
 					{
-						items_span.Add(Shipment.Item.Prefab("battle_rifle", flags: Shipment.Item.Flags.Pickup));
-						items_span.Add(Shipment.Item.Resource("ammo_hc", 80));
+						items_span.Add(Shipment.Item.Prefab("revolver", flags: Shipment.Item.Flags.Pickup));
+						items_span.Add(Shipment.Item.Resource("ammo_lc", 50));
 					}
 
 					if (random.NextBool(0.20f))
@@ -668,7 +673,7 @@ namespace TC2.Siege
 					if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("bazooka", flags: Shipment.Item.Flags.Pickup));
-						items_span.Add(Shipment.Item.Resource("ammo_rocket.hv", 16));
+						items_span.Add(Shipment.Item.Resource("ammo_rocket", 16));
 					}
 					else if (random.NextBool(0.50f))
 					{
@@ -705,7 +710,7 @@ namespace TC2.Siege
 
 					if (i == selection.units.Length - 1)
 					{
-						planner.flags.SetFlag(Siege.Planner.Flags.Ready, true);
+						//planner.flags.SetFlag(Siege.Planner.Flags.Ready, true);
 						planner.status = Siege.Planner.Status.Searching;
 					}
 
@@ -729,9 +734,8 @@ namespace TC2.Siege
 				switch (planner.status)
 				{
 					case Siege.Planner.Status.Searching:
-					default:
 					{
-						if (planner.flags.HasAll(Siege.Planner.Flags.Ready))
+						//if (planner.flags.HasAll(Siege.Planner.Flags.Ready))
 						{
 							//App.WriteLine("raid ready");
 							var arg = (ent_search: entity, faction_id: (byte)2, position: transform.position, ent_root: default(Entity), ent_target: default(Entity), target_dist_nearest_sq: float.MaxValue, target_position: default(Vector2));
@@ -771,10 +775,49 @@ namespace TC2.Siege
 								control.mouse.SetKeyPressed(Mouse.Key.Right, true);
 
 								planner.next_update = info.WorldTime + 5.00f;
+
+								for (int i = 0; i < selection.units.Length; i++)
+								{
+									ref var unit = ref selection.units[i];
+									if (unit.TryGetHandle(out var handle))
+									{
+										ref var transform_unit = ref unit.entity.GetComponent<Transform.Data>();
+										if (!transform_unit.IsNull())
+										{
+											if (Vector2.DistanceSquared(transform_unit.position, control.mouse.position) <= (16 * 16))
+											{
+												unit = default;
+											}
+										}
+									}
+								}
 							}
 
-							planner.status = Siege.Planner.Status.Attacking;
+							//planner.status = Siege.Planner.Status.Attacking;
 						}
+					}
+					break;
+
+					case Planner.Status.Attacking:
+					{
+						//if (arg.ent_target.IsValid())
+						//{
+						//	selection.order_type = Commandable.OrderType.Attack;
+						//	control.mouse.position = arg.target_position; // Maths.MoveTowards(control.mouse.position, arg.target_position, new Vector2(4.00f));
+						//	control.mouse.SetKeyPressed(Mouse.Key.Right, true);
+
+						//	planner.next_update = info.WorldTime + 5.00f;
+						//}
+
+						planner.status = Siege.Planner.Status.Forming;
+
+						//selection.units = default;
+					}
+					break;
+
+					case Planner.Status.Forming:
+					{
+
 					}
 					break;
 				}
