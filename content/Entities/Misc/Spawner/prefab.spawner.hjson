@@ -34,8 +34,8 @@ transform:
 spawner:
 {
 	prefab: "kobold.male"
-	interval: 7.000
-	interval_count_modifier: 1.000
+	interval: 10.000
+	interval_count_modifier: 0.500
 	max_count: 20
 	filter_tag: "kobold"
 }
@@ -43,6 +43,11 @@ spawner:
 faction.colorable:
 {
 	
+}
+
+faction:
+{
+	id: "attackers"
 }
 
 nameable:

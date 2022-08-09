@@ -1,0 +1,6 @@
+{
+	tag: "ATT"
+	name: "Attackers"
+	color_a: "0xfff02000"
+	color_b: "0xffff0000"
+}

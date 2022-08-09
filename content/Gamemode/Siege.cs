@@ -53,6 +53,14 @@ namespace TC2.Siege
 
 #if SERVER
 				Player.OnCreate += OnPlayerCreate;
+				static void OnPlayerCreate(ref Region.Data region, ref Player.Data player)
+				{
+					player.SetFaction("defenders");
+
+					Character.Create(ref region, "Soldier", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Military, origin: Character.Origin.Soldier, gender: Organic.Gender.Male, player_id: player.id, hair_frame: 5, beard_frame: 1);
+					Character.Create(ref region, "Engineer", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Engineering | Character.Flags.Military, origin: Character.Origin.Engineer, gender: Organic.Gender.Male, player_id: player.id, hair_frame: 2, beard_frame: 7);
+					Character.Create(ref region, "Medic", prefab: "human.female", flags: Character.Flags.Human | Character.Flags.Medical | Character.Flags.Military, origin: Character.Origin.Doctor, gender: Organic.Gender.Female, player_id: player.id, hair_frame: 10);
+				}
 #endif
 
 #if CLIENT
@@ -62,15 +70,6 @@ namespace TC2.Siege
 				Spawn.RespawnGUI.enabled = true;
 #endif
 			}
-
-#if SERVER
-			private static void OnPlayerCreate(ref Region.Data region, ref Player.Data player)
-			{
-				Character.Create(ref region, "Soldier", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Military, origin: Character.Origin.Soldier, gender: Organic.Gender.Male, player_id: player.id, hair_frame: 5, beard_frame: 1);
-				Character.Create(ref region, "Engineer", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Engineering | Character.Flags.Military, origin: Character.Origin.Engineer, gender: Organic.Gender.Male, player_id: player.id, hair_frame: 2, beard_frame: 7);
-				Character.Create(ref region, "Medic", prefab: "human.female", flags: Character.Flags.Human | Character.Flags.Medical | Character.Flags.Military, origin: Character.Origin.Doctor, gender: Organic.Gender.Female, player_id: player.id, hair_frame: 10);
-			}
-#endif
 
 			public static void Init()
 			{
@@ -446,37 +445,12 @@ namespace TC2.Siege
 #endregion
 				};
 			}
-
-#if SERVER
-			[ISystem.AddFirst(ISystem.Mode.Single)]
-			public static void OnAdd(ISystem.Info info, [Source.Owned] ref Siege.Gamemode gamemode)
-			{
-				ref var region = ref info.GetRegion();
-
-				ref var faction_1 = ref Faction.Create(ref region, 1, "DEF", "Defenders", 0xff639417, 0xff639417);
-				ref var faction_2 = ref Faction.Create(ref region, 2, "ATT", "Attackers", 0xff000000, 0xffff0000);
-
-				// TODO: replace with ECS event methods
-				Player.OnCreate += OnCreatePlayer;
-			}
-
-			private static void OnCreatePlayer(ref Region.Data region, ref Player.Data player)
-			{
-				player.SetFaction(1);
-			}
-
-			//[ISystem.AddFirst(ISystem.Mode.Single)]
-			//public static void OnSpawn(ISystem.Info info, [Source.Owned] ref Kobold.Data kobold, [Source.Owned] ref AI.Behavior behavior)
-			//{
-			//	behavior.flags.SetFlag(AI.Behavior.Flags.Aggressive, true);
-			//}
-#endif
 		}
 
 		[IComponent.Data(Net.SendType.Unreliable)]
 		public partial struct Target: IComponent
 		{
-			public byte faction_id;
+			public IFaction.Handle faction_id;
 		}
 
 		[IComponent.Data(Net.SendType.Unreliable)]
@@ -721,7 +695,7 @@ namespace TC2.Siege
 
 		[ISystem.VeryLateUpdate(ISystem.Mode.Single)]
 		public static void OnUpdate(ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Spawner.Data spawner,
-		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner)
+		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Owned, Optional] in Faction.Data faction)
 		{
 			if (info.WorldTime > planner.next_update)
 			{
@@ -738,12 +712,12 @@ namespace TC2.Siege
 						//if (planner.flags.HasAll(Siege.Planner.Flags.Ready))
 						{
 							//App.WriteLine("raid ready");
-							var arg = (ent_search: entity, faction_id: (byte)2, position: transform.position, ent_root: default(Entity), ent_target: default(Entity), target_dist_nearest_sq: float.MaxValue, target_position: default(Vector2));
+							var arg = (ent_search: entity, faction_id: faction.id, position: transform.position, ent_root: default(Entity), ent_target: default(Entity), target_dist_nearest_sq: float.MaxValue, target_position: default(Vector2));
 
 							region.Query<Siege.GetAllTargetsQuery>(Func).Execute(ref arg);
 							static void Func(ISystem.Info info, Entity entity, in Siege.Target target, in Transform.Data transform)
 							{
-								ref var arg = ref info.GetParameter<(Entity ent_search, byte faction_id, Vector2 position, Entity ent_root, Entity ent_target, float target_dist_nearest_sq, Vector2 target_position)>();
+								ref var arg = ref info.GetParameter<(Entity ent_search, IFaction.Handle faction_id, Vector2 position, Entity ent_root, Entity ent_target, float target_dist_nearest_sq, Vector2 target_position)>();
 								if (!arg.IsNull())
 								{
 									ref var region = ref info.GetRegion();
