@@ -123,18 +123,18 @@ namespace TC2.Siege
 								[0] = Shipment.Item.Prefab("machete")
 							}
 						}
-					},				
+					},
 
-					new("Pistol", "", origin: Character.Origin.Soldier)
+					new("Revolver", "", origin: Character.Origin.Soldier)
 					{
-						cost = 0.30f,
+						cost = 0.50f,
 
-						shipment = new Shipment.Data("Pistol", Shipment.Flags.Unpack)
+						shipment = new Shipment.Data("Revolver", Shipment.Flags.Unpack)
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("pistol", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_lc", 60)
+								[0] = Shipment.Item.Prefab("revolver"),
+								[1] = Shipment.Item.Resource("ammo_hc.match", 30),
 							}
 						}
 					},
@@ -181,6 +181,48 @@ namespace TC2.Siege
 						}
 					},
 
+					new("ABR 740", "", origin: Character.Origin.Soldier)
+					{
+						cost = 7.00f,
+
+						shipment = new Shipment.Data("ABR 740", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("bp.abr.740", flags: Shipment.Item.Flags.Pickup),
+								[1] = Shipment.Item.Resource("ammo_hc.hv", 90)
+							}
+						}
+					},
+
+					new("Majzl A-749", "", origin: Character.Origin.Soldier)
+					{
+						cost = 5.00f,
+
+						shipment = new Shipment.Data("Majzl A-749", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("bp.majzl.a749", flags: Shipment.Item.Flags.Pickup),
+								[1] = Shipment.Item.Resource("ammo_mg", 40)
+							}
+						}
+					},
+
+					new("Auto-Shotgun", "", origin: Character.Origin.Soldier)
+					{
+						cost = 6.50f,
+
+						shipment = new Shipment.Data("Auto-Shotgun", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("auto_shotgun"),
+								[1] = Shipment.Item.Resource("ammo_sg.buck", 32),
+							}
+						}
+					},
+
 					new("Grenade", "", origin: Character.Origin.Soldier)
 					{
 						cost = 1.50f,
@@ -190,6 +232,19 @@ namespace TC2.Siege
 							items =
 							{
 								[0] = Shipment.Item.Prefab("grenade")
+							}
+						}
+					},
+
+					new("Arc Lance", "", origin: Character.Origin.Soldier)
+					{
+						cost = 7.50f,
+
+						shipment = new Shipment.Data("Arc Lance", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("arc_lance")
 							}
 						}
 					},
@@ -249,16 +304,16 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Revolver", "", origin: Character.Origin.Engineer)
+					new("Pistol", "", origin: Character.Origin.Engineer)
 					{
-						cost = 0.50f,
+						cost = 0.30f,
 
-						shipment = new Shipment.Data("Revolver", Shipment.Flags.Unpack)
+						shipment = new Shipment.Data("Pistol", Shipment.Flags.Unpack)
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("revolver"),
-								[1] = Shipment.Item.Resource("ammo_lc", 40),
+								[0] = Shipment.Item.Prefab("pistol", flags: Shipment.Item.Flags.Pickup),
+								[1] = Shipment.Item.Resource("ammo_lc", 60)
 							}
 						}
 					},
@@ -277,7 +332,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Scattergun (Grenades)", "", origin: Character.Origin.Soldier)
+					new("Scattergun (Grenades)", "", origin: Character.Origin.Engineer)
 					{
 						cost = 2.50f,
 
@@ -291,6 +346,20 @@ namespace TC2.Siege
 						}
 					},
 
+					new("Bazooka", "", origin: Character.Origin.Engineer)
+					{
+						cost = 10.00f,
+
+						shipment = new Shipment.Data("Bazooka", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("bazooka"),
+								[1] = Shipment.Item.Resource("ammo_rocket", 4),
+							}
+						}
+					},
+
 					new("Tools", "", origin: Character.Origin.Engineer)
 					{
 						cost = 0.70f,
@@ -300,14 +369,43 @@ namespace TC2.Siege
 							items =
 							{
 								[0] = Shipment.Item.Prefab("wrench"),
-								[1] = Shipment.Item.Prefab("hammer")
+								[1] = Shipment.Item.Prefab("hammer"),
+								[2] = Shipment.Item.Resource("wood", 500.00f)
+							}
+						}
+					},
+
+					new("R750 Automat", "", origin: Character.Origin.Engineer)
+					{
+						cost = 17.00f,
+
+						shipment = new Shipment.Data("R750 Automat", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("bp.r750", flags: Shipment.Item.Flags.Pickup),
+								[1] = Shipment.Item.Resource("ammo_hc.arc.mt", 200)
+							}
+						}
+					},
+
+					new("Mamut B-738", "", origin: Character.Origin.Engineer)
+					{
+						cost = 12.00f,
+
+						shipment = new Shipment.Data("Mamut B-738", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("bp.mamut.b738", flags: Shipment.Item.Flags.Pickup),
+								[1] = Shipment.Item.Resource("ammo_ac", 30)
 							}
 						}
 					},
 
 					new("Machine Gun Kit", "", origin: Character.Origin.Engineer)
 					{
-						cost = 7.50f,
+						cost = 20.00f,
 
 						shipment = new Shipment.Data("Machine Gun")
 						{
@@ -320,15 +418,28 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Dynamite", "", origin: Character.Origin.Engineer)
+					new("Land Mines", "", origin: Character.Origin.Engineer)
 					{
-						cost = 2.20f,
+						cost = 10.00f,
 
-						shipment = new Shipment.Data("Dynamite", Shipment.Flags.Unpack)
+						shipment = new Shipment.Data("Land Mines")
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("dynamite")
+								[0] = Shipment.Item.Prefab("landmine", 4),
+							}
+						}
+					},
+
+					new("Dynamite", "", origin: Character.Origin.Engineer)
+					{
+						cost = 10.00f,
+
+						shipment = new Shipment.Data("Dynamite", Shipment.Flags.None)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("dynamite", 4)
 							}
 						}
 					},
@@ -389,16 +500,16 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Rifle", "", origin: Character.Origin.Doctor)
+					new("Carbine", "", origin: Character.Origin.Doctor)
 					{
 						cost = 1.00f,
 
-						shipment = new Shipment.Data("Rifle", Shipment.Flags.Unpack)
+						shipment = new Shipment.Data("Carbine", Shipment.Flags.Unpack)
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("rifle", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_hc", 40)
+								[0] = Shipment.Item.Prefab("carbine", flags: Shipment.Item.Flags.Pickup),
+								[1] = Shipment.Item.Resource("ammo_hc.match", 40)
 							}
 						}
 					},
@@ -413,6 +524,20 @@ namespace TC2.Siege
 							{
 								[0] = Shipment.Item.Prefab("machine_pistol", flags: Shipment.Item.Flags.Pickup),
 								[1] = Shipment.Item.Resource("ammo_lc", 150),
+							}
+						}
+					},
+
+					new("Houser A-750", "", origin: Character.Origin.Doctor)
+					{
+						cost = 7.00f,
+
+						shipment = new Shipment.Data("Houser A-750", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("bp.houser.a750", flags: Shipment.Item.Flags.Pickup),
+								[1] = Shipment.Item.Resource("ammo_hc.hv", 90)
 							}
 						}
 					},
@@ -434,11 +559,76 @@ namespace TC2.Siege
 					{
 						cost = 1.50f,
 
-						shipment = new Shipment.Data("Grenade", Shipment.Flags.Unpack)
+						shipment = new Shipment.Data("Grenade", Shipment.Flags.None)
 						{
 							items =
 							{
 								[0] = Shipment.Item.Prefab("grenade")
+							}
+						}
+					},
+
+					new("Morfitin-B", "", origin: Character.Origin.Doctor)
+					{
+						cost = 4.00f,
+
+						shipment = new Shipment.Data("Morfitin-B", Shipment.Flags.None)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("bp.morfitin.b", 4)
+							}
+						}
+					},
+
+					new("Paralyx", "", origin: Character.Origin.Doctor)
+					{
+						cost = 3.00f,
+
+						shipment = new Shipment.Data("Paralyx", Shipment.Flags.None)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("bp.paralyx", 4)
+							}
+						}
+					},
+
+					new("Codeine 20mg IR", "", origin: Character.Origin.Doctor)
+					{
+						cost = 2.00f,
+
+						shipment = new Shipment.Data("Codeine 20mg IR", Shipment.Flags.None)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("bp.codeine.20mg.ir", 4)
+							}
+						}
+					},
+
+					new("Pervitin 50mg ER", "", origin: Character.Origin.Doctor)
+					{
+						cost = 4.00f,
+
+						shipment = new Shipment.Data("Pervitin 50mg ER", Shipment.Flags.None)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("bp.pervitin.50mg.er", 4)
+							}
+						}
+					},
+
+					new("Pervitin 100mg ER", "", origin: Character.Origin.Doctor)
+					{
+						cost = 6.00f,
+
+						shipment = new Shipment.Data("Pervitin 100mg ER", Shipment.Flags.None)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("bp.pervitin.100mg.er", 4)
 							}
 						}
 					},
@@ -482,12 +672,20 @@ namespace TC2.Siege
 		}
 
 #if SERVER
-		[ISystem.Event<Spawner.SpawnEvent>(ISystem.Mode.Single)]
-		public static void OnSpawn(ISystem.Info info, Entity entity, ref Spawner.SpawnEvent data,
-		[Source.Owned] ref Spawner.Data spawner, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Siege.Planner planner, [Source.Owned] ref Selection.Data selection)
+		[ChatCommand.Region("kobold", "", creative: true)]
+		public static void KoboldCommand(ref ChatCommand.Context context)
 		{
-			App.WriteLine($"spawn event {data.ent_target}");
+			ref var region = ref context.GetRegion();
+			ref var player = ref context.GetPlayer();
 
+			region.SpawnPrefab("kobold.male", player.control.mouse.position, faction_id: player.faction_id).ContinueWith((ent) =>
+			{
+				SetKoboldLoadout(ent);
+			});
+		}
+
+		public static void SetKoboldLoadout(Entity ent_kobold)
+		{
 			var random = XorRandom.New();
 			var loadout = new Loadout.Data();
 
@@ -511,7 +709,7 @@ namespace TC2.Siege
 					//{
 					//	items_span.Add(Shipment.Item.Prefab("axe", flags: Shipment.Item.Flags.Pickup));
 					//}
-					
+
 					if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("drill", flags: Shipment.Item.Flags.Pickup));
@@ -669,16 +867,25 @@ namespace TC2.Siege
 				break;
 			}
 
-			ref var loadout_new = ref data.ent_target.GetOrAddComponent<Loadout.Data>(sync: false, ignore_mask: true);
+			ref var loadout_new = ref ent_kobold.GetOrAddComponent<Loadout.Data>(sync: false, ignore_mask: true);
 			if (!loadout_new.IsNull())
 			{
 				loadout_new = loadout;
 			}
+		}
+
+		[ISystem.Event<Spawner.SpawnEvent>(ISystem.Mode.Single)]
+		public static void OnSpawn(ISystem.Info info, Entity entity, ref Spawner.SpawnEvent data,
+		[Source.Owned] ref Spawner.Data spawner, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Siege.Planner planner, [Source.Owned] ref Selection.Data selection)
+		{
+			App.WriteLine($"spawn event {data.ent_target}");
+
+			SetKoboldLoadout(data.ent_target);
 
 			for (int i = 0; i < selection.units.Length; i++)
 			{
 				ref var unit = ref selection.units[i];
-				if (!unit.IsAlive())
+				if (!unit.IsAlive() || unit.entity.HasTag("dead"))
 				{
 					unit.Set(data.ent_target);
 
