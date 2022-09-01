@@ -169,7 +169,7 @@ namespace TC2.Siege
 
 					new("Battle Rifle", "", origin: Character.Origin.Soldier)
 					{
-						cost = 2.00f,
+						cost = 2.50f,
 
 						shipment = new Shipment.Data("Battle Rifle", Shipment.Flags.Unpack)
 						{
@@ -238,7 +238,7 @@ namespace TC2.Siege
 
 					new("Arc Lance", "", origin: Character.Origin.Soldier)
 					{
-						cost = 7.50f,
+						cost = 6.00f,
 
 						shipment = new Shipment.Data("Arc Lance", Shipment.Flags.Unpack)
 						{
@@ -334,7 +334,7 @@ namespace TC2.Siege
 
 					new("Scattergun (Grenades)", "", origin: Character.Origin.Engineer)
 					{
-						cost = 2.50f,
+						cost = 5.00f,
 
 						shipment = new Shipment.Data("Scattergun", Shipment.Flags.Unpack)
 						{
@@ -377,7 +377,7 @@ namespace TC2.Siege
 
 					new("R750 Automat", "", origin: Character.Origin.Engineer)
 					{
-						cost = 17.00f,
+						cost = 15.00f,
 
 						shipment = new Shipment.Data("R750 Automat", Shipment.Flags.Unpack)
 						{
@@ -405,7 +405,7 @@ namespace TC2.Siege
 
 					new("Machine Gun Kit", "", origin: Character.Origin.Engineer)
 					{
-						cost = 20.00f,
+						cost = 25.00f,
 
 						shipment = new Shipment.Data("Machine Gun")
 						{
@@ -681,6 +681,12 @@ namespace TC2.Siege
 			region.SpawnPrefab("kobold.male", player.control.mouse.position, faction_id: player.faction_id).ContinueWith((ent) =>
 			{
 				SetKoboldLoadout(ent);
+
+				ref var ai = ref ent.GetComponent<AI.Data>();
+				if (!ai.IsNull())
+				{
+					ai.stance = AI.Stance.Aggressive;
+				}
 			});
 		}
 
@@ -882,6 +888,12 @@ namespace TC2.Siege
 
 			SetKoboldLoadout(data.ent_target);
 
+			ref var ai = ref data.ent_target.GetComponent<AI.Data>();
+			if (!ai.IsNull())
+			{
+				ai.stance = AI.Stance.Aggressive;
+			}
+
 			for (int i = 0; i < selection.units.Length; i++)
 			{
 				ref var unit = ref selection.units[i];
@@ -972,9 +984,12 @@ namespace TC2.Siege
 										}
 									}
 								}
+
+								//selection.units = default;
 							}
 
 							//planner.status = Siege.Planner.Status.Attacking;
+							//planner.status = Siege.Planner.Status.Forming;
 						}
 					}
 					break;
