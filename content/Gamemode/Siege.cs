@@ -901,7 +901,7 @@ namespace TC2.Siege
 				{
 					unit.Set(data.ent_target);
 
-					if (i == selection.units.Length - 1)
+					if (i == 2)
 					{
 						//planner.flags.SetFlag(Siege.Planner.Flags.Ready, true);
 						planner.status = Siege.Planner.Status.Searching;
@@ -921,6 +921,7 @@ namespace TC2.Siege
 				planner.next_update = info.WorldTime + 1.00f;
 
 				ref var region = ref info.GetRegion();
+				WorldNotification.Push(ref region, "target", 0xffffffff, control.mouse.position);
 
 				//App.WriteLine(region.GetTotalTagCount("kobold"));
 
@@ -962,7 +963,7 @@ namespace TC2.Siege
 
 							if (arg.ent_target.IsValid())
 							{
-								selection.order_type = Commandable.OrderType.Attack;
+								selection.order_type = Commandable.OrderType.Move;
 
 								control.mouse.position = arg.target_position; // Maths.MoveTowards(control.mouse.position, arg.target_position, new Vector2(4.00f));
 								control.mouse.SetKeyPressed(Mouse.Key.Right, true);

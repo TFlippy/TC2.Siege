@@ -59,18 +59,17 @@
 			color: "0xffffffff"
 		}
 		{
-			prefab: "ruins"
-			name: "Bunker"
-			position: [166.750, 19.000]
-			rotation: -0.05236
+			prefab: "monument"
+			name: "Cottage"
+			faction: "defenders"
+			position: [488.7757, 39.18122]
+			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "monument"
-			name: "Defender Test"
-			faction: "defenders"
-			position: [365.000, 57.875]
-			rotation: -0.034907
+			prefab: "soundscape.forest.day.00"
+			position: [62.33477, 46.07945]
+			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
 		{
@@ -215,8 +214,8 @@
 		}
 		{
 			prefab: "barrel.metal.wreck.00"
-			position: [149.3402, 42.430]
-			rotation: 0.000001
+			position: [149.3404, 42.42998]
+			rotation: 0.00003
 			scale: [1.000, 1.000]
 		}
 		{
@@ -318,13 +317,6 @@
 		{
 			prefab: "shrubbery.01"
 			position: [139.750, 43.250]
-			rotation: 0.000
-			scale: [1.000, 1.000]
-		}
-		{
-			prefab: "monument"
-			faction: "defenders"
-			position: [488.250, 39.125]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
@@ -486,8 +478,8 @@
 		}
 		{
 			prefab: "chair.wood.00"
-			position: [141.6851, 42.72985]
-			rotation: -0.000208
+			position: [141.6849, 42.72971]
+			rotation: -0.00042
 			scale: [1.000, 1.000]
 		}
 		{
@@ -531,8 +523,8 @@
 		}
 		{
 			prefab: "wreck.car"
-			position: [265.5457, 57.08117]
-			rotation: 3.197795
+			position: [265.5459, 57.08119]
+			rotation: 3.197799
 			scale: [1.000, 1.000]
 		}
 		{
@@ -565,19 +557,19 @@
 		{
 			prefab: "barrel.metal.wreck.00"
 			position: [229.0631, 44.31007]
-			rotation: -0.009123
+			rotation: -0.009149
 			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "barrel.metal.00"
 			position: [231.746, 44.47874]
-			rotation: 1.655981
+			rotation: 1.655983
 			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "barricade.wood.01"
-			position: [137.8749, 42.40472]
-			rotation: 0.04557
+			position: [137.8764, 42.4052]
+			rotation: 0.045954
 			scale: [1.000, 1.000]
 		}
 		{
@@ -629,12 +621,6 @@
 			prefab: "mount.heavy"
 			faction: "defenders"
 			position: [195.750, 18.875]
-			rotation: 0.000
-			scale: [1.000, 1.000]
-		}
-		{
-			prefab: "soundscape.city.day.00"
-			position: [167.875, 35.250]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
@@ -765,13 +751,6 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "monument"
-			faction: "defenders"
-			position: [179.875, 32.875]
-			rotation: 0.000
-			scale: [1.000, 1.000]
-		}
-		{
 			prefab: "lamp.01"
 			position: [187.500, 31.375]
 			rotation: 3.141593
@@ -851,8 +830,8 @@
 		}
 		{
 			prefab: "barrel.metal.00"
-			position: [174.1214, 34.88928]
-			rotation: -0.045417
+			position: [174.1214, 34.88927]
+			rotation: -0.045396
 			scale: [1.000, 1.000]
 		}
 		{
@@ -905,16 +884,9 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "monument"
-			faction: "defenders"
-			position: [39.05004, 51.73058]
-			rotation: 0.000
-			scale: [1.000, 1.000]
-		}
-		{
 			prefab: "spawner"
 			name: "Attacker Spawn"
-			faction: "defenders"
+			faction: "attackers"
 			position: [561.5001, 23.000]
 			rotation: 0.139626
 			scale: [1.000, 1.000]
@@ -1045,12 +1017,12 @@
 		{
 			prefab: "lantern"
 			position: [376.2798, 58.8858]
-			rotation: -0.000018
+			rotation: -0.000027
 			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "lantern"
-			position: [381.8256, 59.48531]
+			position: [381.8267, 59.48547]
 			rotation: 0.000006
 			scale: [1.000, 1.000]
 		}
@@ -1068,7 +1040,7 @@
 		}
 		{
 			prefab: "wreck.trashcan"
-			position: [353.3441, 61.29872]
+			position: [353.3441, 61.29873]
 			rotation: -1.73531
 			scale: [1.000, 1.000]
 		}
@@ -1115,8 +1087,26 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "soundscape.forest.day.00"
-			position: [62.33477, 46.07945]
+			prefab: "monument"
+			name: "Fortress"
+			faction: "defenders"
+			position: [39.7257, 51.88157]
+			rotation: -0.034907
+			scale: [1.000, 1.000]
+		}
+		{
+			prefab: "monument"
+			name: "Bunker"
+			faction: "defenders"
+			position: [179.8156, 32.98296]
+			rotation: -0.034907
+			scale: [1.000, 1.000]
+		}
+		{
+			prefab: "monument"
+			name: "Lumber Mill"
+			faction: "defenders"
+			position: [365.7805, 57.84199]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
