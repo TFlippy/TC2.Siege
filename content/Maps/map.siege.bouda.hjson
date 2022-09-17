@@ -214,8 +214,8 @@
 		}
 		{
 			prefab: "barrel.metal.wreck.00"
-			position: [149.3404, 42.42998]
-			rotation: 0.00003
+			position: [149.3405, 42.42997]
+			rotation: 0.000041
 			scale: [1.000, 1.000]
 		}
 		{
@@ -478,8 +478,8 @@
 		}
 		{
 			prefab: "chair.wood.00"
-			position: [141.6849, 42.72971]
-			rotation: -0.00042
+			position: [141.6848, 42.72964]
+			rotation: -0.000526
 			scale: [1.000, 1.000]
 		}
 		{
@@ -523,7 +523,7 @@
 		}
 		{
 			prefab: "wreck.car"
-			position: [265.5459, 57.08119]
+			position: [265.546, 57.0812]
 			rotation: 3.197799
 			scale: [1.000, 1.000]
 		}
@@ -557,19 +557,19 @@
 		{
 			prefab: "barrel.metal.wreck.00"
 			position: [229.0631, 44.31007]
-			rotation: -0.009149
+			rotation: -0.009162
 			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "barrel.metal.00"
 			position: [231.746, 44.47874]
-			rotation: 1.655983
+			rotation: 1.655984
 			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "barricade.wood.01"
-			position: [137.8764, 42.4052]
-			rotation: 0.045954
+			position: [137.8762, 42.40468]
+			rotation: 0.04548
 			scale: [1.000, 1.000]
 		}
 		{
@@ -830,8 +830,8 @@
 		}
 		{
 			prefab: "barrel.metal.00"
-			position: [174.1214, 34.88927]
-			rotation: -0.045396
+			position: [174.1214, 34.88926]
+			rotation: -0.045391
 			scale: [1.000, 1.000]
 		}
 		{
@@ -862,7 +862,7 @@
 		{
 			prefab: "pallet.ingot.iron.wreck.00"
 			position: [175.883, 34.64431]
-			rotation: -0.067433
+			rotation: -0.067432
 			scale: [1.000, 1.000]
 		}
 		{
@@ -887,8 +887,8 @@
 			prefab: "spawner"
 			name: "Attacker Spawn"
 			faction: "attackers"
-			position: [561.5001, 23.000]
-			rotation: 0.139626
+			position: [582.250, 32.500]
+			rotation: -0
 			scale: [1.000, 1.000]
 		}
 		{
@@ -1022,7 +1022,7 @@
 		}
 		{
 			prefab: "lantern"
-			position: [381.8267, 59.48547]
+			position: [381.8272, 59.48555]
 			rotation: 0.000006
 			scale: [1.000, 1.000]
 		}
