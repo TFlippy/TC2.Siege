@@ -20,7 +20,7 @@ body:
 
 health:
 {
-	max: 20000.000
+	max: 80000.000
 }
 
 threat:

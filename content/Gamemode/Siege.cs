@@ -5,9 +5,6 @@ namespace TC2.Siege
 {
 	public static partial class Siege
 	{
-		[Query]
-		public delegate void GetAllTargetsQuery(ISystem.Info info, Entity entity, [Source.Owned] in Siege.Target target, [Source.Owned] in Transform.Data transform);
-
 		[IGamemode.Data("Siege", "")]
 		public partial struct Gamemode: IGamemode
 		{
@@ -41,7 +38,7 @@ namespace TC2.Siege
 				Constants.World.enable_autosave = false;
 
 				Constants.Respawn.token_count_min = 10.00f;
-				Constants.Respawn.token_count_max = 50.00f;
+				Constants.Respawn.token_count_max = 500.00f;
 				Constants.Respawn.token_count_default = 30.00f;
 				Constants.Respawn.token_refill_amount = 0.50f;
 
@@ -87,7 +84,7 @@ namespace TC2.Siege
 #region Soldier			
 					new("Armor", "", origin: Character.Origin.Soldier)
 					{
-						cost = 2.50f,
+						cost = 0.50f,
 
 						shipment = new Shipment.Data("Armor", Shipment.Flags.Unpack)
 						{
@@ -148,7 +145,7 @@ namespace TC2.Siege
 							items =
 							{
 								[0] = Shipment.Item.Prefab("rifle", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_hc", 60)
+								[1] = Shipment.Item.Resource("ammo_hc.hv", 45)
 							}
 						}
 					},
@@ -162,7 +159,7 @@ namespace TC2.Siege
 							items =
 							{
 								[0] = Shipment.Item.Prefab("smg", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_lc", 150)
+								[1] = Shipment.Item.Resource("ammo_lc", 300)
 							}
 						}
 					},
@@ -190,7 +187,7 @@ namespace TC2.Siege
 							items =
 							{
 								[0] = Shipment.Item.Prefab("bp.abr.740", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_hc.hv", 90)
+								[1] = Shipment.Item.Resource("ammo_hc.hv", 150)
 							}
 						}
 					},
@@ -204,7 +201,7 @@ namespace TC2.Siege
 							items =
 							{
 								[0] = Shipment.Item.Prefab("bp.majzl.a749", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_mg", 40)
+								[1] = Shipment.Item.Resource("ammo_mg", 80)
 							}
 						}
 					},
@@ -253,7 +250,7 @@ namespace TC2.Siege
 #region Engineer
 					new("Armor", "", origin: Character.Origin.Engineer)
 					{
-						cost = 2.50f,
+						cost = 0.50f,
 
 						shipment = new Shipment.Data("Armor", Shipment.Flags.Unpack)
 						{
@@ -398,7 +395,7 @@ namespace TC2.Siege
 							items =
 							{
 								[0] = Shipment.Item.Prefab("bp.mamut.b738", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_ac", 30)
+								[1] = Shipment.Item.Resource("ammo_ac", 60)
 							}
 						}
 					},
@@ -414,6 +411,45 @@ namespace TC2.Siege
 								[0] = Shipment.Item.Prefab("machine_gun"),
 								[1] = Shipment.Item.Resource("ammo_mg", 500),
 								[2] = Shipment.Item.Prefab("mount.tripod")
+							}
+						}
+					},
+
+					new("Binoculars", "", origin: Character.Origin.Engineer)
+					{
+						cost = 0.50f,
+
+						shipment = new Shipment.Data("Binoculars", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("binoculars")
+							}
+						}
+					},
+
+					new("Artillery Shells (HE)", "", origin: Character.Origin.Engineer)
+					{
+						cost = 20.00f,
+
+						shipment = new Shipment.Data("Shells")
+						{
+							items =
+							{
+								[0] = Shipment.Item.Resource("ammo_shell.he", 8)
+							}
+						}
+					},
+
+					new("Artillery Shells (Basic)", "", origin: Character.Origin.Engineer)
+					{
+						cost = 15.00f,
+
+						shipment = new Shipment.Data("Shells")
+						{
+							items =
+							{
+								[0] = Shipment.Item.Resource("ammo_shell", 8)
 							}
 						}
 					},
@@ -448,7 +484,7 @@ namespace TC2.Siege
 #region Medic
 					new("Armor", "", origin: Character.Origin.Doctor)
 					{
-						cost = 2.50f,
+						cost = 0.50f,
 
 						shipment = new Shipment.Data("Armor", Shipment.Flags.Unpack)
 						{
@@ -669,6 +705,7 @@ namespace TC2.Siege
 			public Siege.Planner.Status status;
 
 			[Save.Ignore, Net.Ignore] public float next_update;
+			[Save.Ignore, Net.Ignore] public float next_regroup;
 		}
 
 #if SERVER
@@ -894,21 +931,84 @@ namespace TC2.Siege
 				ai.stance = AI.Stance.Aggressive;
 			}
 
-			for (int i = 0; i < selection.units.Length; i++)
+			//for (int i = 0; i < selection.units.Length; i++)
+			//{
+			//	ref var unit = ref selection.units[i];
+			//	if (!unit.IsAlive() || unit.entity.HasTag("dead"))
+			//	{
+			//		unit.Set(data.ent_target);
+
+			//		if (i >= 1)
+			//		{
+			//			//planner.flags.SetFlag(Siege.Planner.Flags.Ready, true);
+			//			planner.status = Siege.Planner.Status.Searching;
+			//		}
+
+			//		break;
+			//	}
+			//}
+		}
+
+		//[ISystem.LateUpdate(ISystem.Mode.Single)]
+		//public static void OnUpdate2(ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform,
+		//[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Owned, Optional] in Faction.Data faction)
+		//{
+		//	if (info.WorldTime > planner.next_update)
+		//	{
+		//		ref var region = ref info.GetRegion();
+		//		var random = XorRandom.New();
+
+		//		planner.next_regroup = info.WorldTime + random.NextFloatRange(5.00f, 10.00f);
+		//	}
+		//}
+
+		[Query]
+		public delegate void GetAllTargetsQuery(ISystem.Info info, Entity entity, [Source.Owned] in Siege.Target target, [Source.Owned] in Transform.Data transform);
+
+		[Query]
+		public delegate void GetAllUnitsQuery(ISystem.Info info, Entity entity, [Source.Owned] in Commandable.Data commandable, [Source.Owned, Override] in AI.Movement movement, [Source.Owned, Override] in AI.Behavior behavior, [Source.Owned] in Transform.Data transform, [Source.Owned] in Faction.Data faction);
+
+		private struct GetAllTargetsQueryArgs
+		{
+			public Entity ent_search;
+			public IFaction.Handle faction_id;
+			public Vector2 position;
+			public Entity ent_root;
+			public Entity ent_target;
+			public float target_dist_nearest_sq;
+			public Vector2 target_position;
+
+			public GetAllTargetsQueryArgs(Entity ent_search, IAsset2<IFaction, IFaction.Data>.Handle faction_id, Vector2 position, Entity ent_root, Entity ent_target, float target_dist_nearest_sq, Vector2 target_position)
 			{
-				ref var unit = ref selection.units[i];
-				if (!unit.IsAlive() || unit.entity.HasTag("dead"))
-				{
-					unit.Set(data.ent_target);
+				this.ent_search = ent_search;
+				this.faction_id = faction_id;
+				this.position = position;
+				this.ent_root = ent_root;
+				this.ent_target = ent_target;
+				this.target_dist_nearest_sq = target_dist_nearest_sq;
+				this.target_position = target_position;
+			}
+		}
 
-					if (i == 2)
-					{
-						//planner.flags.SetFlag(Siege.Planner.Flags.Ready, true);
-						planner.status = Siege.Planner.Status.Searching;
-					}
+		private struct GetAllUnitsQueryArgs
+		{
+			public Entity ent_search;
+			public Entity ent_target;
+			public IFaction.Handle faction_id;
+			public Vector2 position;
+			public Vector2 target_position;
+			public int current_unit_index;
+			public FixedArray4<EntRef<Commandable.Data>> selection;
 
-					break;
-				}
+			public GetAllUnitsQueryArgs(Entity ent_search, Entity ent_target, IAsset2<IFaction, IFaction.Data>.Handle faction_id, Vector2 position, Vector2 target_position, int current_unit_index, FixedArray4<EntRef<Commandable.Data>> selection)
+			{
+				this.ent_search = ent_search;
+				this.ent_target = ent_target;
+				this.faction_id = faction_id;
+				this.position = position;
+				this.target_position = target_position;
+				this.current_unit_index = current_unit_index;
+				this.selection = selection;
 			}
 		}
 
@@ -921,23 +1021,30 @@ namespace TC2.Siege
 				planner.next_update = info.WorldTime + 1.00f;
 
 				ref var region = ref info.GetRegion();
+				var random = XorRandom.New();
+
 				WorldNotification.Push(ref region, "target", 0xffffffff, control.mouse.position);
 
 				//App.WriteLine(region.GetTotalTagCount("kobold"));
 
+
+				var difficulty = (info.WorldTime / 60.00f);
+				spawner.group_size_extra = (int)Maths.Clamp(1 + MathF.Floor(MathF.Pow(difficulty * 0.50f, 0.50f)), 0, 6);
+
 				switch (planner.status)
 				{
+					default:
 					case Siege.Planner.Status.Searching:
 					{
 						//if (planner.flags.HasAll(Siege.Planner.Flags.Ready))
 						{
 							//App.WriteLine("raid ready");
-							var arg = (ent_search: entity, faction_id: faction.id, position: transform.position, ent_root: default(Entity), ent_target: default(Entity), target_dist_nearest_sq: float.MaxValue, target_position: default(Vector2));
+							var arg = new GetAllTargetsQueryArgs(entity, faction.id, transform.position, default, default, float.MaxValue, default);
 
 							region.Query<Siege.GetAllTargetsQuery>(Func).Execute(ref arg);
 							static void Func(ISystem.Info info, Entity entity, in Siege.Target target, in Transform.Data transform)
 							{
-								ref var arg = ref info.GetParameter<(Entity ent_search, IFaction.Handle faction_id, Vector2 position, Entity ent_root, Entity ent_target, float target_dist_nearest_sq, Vector2 target_position)>();
+								ref var arg = ref info.GetParameter<GetAllTargetsQueryArgs>();
 								if (!arg.IsNull())
 								{
 									ref var region = ref info.GetRegion();
@@ -963,28 +1070,61 @@ namespace TC2.Siege
 
 							if (arg.ent_target.IsValid())
 							{
-								selection.order_type = Commandable.OrderType.Move;
+								//var selection_units = selection.units;
 
-								control.mouse.position = arg.target_position; // Maths.MoveTowards(control.mouse.position, arg.target_position, new Vector2(4.00f));
-								control.mouse.SetKeyPressed(Mouse.Key.Right, true);
+								var arg2 = new GetAllUnitsQueryArgs(entity, arg.ent_target, faction.id, transform.position, arg.target_position, 0, default);
 
-								planner.next_update = info.WorldTime + 5.00f;
-
-								for (int i = 0; i < selection.units.Length; i++)
+								//if (info.WorldTime > planner.next_update)
 								{
-									ref var unit = ref selection.units[i];
-									if (unit.TryGetHandle(out var handle))
+									//planner.next_regroup = info.WorldTime + random.NextFloatRange(5.00f, 10.00f);
+
+									//var arg2 = new GetAllUnitsQueryArgs(entity, arg.ent_target, faction.id, transform.position, arg.target_position, 0, default);
+
+									region.Query<Siege.GetAllUnitsQuery>(Func2).Execute(ref arg2);
+									static void Func2(ISystem.Info info, Entity entity, [Source.Owned] in Commandable.Data commandable, [Source.Owned, Override] in AI.Movement movement, [Source.Owned, Override] in AI.Behavior behavior, [Source.Owned] in Transform.Data transform, [Source.Owned] in Faction.Data faction)
 									{
-										ref var transform_unit = ref unit.entity.GetComponent<Transform.Data>();
-										if (!transform_unit.IsNull())
+										ref var arg = ref info.GetParameter<GetAllUnitsQueryArgs>();
+										if (!arg.IsNull() && arg.current_unit_index < arg.selection.Length)
 										{
-											if (Vector2.DistanceSquared(transform_unit.position, control.mouse.position) <= (16 * 16))
+											//App.WriteLine(behavior.idle_timer);
+											if (faction.id == arg.faction_id && (behavior.idle_timer >= 2.00f || behavior.type == AI.Behavior.Type.None || movement.type == AI.Movement.Type.None))
 											{
-												unit = default;
+												//ref var region = ref info.GetRegion();
+												arg.selection[arg.current_unit_index++].Set(entity);
+												//App.WriteLine(entity);
 											}
 										}
 									}
 								}
+
+								//App.WriteLine(arg2.current_unit_index);
+
+								selection.units = arg2.selection;
+
+								selection.order_type = Commandable.OrderType.Attack;
+
+								control.mouse.position = arg.target_position; // Maths.MoveTowards(control.mouse.position, arg.target_position, new Vector2(4.00f));
+								control.mouse.SetKeyPressed(Mouse.Key.Right, true);
+
+								planner.next_update = info.WorldTime + random.NextFloatRange(10.00f, 30.00f);
+
+								//selection.units = default;
+
+								//for (int i = 0; i < selection.units.Length; i++)
+								//{
+								//	ref var unit = ref selection.units[i];
+								//	if (unit.TryGetHandle(out var handle))
+								//	{
+								//		ref var transform_unit = ref unit.entity.GetComponent<Transform.Data>();
+								//		if (!transform_unit.IsNull())
+								//		{
+								//			if (Vector2.DistanceSquared(transform_unit.position, control.mouse.position) <= (16 * 16))
+								//			{
+								//				unit = default;
+								//			}
+								//		}
+								//	}
+								//}
 
 								//selection.units = default;
 							}
