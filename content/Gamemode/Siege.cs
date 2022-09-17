@@ -693,14 +693,8 @@ namespace TC2.Siege
 			public enum Status: uint
 			{
 				Undefined = 0,
-
-				Forming,
-
 				Waiting,
-				Searching,
 				Dispatching,
-				Approaching,
-				Attacking,
 			}
 
 			public int wave_size;
@@ -711,7 +705,7 @@ namespace TC2.Siege
 			public Siege.Planner.Status status;
 
 			[Save.Ignore, Net.Ignore] public float next_update;
-			[Save.Ignore, Net.Ignore] public float next_regroup;
+			[Save.Ignore, Net.Ignore] public float next_dispatch;
 			[Save.Ignore, Net.Ignore] public float next_wave;
 
 			public Planner()
@@ -933,7 +927,7 @@ namespace TC2.Siege
 		public static void OnSpawn(ISystem.Info info, Entity entity, ref Spawner.SpawnEvent data,
 		[Source.Owned] ref Spawner.Data spawner, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Siege.Planner planner, [Source.Owned] ref Selection.Data selection)
 		{
-			App.WriteLine($"spawn event {data.ent_target}");
+			//App.WriteLine($"spawn event {data.ent_target}");
 
 			SetKoboldLoadout(data.ent_target);
 
@@ -942,39 +936,7 @@ namespace TC2.Siege
 			{
 				ai.stance = AI.Stance.Aggressive;
 			}
-
-			//for (int i = 0; i < selection.units.Length; i++)
-			//{
-			//	ref var unit = ref selection.units[i];
-			//	if (!unit.IsAlive() || unit.entity.HasTag("dead"))
-			//	{
-			//		unit.Set(data.ent_target);
-
-			//		if (i >= 1)
-			//		{
-			//			//planner.flags.SetFlag(Siege.Planner.Flags.Ready, true);
-			//			planner.status = Siege.Planner.Status.Searching;
-			//		}
-
-			//		break;
-			//	}
-			//}
-
-			//planner.wave_size_rem = Maths.Clamp(planner.wave_size_rem - 1, 0, planner.wave_size);
 		}
-
-		//[ISystem.LateUpdate(ISystem.Mode.Single)]
-		//public static void OnUpdate2(ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform,
-		//[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Owned, Optional] in Faction.Data faction)
-		//{
-		//	if (info.WorldTime > planner.next_update)
-		//	{
-		//		ref var region = ref info.GetRegion();
-		//		var random = XorRandom.New();
-
-		//		planner.next_regroup = info.WorldTime + random.NextFloatRange(5.00f, 10.00f);
-		//	}
-		//}
 
 #if SERVER
 		[ChatCommand.Region("nextmap", "", creative: true)]
@@ -984,7 +946,9 @@ namespace TC2.Siege
 			if (!region.IsNull())
 			{
 				var map_handle = new Map.Handle(map);
-				if (map_handle.id != 0)
+				//App.WriteLine($"nextmapping {map}; {map_handle}; {map_handle.id}");
+
+				//if (map_handle.id != 0)
 				{
 					Siege.ChangeMap(ref region, map_handle);
 				}
@@ -1123,25 +1087,7 @@ namespace TC2.Siege
 				ref var region = ref info.GetRegion();
 				var random = XorRandom.New();
 
-				//WorldNotification.Push(ref region, "target", 0xffffffff, control.mouse.position);
-
-				////App.WriteLine(region.GetTotalTagCount("kobold"));
-
-
 				var difficulty = (info.WorldTime / 60.00f);
-				//spawner.group_size_extra = (int)Maths.Clamp(1 + MathF.Floor(MathF.Pow(difficulty * 0.50f, 0.50f)), 0, 6);
-
-				//if (planner.next_wave <= 0.00f)
-				//{
-				//	planner.next_wave = time + planner.wave_interval;
-				//}
-
-				//if (time >= planner.next_wave)
-				//{
-
-				//}
-
-				App.WriteLine($"next wave in {planner.next_wave - time}");
 
 				switch (planner.status)
 				{
@@ -1162,8 +1108,6 @@ namespace TC2.Siege
 
 							planner.status = Planner.Status.Dispatching;
 						}
-
-
 					}
 					break;
 
@@ -1171,47 +1115,13 @@ namespace TC2.Siege
 					{
 						if ((planner.next_wave - time) >= 30.00f)
 						{
-							//App.WriteLine("raid ready");
-							//var arg = new GetAllTargetsQueryArgs(entity, faction.id, transform.position, default, default, float.MaxValue, default);
-
-							//region.Query<Siege.GetAllTargetsQuery>(Func).Execute(ref arg);
-							//static void Func(ISystem.Info info, Entity entity, in Siege.Target target, in Transform.Data transform)
-							//{
-							//	ref var arg = ref info.GetParameter<GetAllTargetsQueryArgs>();
-							//	if (!arg.IsNull())
-							//	{
-							//		ref var region = ref info.GetRegion();
-
-							//		var dist_sq = Vector2.DistanceSquared(transform.position, arg.position);
-							//		if ((target.faction_id == 0 || target.faction_id != arg.faction_id) && dist_sq < arg.target_dist_nearest_sq)
-							//		{
-							//			if (arg.ent_root.id == 0)
-							//			{
-							//				arg.ent_root = arg.ent_search.GetRoot(Relation.Type.Child);
-							//			}
-
-							//			var ent_root = entity.GetRoot(Relation.Type.Child);
-							//			if (ent_root != arg.ent_root && ent_root.GetRoot(Relation.Type.Instance) != arg.ent_root)
-							//			{
-							//				arg.ent_target = entity;
-							//				arg.target_dist_nearest_sq = dist_sq;
-							//				arg.target_position = transform.position;
-							//			}
-							//		}
-							//	}
-							//}
-
-							if (TryFindTarget(ref region, entity, faction.id, transform.position, out var ent_target, out var target_position))
+							if (time >= planner.next_dispatch)
 							{
-								//var selection_units = selection.units;
+								planner.next_dispatch = time + random.NextFloatRange(5.00f, 10.00f);
 
-								var arg = new GetAllUnitsQueryArgs(entity, ent_target, faction.id, transform.position, target_position, 0, planner.wave_size_rem, default);
-
-								//if (info.WorldTime > planner.next_update)
+								if (TryFindTarget(ref region, entity, faction.id, transform.position, out var ent_target, out var target_position))
 								{
-									//planner.next_regroup = info.WorldTime + random.NextFloatRange(5.00f, 10.00f);
-
-									//var arg2 = new GetAllUnitsQueryArgs(entity, arg.ent_target, faction.id, transform.position, arg.target_position, 0, default);
+									var arg = new GetAllUnitsQueryArgs(entity, ent_target, faction.id, transform.position, target_position, 0, planner.wave_size_rem, default);
 
 									region.Query<Siege.GetAllUnitsQuery>(Func2).Execute(ref arg);
 									static void Func2(ISystem.Info info, Entity entity, [Source.Owned] in Commandable.Data commandable, [Source.Owned, Override] in AI.Movement movement, [Source.Owned, Override] in AI.Behavior behavior, [Source.Owned] in Transform.Data transform, [Source.Owned] in Faction.Data faction)
@@ -1240,54 +1150,28 @@ namespace TC2.Siege
 											}
 										}
 									}
+
+									planner.wave_size_rem = arg.wave_size_rem;
+
+									if (arg.selection_count > 0)
+									{
+										selection.units = arg.selection;
+
+										selection.order_type = Commandable.OrderType.Attack;
+
+										control.mouse.position = target_position;
+										control.mouse.SetKeyPressed(Mouse.Key.Right, true);
+									}
+
+									if (planner.wave_size_rem > 0)
+									{
+										planner.next_dispatch = time + random.NextFloatRange(1.00f, 3.00f);
+										spawner.next_spawn = time;
+
+										App.WriteLine($"Spawning reinforcements... ({planner.wave_size_rem} left)");
+									}
 								}
-
-								planner.wave_size_rem = arg.wave_size_rem;
-
-								if (arg.selection_count > 0)
-								{
-									selection.units = arg.selection;
-
-									selection.order_type = Commandable.OrderType.Attack;
-
-									control.mouse.position = target_position; // Maths.MoveTowards(control.mouse.position, arg.target_position, new Vector2(4.00f));
-									control.mouse.SetKeyPressed(Mouse.Key.Right, true);
-
-									planner.next_update = info.WorldTime + random.NextFloatRange(5.00f, 10.00f);
-									//planner.wave_size_rem = Maths.Clamp(planner.wave_size_rem - arg.selection_count, 0, planner.wave_size);
-								}
-								else if (planner.wave_size_rem > 0)
-								{
-									planner.next_update = info.WorldTime + random.NextFloatRange(1.00f, 3.00f);
-									spawner.next_spawn = time;
-								}
-
-								App.WriteLine($"Dispatched {arg.selection_count} ({planner.wave_size_rem}/{planner.wave_size})");
-
-								//selection.units = default;
-
-								//for (int i = 0; i < selection.units.Length; i++)
-								//{
-								//	ref var unit = ref selection.units[i];
-								//	if (unit.TryGetHandle(out var handle))
-								//	{
-								//		ref var transform_unit = ref unit.entity.GetComponent<Transform.Data>();
-								//		if (!transform_unit.IsNull())
-								//		{
-								//			if (Vector2.DistanceSquared(transform_unit.position, control.mouse.position) <= (16 * 16))
-								//			{
-								//				unit = default;
-								//			}
-								//		}
-								//	}
-								//}
-
-								//selection.units = default;
 							}
-
-
-							//planner.status = Siege.Planner.Status.Attacking;
-							//planner.status = Siege.Planner.Status.Forming;
 						}
 						else
 						{
