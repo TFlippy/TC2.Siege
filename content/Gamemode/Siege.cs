@@ -62,7 +62,7 @@ namespace TC2.Siege
 
 #if CLIENT
 				Character.CreationGUI.enabled = false;
-				Character.CharacterHUD.enabled = false;
+				//Character.CharacterHUD.enabled = false;
 
 				Spawn.RespawnGUI.enabled = true;
 #endif
@@ -192,6 +192,20 @@ namespace TC2.Siege
 						}
 					},
 
+					new("R750 Automat", "", origin: Character.Origin.Soldier)
+					{
+						cost = 15.00f,
+
+						shipment = new Shipment.Data("R750 Automat", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("bp.r750", flags: Shipment.Item.Flags.Pickup),
+								[1] = Shipment.Item.Resource("ammo_hc.arc.mt", 200)
+							}
+						}
+					},
+
 					new("Majzl A-749", "", origin: Character.Origin.Soldier)
 					{
 						cost = 5.00f,
@@ -229,19 +243,6 @@ namespace TC2.Siege
 							items =
 							{
 								[0] = Shipment.Item.Prefab("grenade")
-							}
-						}
-					},
-
-					new("Arc Lance", "", origin: Character.Origin.Soldier)
-					{
-						cost = 6.00f,
-
-						shipment = new Shipment.Data("Arc Lance", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("arc_lance")
 							}
 						}
 					},
@@ -372,20 +373,6 @@ namespace TC2.Siege
 						}
 					},
 
-					new("R750 Automat", "", origin: Character.Origin.Engineer)
-					{
-						cost = 15.00f,
-
-						shipment = new Shipment.Data("R750 Automat", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("bp.r750", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_hc.arc.mt", 200)
-							}
-						}
-					},
-
 					new("Mamut B-738", "", origin: Character.Origin.Engineer)
 					{
 						cost = 12.00f,
@@ -400,9 +387,9 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Machine Gun Kit", "", origin: Character.Origin.Engineer)
+					new("Machine Gun Kit", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
 					{
-						cost = 25.00f,
+						cost = 50.00f,
 
 						shipment = new Shipment.Data("Machine Gun")
 						{
@@ -428,7 +415,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Artillery Shells (HE)", "", origin: Character.Origin.Engineer)
+					new("Artillery Shells (HE)", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 20.00f,
 
@@ -441,7 +428,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Artillery Shells (Basic)", "", origin: Character.Origin.Engineer)
+					new("Artillery Shells (Basic)", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 15.00f,
 
@@ -454,7 +441,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Land Mines", "", origin: Character.Origin.Engineer)
+					new("Land Mines", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 10.00f,
 
@@ -467,7 +454,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Dynamite", "", origin: Character.Origin.Engineer)
+					new("Dynamite", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 10.00f,
 
@@ -476,6 +463,22 @@ namespace TC2.Siege
 							items =
 							{
 								[0] = Shipment.Item.Prefab("dynamite", 4)
+							}
+						}
+					},
+
+					new("Supplies (Ammo)", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
+					{
+						cost = 30.00f,
+
+						shipment = new Shipment.Data("Supplies (Ammo)")
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("ammo_lc.hv", 800),
+								[1] = Shipment.Item.Resource("ammo_hc.hv", 400),
+								[2] = Shipment.Item.Prefab("ammo_sg.buck", 250),
+								[3] = Shipment.Item.Prefab("ammo_mg", 200),
 							}
 						}
 					},
@@ -564,6 +567,20 @@ namespace TC2.Siege
 						}
 					},
 
+					new("Mamut B-738", "", origin: Character.Origin.Doctor)
+					{
+						cost = 12.00f,
+
+						shipment = new Shipment.Data("Mamut B-738", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("bp.mamut.b738", flags: Shipment.Item.Flags.Pickup),
+								[1] = Shipment.Item.Resource("ammo_ac", 60)
+							}
+						}
+					},
+
 					new("Houser A-750", "", origin: Character.Origin.Doctor)
 					{
 						cost = 7.00f,
@@ -573,7 +590,7 @@ namespace TC2.Siege
 							items =
 							{
 								[0] = Shipment.Item.Prefab("bp.houser.a750", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_hc.hv", 90)
+								[1] = Shipment.Item.Resource("ammo_hc.hv", 150)
 							}
 						}
 					},
@@ -591,11 +608,24 @@ namespace TC2.Siege
 						}
 					},
 
+					new("Arc Lance", "", origin: Character.Origin.Doctor)
+					{
+						cost = 6.00f,
+
+						shipment = new Shipment.Data("Arc Lance", Shipment.Flags.Unpack)
+						{
+							items =
+							{
+								[0] = Shipment.Item.Prefab("arc_lance")
+							}
+						}
+					},
+
 					new("Grenade", "", origin: Character.Origin.Doctor)
 					{
 						cost = 1.50f,
 
-						shipment = new Shipment.Data("Grenade", Shipment.Flags.None)
+						shipment = new Shipment.Data("Grenade", Shipment.Flags.Unpack)
 						{
 							items =
 							{
@@ -604,7 +634,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Morfitin-B", "", origin: Character.Origin.Doctor)
+					new("Morfitin-B", "", origin: Character.Origin.Doctor, flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 4.00f,
 
@@ -617,7 +647,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Paralyx", "", origin: Character.Origin.Doctor)
+					new("Paralyx", "", origin: Character.Origin.Doctor, flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 3.00f,
 
@@ -630,7 +660,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Codeine 20mg IR", "", origin: Character.Origin.Doctor)
+					new("Codeine 20mg IR", "", origin: Character.Origin.Doctor, flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 2.00f,
 
@@ -643,7 +673,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Pervitin 50mg ER", "", origin: Character.Origin.Doctor)
+					new("Pervitin 50mg ER", "", origin: Character.Origin.Doctor, flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 4.00f,
 
@@ -656,7 +686,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Pervitin 100mg ER", "", origin: Character.Origin.Doctor)
+					new("Pervitin 100mg ER", "", origin: Character.Origin.Doctor, flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 6.00f,
 
@@ -1103,7 +1133,7 @@ namespace TC2.Siege
 						if (time >= planner.next_wave)
 						{
 							planner.next_wave = time + planner.wave_interval + Maths.Clamp(difficulty * 10.00f, 0.00f, 120.00f);
-							planner.wave_size = (int)Maths.Clamp(3 + MathF.Floor(MathF.Pow(difficulty, 0.70f)) * 2.00f, 0, 40);
+							planner.wave_size = (int)Maths.Clamp(3 + MathF.Floor(MathF.Pow(difficulty, 0.80f)) * 2.00f, 0, 40);
 							planner.wave_size_rem = planner.wave_size;
 
 							planner.status = Planner.Status.Dispatching;
