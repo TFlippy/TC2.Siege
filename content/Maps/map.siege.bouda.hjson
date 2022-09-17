@@ -831,14 +831,6 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "spawner"
-			name: "Attacker Spawn"
-			faction: "attackers"
-			position: [583.000, 32.750]
-			rotation: -0
-			scale: [1.000, 1.000]
-		}
-		{
 			prefab: "market"
 			faction: "defenders"
 			position: [477.250, 41.125]

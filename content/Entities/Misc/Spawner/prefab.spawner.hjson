@@ -36,12 +36,12 @@ spawner:
 	prefab: "kobold.male"
 	filter_tag: "kobold"
 
-	interval: 40.000
-	interval_extra: 20.000
-	interval_count_modifier: 0.500
+	interval: 20.000
+	interval_extra: 30.000
+	interval_count_modifier: 2.000
 
-	group_size: 2
-	group_size_extra: 0
+	group_size: 1
+	group_size_extra: 1
 
 	max_count: 24
 }
