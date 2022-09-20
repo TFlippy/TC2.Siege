@@ -415,6 +415,45 @@ namespace TC2.Siege
 						}
 					},
 
+					new("Artillery Shells (Explosive)", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
+					{
+						cost = 15.00f,
+
+						shipment = new Shipment.Data("Shells")
+						{
+							items =
+							{
+								[0] = Shipment.Item.Resource("ammo_shell", 8)
+							}
+						}
+					},
+
+					new("Artillery Shells (Shrapnel)", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
+					{
+						cost = 20.00f,
+
+						shipment = new Shipment.Data("Shells")
+						{
+							items =
+							{
+								[0] = Shipment.Item.Resource("ammo_shell.shrapnel", 8)
+							}
+						}
+					},
+
+					new("Artillery Shells (HV)", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
+					{
+						cost = 20.00f,
+
+						shipment = new Shipment.Data("Shells")
+						{
+							items =
+							{
+								[0] = Shipment.Item.Resource("ammo_shell.hv", 8)
+							}
+						}
+					},
+
 					new("Artillery Shells (HE)", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 20.00f,
@@ -424,19 +463,6 @@ namespace TC2.Siege
 							items =
 							{
 								[0] = Shipment.Item.Resource("ammo_shell.he", 8)
-							}
-						}
-					},
-
-					new("Artillery Shells (Basic)", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
-					{
-						cost = 15.00f,
-
-						shipment = new Shipment.Data("Shells")
-						{
-							items =
-							{
-								[0] = Shipment.Item.Resource("ammo_shell", 8)
 							}
 						}
 					},
@@ -475,10 +501,10 @@ namespace TC2.Siege
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("ammo_lc.hv", 800),
+								[0] = Shipment.Item.Resource("ammo_lc.hv", 400),
 								[1] = Shipment.Item.Resource("ammo_hc.hv", 400),
-								[2] = Shipment.Item.Prefab("ammo_sg.buck", 250),
-								[3] = Shipment.Item.Prefab("ammo_mg", 200),
+								[2] = Shipment.Item.Resource("ammo_sg.buck", 140),
+								[3] = Shipment.Item.Resource("ammo_mg", 600),
 							}
 						}
 					},
@@ -1109,106 +1135,109 @@ namespace TC2.Siege
 		public static void OnUpdate(ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Spawner.Data spawner,
 		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Owned, Optional] in Faction.Data faction)
 		{
-			var time = info.WorldTime;
-			if (time >= planner.next_update)
+			if (Constants.World.enable_npc_spawning && Constants.World.enable_ai)
 			{
-				planner.next_update = time + 1.00f;
-
-				ref var region = ref info.GetRegion();
-				var random = XorRandom.New();
-
-				var difficulty = (info.WorldTime / 60.00f);
-
-				switch (planner.status)
+				var time = info.WorldTime;
+				if (time >= planner.next_update)
 				{
-					case Planner.Status.Undefined:
-					{
-						planner.next_wave = time + 60.00f;
-						planner.status = Planner.Status.Waiting;
-					}
-					break;
+					planner.next_update = time + 1.00f;
 
-					case Planner.Status.Waiting:
+					ref var region = ref info.GetRegion();
+					var random = XorRandom.New();
+
+					var difficulty = (info.WorldTime / 60.00f);
+
+					switch (planner.status)
 					{
-						if (time >= planner.next_wave)
+						case Planner.Status.Undefined:
 						{
-							planner.next_wave = time + planner.wave_interval + Maths.Clamp(difficulty * 10.00f, 0.00f, 120.00f);
-							planner.wave_size = (int)Maths.Clamp(3 + MathF.Floor(MathF.Pow(difficulty, 0.80f)) * 2.00f, 0, 40);
-							planner.wave_size_rem = planner.wave_size;
-
-							planner.status = Planner.Status.Dispatching;
+							planner.next_wave = time + 60.00f;
+							planner.status = Planner.Status.Waiting;
 						}
-					}
-					break;
+						break;
 
-					case Siege.Planner.Status.Dispatching:
-					{
-						if ((planner.next_wave - time) >= 30.00f)
+						case Planner.Status.Waiting:
 						{
-							if (time >= planner.next_dispatch)
+							if (time >= planner.next_wave)
 							{
-								planner.next_dispatch = time + random.NextFloatRange(5.00f, 10.00f);
+								planner.next_wave = time + planner.wave_interval + Maths.Clamp(difficulty * 10.00f, 0.00f, 120.00f);
+								planner.wave_size = (int)Maths.Clamp(3 + MathF.Floor(MathF.Pow(difficulty, 0.80f)) * 2.00f, 0, 40);
+								planner.wave_size_rem = planner.wave_size;
 
-								if (TryFindTarget(ref region, entity, faction.id, transform.position, out var ent_target, out var target_position))
+								planner.status = Planner.Status.Dispatching;
+							}
+						}
+						break;
+
+						case Siege.Planner.Status.Dispatching:
+						{
+							if ((planner.next_wave - time) >= 30.00f)
+							{
+								if (time >= planner.next_dispatch)
 								{
-									var arg = new GetAllUnitsQueryArgs(entity, ent_target, faction.id, transform.position, target_position, 0, planner.wave_size_rem, default);
+									planner.next_dispatch = time + random.NextFloatRange(5.00f, 10.00f);
 
-									region.Query<Siege.GetAllUnitsQuery>(Func2).Execute(ref arg);
-									static void Func2(ISystem.Info info, Entity entity, [Source.Owned] in Commandable.Data commandable, [Source.Owned, Override] in AI.Movement movement, [Source.Owned, Override] in AI.Behavior behavior, [Source.Owned] in Transform.Data transform, [Source.Owned] in Faction.Data faction)
+									if (TryFindTarget(ref region, entity, faction.id, transform.position, out var ent_target, out var target_position))
 									{
-										ref var arg = ref info.GetParameter<GetAllUnitsQueryArgs>();
-										if (!arg.IsNull() && arg.selection_count < arg.selection.Length)
-										{
-											//App.WriteLine(behavior.idle_timer);
-											if (faction.id == arg.faction_id && (behavior.idle_timer >= 2.00f || behavior.type == AI.Behavior.Type.None || movement.type == AI.Movement.Type.None))
-											{
-												if (Vector2.DistanceSquared(transform.position, arg.position) <= (32 * 32))
-												{
-													if (arg.wave_size_rem > 0)
-													{
-														arg.wave_size_rem--;
-													}
-													else
-													{
-														return;
-													}
-												}
+										var arg = new GetAllUnitsQueryArgs(entity, ent_target, faction.id, transform.position, target_position, 0, planner.wave_size_rem, default);
 
-												//ref var region = ref info.GetRegion();
-												arg.selection[arg.selection_count++].Set(entity);
-												//App.WriteLine(entity);
+										region.Query<Siege.GetAllUnitsQuery>(Func2).Execute(ref arg);
+										static void Func2(ISystem.Info info, Entity entity, [Source.Owned] in Commandable.Data commandable, [Source.Owned, Override] in AI.Movement movement, [Source.Owned, Override] in AI.Behavior behavior, [Source.Owned] in Transform.Data transform, [Source.Owned] in Faction.Data faction)
+										{
+											ref var arg = ref info.GetParameter<GetAllUnitsQueryArgs>();
+											if (!arg.IsNull() && arg.selection_count < arg.selection.Length)
+											{
+												//App.WriteLine(behavior.idle_timer);
+												if (faction.id == arg.faction_id && (behavior.idle_timer >= 2.00f || behavior.type == AI.Behavior.Type.None || movement.type == AI.Movement.Type.None))
+												{
+													if (Vector2.DistanceSquared(transform.position, arg.position) <= (32 * 32))
+													{
+														if (arg.wave_size_rem > 0)
+														{
+															arg.wave_size_rem--;
+														}
+														else
+														{
+															return;
+														}
+													}
+
+													//ref var region = ref info.GetRegion();
+													arg.selection[arg.selection_count++].Set(entity);
+													//App.WriteLine(entity);
+												}
 											}
 										}
-									}
 
-									planner.wave_size_rem = arg.wave_size_rem;
+										planner.wave_size_rem = arg.wave_size_rem;
 
-									if (arg.selection_count > 0)
-									{
-										selection.units = arg.selection;
+										if (arg.selection_count > 0)
+										{
+											selection.units = arg.selection;
 
-										selection.order_type = Commandable.OrderType.Attack;
+											selection.order_type = Commandable.OrderType.Attack;
 
-										control.mouse.position = target_position;
-										control.mouse.SetKeyPressed(Mouse.Key.Right, true);
-									}
+											control.mouse.position = target_position;
+											control.mouse.SetKeyPressed(Mouse.Key.Right, true);
+										}
 
-									if (planner.wave_size_rem > 0)
-									{
-										planner.next_dispatch = time + random.NextFloatRange(1.00f, 3.00f);
-										spawner.next_spawn = time;
+										if (planner.wave_size_rem > 0)
+										{
+											planner.next_dispatch = time + random.NextFloatRange(1.00f, 3.00f);
+											spawner.next_spawn = time;
 
-										App.WriteLine($"Spawning reinforcements... ({planner.wave_size_rem} left)");
+											App.WriteLine($"Spawning reinforcements... ({planner.wave_size_rem} left)");
+										}
 									}
 								}
 							}
+							else
+							{
+								planner.status = Planner.Status.Waiting;
+							}
 						}
-						else
-						{
-							planner.status = Planner.Status.Waiting;
-						}
+						break;
 					}
-					break;
 				}
 			}
 		}
