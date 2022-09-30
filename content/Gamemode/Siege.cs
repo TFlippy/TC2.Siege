@@ -8,6 +8,9 @@ namespace TC2.Siege
 		[IGamemode.Data("Siege", "")]
 		public partial struct Gamemode: IGamemode
 		{
+			public IFaction.Handle faction_defenders = "defenders";
+			public IFaction.Handle faction_attackers = "attackers";
+
 			[Flags]
 			public enum Flags: uint
 			{
@@ -48,15 +51,20 @@ namespace TC2.Siege
 				Constants.Characters.allow_custom_characters = false;
 				Constants.Characters.allow_switching = true;
 
+				Constants.Equipment.enable_equip = true;
+				Constants.Equipment.enable_unequip = false;
+
 #if SERVER
 				Player.OnCreate += OnPlayerCreate;
 				static void OnPlayerCreate(ref Region.Data region, ref Player.Data player)
 				{
 					player.SetFaction("defenders");
 
-					Character.Create(ref region, "Soldier", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Military, origin: Character.Origin.Soldier, gender: Organic.Gender.Male, player_id: player.id, hair_frame: 5, beard_frame: 1);
-					Character.Create(ref region, "Engineer", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Engineering | Character.Flags.Military, origin: Character.Origin.Engineer, gender: Organic.Gender.Male, player_id: player.id, hair_frame: 2, beard_frame: 7);
-					Character.Create(ref region, "Medic", prefab: "human.female", flags: Character.Flags.Human | Character.Flags.Medical | Character.Flags.Military, origin: Character.Origin.Doctor, gender: Organic.Gender.Female, player_id: player.id, hair_frame: 10);
+					var ent_character_soldier = Character.Create(ref region, "Soldier", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Military, origin: "soldier", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 5, beard_frame: 1);
+					var ent_character_engineer = Character.Create(ref region, "Engineer", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Engineering | Character.Flags.Military, origin: "engineer", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 2, beard_frame: 7);
+					var ent_character_medic = Character.Create(ref region, "Medic", prefab: "human.female", flags: Character.Flags.Human | Character.Flags.Medical | Character.Flags.Military, origin: "doctor", gender: Organic.Gender.Female, player_id: player.id, hair_frame: 10);
+
+					player.SetControlledCharacter(ent_character_soldier);
 				}
 #endif
 
@@ -82,7 +90,7 @@ namespace TC2.Siege
 					default,
 
 #region Soldier			
-					new("Armor", "", origin: Character.Origin.Soldier)
+					new("Armor (Soldier)", "", origin: "soldier", flags: Loadout.Kit.Flags.Required)
 					{
 						cost = 0.50f,
 
@@ -96,7 +104,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Shield", "", origin: Character.Origin.Soldier)
+					new("Shield", "", origin: "soldier")
 					{
 						cost = 0.50f,
 
@@ -109,7 +117,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Machete", "", origin: Character.Origin.Soldier)
+					new("Machete", "", origin: "soldier")
 					{
 						cost = 0.20f,
 
@@ -122,7 +130,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Revolver", "", origin: Character.Origin.Soldier)
+					new("Revolver", "", origin: "soldier")
 					{
 						cost = 0.50f,
 
@@ -136,7 +144,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Rifle", "", origin: Character.Origin.Soldier)
+					new("Rifle", "", origin: "soldier")
 					{
 						cost = 1.00f,
 
@@ -150,7 +158,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("SMG", "", origin: Character.Origin.Soldier)
+					new("SMG", "", origin: "soldier")
 					{
 						cost = 2.50f,
 
@@ -164,7 +172,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Battle Rifle", "", origin: Character.Origin.Soldier)
+					new("Battle Rifle", "", origin: "soldier")
 					{
 						cost = 2.50f,
 
@@ -178,7 +186,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("ABR 740", "", origin: Character.Origin.Soldier)
+					new("ABR 740", "", origin: "soldier")
 					{
 						cost = 7.00f,
 
@@ -192,21 +200,21 @@ namespace TC2.Siege
 						}
 					},
 
-					new("R750 Automat", "", origin: Character.Origin.Soldier)
-					{
-						cost = 15.00f,
+					//new("R750 Automat", "", origin: "soldier")
+					//{
+					//	cost = 15.00f,
 
-						shipment = new Shipment.Data("R750 Automat", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("bp.r750", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_hc.arc.mt", 200)
-							}
-						}
-					},
+					//	shipment = new Shipment.Data("R750 Automat", Shipment.Flags.Unpack)
+					//	{
+					//		items =
+					//		{
+					//			[0] = Shipment.Item.Prefab("bp.r750", flags: Shipment.Item.Flags.Pickup),
+					//			[1] = Shipment.Item.Resource("ammo_hc.arc.mt", 200)
+					//		}
+					//	}
+					//},
 
-					new("Majzl A-749", "", origin: Character.Origin.Soldier)
+					new("Majzl A-749", "", origin: "soldier")
 					{
 						cost = 5.00f,
 
@@ -220,7 +228,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Auto-Shotgun", "", origin: Character.Origin.Soldier)
+					new("Auto-Shotgun", "", origin: "soldier")
 					{
 						cost = 6.50f,
 
@@ -234,7 +242,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Grenade", "", origin: Character.Origin.Soldier)
+					new("Grenade", "", origin: "soldier")
 					{
 						cost = 1.50f,
 
@@ -249,7 +257,7 @@ namespace TC2.Siege
 #endregion
 
 #region Engineer
-					new("Armor", "", origin: Character.Origin.Engineer)
+					new("Armor (Engineer)", "", origin: "engineer", flags: Loadout.Kit.Flags.Required)
 					{
 						cost = 0.50f,
 
@@ -257,13 +265,13 @@ namespace TC2.Siege
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip),
-								[1] = Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip),
+								[0] = Shipment.Item.Prefab("helmet.03", flags: Shipment.Item.Flags.Equip),
+								[1] = Shipment.Item.Prefab("armor.02", flags: Shipment.Item.Flags.Equip),
 							}
 						}
 					},
 
-					new("Crowbar", "", origin: Character.Origin.Engineer)
+					new("Crowbar", "", origin: "engineer")
 					{
 						cost = 0.30f,
 
@@ -276,7 +284,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Pickaxe", "", origin: Character.Origin.Engineer)
+					new("Pickaxe", "", origin: "engineer")
 					{
 						cost = 0.40f,
 
@@ -289,7 +297,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Drill", "", origin: Character.Origin.Engineer)
+					new("Drill", "", origin: "engineer")
 					{
 						cost = 6.50f,
 
@@ -302,7 +310,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Pistol", "", origin: Character.Origin.Engineer)
+					new("Pistol", "", origin: "engineer")
 					{
 						cost = 0.30f,
 
@@ -316,7 +324,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Pump Shotgun", "", origin: Character.Origin.Engineer)
+					new("Pump Shotgun", "", origin: "engineer")
 					{
 						cost = 2.50f,
 
@@ -330,7 +338,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Scattergun (Grenades)", "", origin: Character.Origin.Engineer)
+					new("Scattergun (Grenades)", "", origin: "engineer")
 					{
 						cost = 5.00f,
 
@@ -344,7 +352,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Bazooka", "", origin: Character.Origin.Engineer)
+					new("Bazooka", "", origin: "engineer")
 					{
 						cost = 10.00f,
 
@@ -358,7 +366,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Tools", "", origin: Character.Origin.Engineer)
+					new("Tools", "", origin: "engineer")
 					{
 						cost = 0.70f,
 
@@ -373,7 +381,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Mamut B-738", "", origin: Character.Origin.Engineer)
+					new("Mamut B-738", "", origin: "engineer")
 					{
 						cost = 12.00f,
 
@@ -387,7 +395,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Machine Gun Kit", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
+					new("Machine Gun Kit", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 50.00f,
 
@@ -402,7 +410,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Binoculars", "", origin: Character.Origin.Engineer)
+					new("Binoculars", "", origin: "engineer")
 					{
 						cost = 0.50f,
 
@@ -415,7 +423,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Artillery Shells (Explosive)", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
+					new("Artillery Shells (Explosive)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 15.00f,
 
@@ -428,7 +436,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Artillery Shells (Shrapnel)", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
+					new("Artillery Shells (Shrapnel)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 20.00f,
 
@@ -441,7 +449,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Artillery Shells (HV)", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
+					new("Artillery Shells (HV)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 20.00f,
 
@@ -454,7 +462,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Artillery Shells (HE)", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
+					new("Artillery Shells (HE)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 20.00f,
 
@@ -467,7 +475,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Land Mines", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
+					new("Land Mines", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 10.00f,
 
@@ -480,7 +488,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Dynamite", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
+					new("Dynamite", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 10.00f,
 
@@ -493,7 +501,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Supplies (Ammo)", "", origin: Character.Origin.Engineer, flags: Loadout.Kit.Flags.Unselect)
+					new("Supplies (Ammo)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 30.00f,
 
@@ -511,7 +519,7 @@ namespace TC2.Siege
 #endregion
 
 #region Medic
-					new("Armor", "", origin: Character.Origin.Doctor)
+					new("Armor (Medic)", "", origin: "doctor", flags: Loadout.Kit.Flags.Required)
 					{
 						cost = 0.50f,
 
@@ -519,13 +527,13 @@ namespace TC2.Siege
 						{
 							items =
 							{
-								[0] = Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip),
-								[1] = Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip),
+								[0] = Shipment.Item.Prefab("helmet.04", flags: Shipment.Item.Flags.Equip),
+								[1] = Shipment.Item.Prefab("armor.04", flags: Shipment.Item.Flags.Equip),
 							}
 						}
 					},
 
-					new("Shield", "", origin: Character.Origin.Doctor)
+					new("Shield", "", origin: "doctor")
 					{
 						cost = 0.50f,
 
@@ -538,7 +546,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Knife", "", origin: Character.Origin.Doctor)
+					new("Knife", "", origin: "doctor")
 					{
 						cost = 0.20f,
 
@@ -551,7 +559,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Pistol", "", origin: Character.Origin.Doctor)
+					new("Pistol", "", origin: "doctor")
 					{
 						cost = 0.30f,
 
@@ -565,7 +573,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Carbine", "", origin: Character.Origin.Doctor)
+					new("Carbine", "", origin: "doctor")
 					{
 						cost = 1.00f,
 
@@ -579,7 +587,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Machine Pistol", "", origin: Character.Origin.Doctor)
+					new("Machine Pistol", "", origin: "doctor")
 					{
 						cost = 2.50f,
 
@@ -593,7 +601,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Mamut B-738", "", origin: Character.Origin.Doctor)
+					new("Mamut B-738", "", origin: "doctor")
 					{
 						cost = 12.00f,
 
@@ -607,7 +615,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Houser A-750", "", origin: Character.Origin.Doctor)
+					new("Houser A-750", "", origin: "doctor")
 					{
 						cost = 7.00f,
 
@@ -621,7 +629,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Medkit", "", origin: Character.Origin.Doctor)
+					new("Medkit", "", origin: "doctor")
 					{
 						cost = 0.50f,
 
@@ -634,7 +642,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Arc Lance", "", origin: Character.Origin.Doctor)
+					new("Arc Lance", "", origin: "doctor")
 					{
 						cost = 6.00f,
 
@@ -647,7 +655,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Grenade", "", origin: Character.Origin.Doctor)
+					new("Grenade", "", origin: "doctor")
 					{
 						cost = 1.50f,
 
@@ -660,7 +668,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Morfitin-B", "", origin: Character.Origin.Doctor, flags: Loadout.Kit.Flags.Unselect)
+					new("Morfitin-B", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 4.00f,
 
@@ -673,7 +681,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Paralyx", "", origin: Character.Origin.Doctor, flags: Loadout.Kit.Flags.Unselect)
+					new("Paralyx", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 3.00f,
 
@@ -686,7 +694,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Codeine 20mg IR", "", origin: Character.Origin.Doctor, flags: Loadout.Kit.Flags.Unselect)
+					new("Codeine 20mg IR", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 2.00f,
 
@@ -699,7 +707,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Pervitin 50mg ER", "", origin: Character.Origin.Doctor, flags: Loadout.Kit.Flags.Unselect)
+					new("Pervitin 50mg ER", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 4.00f,
 
@@ -712,7 +720,7 @@ namespace TC2.Siege
 						}
 					},
 
-					new("Pervitin 100mg ER", "", origin: Character.Origin.Doctor, flags: Loadout.Kit.Flags.Unselect)
+					new("Pervitin 100mg ER", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
 					{
 						cost = 6.00f,
 
