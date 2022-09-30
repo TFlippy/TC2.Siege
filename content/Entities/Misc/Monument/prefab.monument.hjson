@@ -80,8 +80,8 @@ claimable:
 
 claimer:
 {
-	radius: 64.000
-	strength: 50.000
+	radius: 150.000
+	strength: 10.000
 	falloff: 1.000
 }
 
