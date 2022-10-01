@@ -87,3 +87,14 @@ siege.planner:
 {
 
 }
+
+minimap.marker:
+{
+	sprite:
+	{
+		texture: "ui_icons_minimap"
+		size: [16, 16]
+		frame: [1, 0]
+	}
+	// flags: faction
+}

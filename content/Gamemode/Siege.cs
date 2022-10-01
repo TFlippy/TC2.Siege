@@ -741,7 +741,35 @@ namespace TC2.Siege
 		public partial struct Target: IComponent
 		{
 			public IFaction.Handle faction_id;
+
+			[Save.Ignore, Net.Ignore] public float next_notification;
 		}
+
+#if SERVER
+		[ISystem.Event<Health.PostDamageEvent>(ISystem.Mode.Single)]
+		public static void OnPostDamage(ISystem.Info info, Entity entity, ref Health.PostDamageEvent data, [Source.Owned] ref Health.Data health, [Source.Owned] ref Siege.Target siege_target, [Source.Owned, Optional] in Faction.Data faction)
+		{
+			ref var region = ref info.GetRegion();
+
+			if (data.damage.faction_id == 0 || data.damage.faction_id != faction.id)
+			{
+				if (info.WorldTime >= siege_target.next_notification)
+				{
+					siege_target.next_notification = info.WorldTime + 2.00f;
+
+					Notification.Push(ref region, $"{entity.GetFullName()} is under attack! ({(health.integrity * 100.00f):0}% health left)", Color32BGRA.Red, lifetime: 7.00f, "ui.alert.00", volume: 0.70f, pitch: 1.00f);
+				}
+			}
+		}
+
+		[ISystem.Remove(ISystem.Mode.Single)]
+		public static void OnRemove(ISystem.Info info, Entity entity, [Source.Owned] ref Siege.Target siege_target)
+		{
+			ref var region = ref info.GetRegion();
+
+			Notification.Push(ref region, $"{entity.GetFullName()} has been destroyed!", Color32BGRA.Red, lifetime: 10.00f, "ui.alert.02", volume: 0.80f, pitch: 0.80f);
+		}
+#endif
 
 		[IComponent.Data(Net.SendType.Unreliable)]
 		public partial struct Planner: IComponent
@@ -1000,6 +1028,12 @@ namespace TC2.Siege
 			{
 				ai.stance = AI.Stance.Aggressive;
 			}
+
+			ref var marker = ref data.ent_target.GetOrAddComponent<Minimap.Marker.Data>(sync: true);
+			if (!marker.IsNull())
+			{
+				marker.sprite = new Sprite("ui_icons_minimap", 16, 16, 0, 0);
+			}
 		}
 
 #if SERVER
@@ -1173,6 +1207,10 @@ namespace TC2.Siege
 								planner.wave_size_rem = planner.wave_size;
 
 								planner.status = Planner.Status.Dispatching;
+
+								//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
+								Notification.Push(ref region, $"A group of {planner.wave_size} kobolds is approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.11", volume: 0.60f, pitch: 0.80f);
+
 							}
 						}
 						break;
@@ -1247,6 +1285,86 @@ namespace TC2.Siege
 						break;
 					}
 				}
+			}
+		}
+#endif
+
+#if CLIENT
+		public partial struct SiegeDefenderGUI: IGUICommand
+		{
+			public Entity ent_siege;
+			public Siege.Gamemode siege;
+
+			public void Draw()
+			{
+				var window_pos = (GUI.CanvasSize * new Vector2(0.50f, 0.00f)) + new Vector2(100, 48);
+				using (var window = GUI.Window.Standalone("Siege", size: new Vector2(400, 300), pivot: new Vector2(0.50f, 0.00f), padding: new(4)))
+				{
+					this.StoreCurrentWindowTypeID();
+					if (window.show)
+					{
+						GUI.DrawWindowBackground();
+
+						ref var region = ref Client.GetRegion();
+						ref var world = ref Client.GetWorld();
+						ref var game_info = ref Client.GetGameInfo();
+
+						//GUI.Title("Siege");
+
+						GUI.DrawButton("Test", new(120, 40));
+					}
+				}
+			}
+		}
+
+		[ISystem.EarlyGUI(ISystem.Mode.Single)]
+		public static void OnGUIDefender(Entity entity, [Source.Owned] in Player.Data player, [Source.Global] in Siege.Gamemode siege)
+		{
+			if (player.IsLocal() && player.faction_id == siege.faction_defenders)
+			{
+				var gui = new SiegeDefenderGUI()
+				{
+					siege = siege
+				};
+				gui.Submit();
+			}
+		}
+#endif
+
+#if CLIENT
+		public partial struct SiegeAttackerGUI: IGUICommand
+		{
+			public Entity ent_siege;
+			public Siege.Gamemode siege;
+
+			public void Draw()
+			{
+				var window_pos = (GUI.CanvasSize * new Vector2(0.50f, 0.00f)) + new Vector2(100, 48);
+				using (var window = GUI.Window.Standalone("Siege2", position: window_pos, size: new Vector2(700, 400), pivot: new Vector2(0.50f, 0.00f)))
+				{
+					this.StoreCurrentWindowTypeID();
+					if (window.show)
+					{
+						ref var region = ref Client.GetRegion();
+						ref var world = ref Client.GetWorld();
+						ref var game_info = ref Client.GetGameInfo();
+
+						GUI.Title($"{this.siege.faction_defenders.id}");
+					}
+				}
+			}
+		}
+
+		[ISystem.EarlyGUI(ISystem.Mode.Single)]
+		public static void OnGUIAttacker(Entity entity, [Source.Owned] in Player.Data player, [Source.Global] in Siege.Gamemode siege)
+		{
+			if (player.IsLocal() && player.faction_id == siege.faction_attackers)
+			{
+				var gui = new SiegeAttackerGUI()
+				{
+					siege = siege
+				};
+				gui.Submit();
 			}
 		}
 #endif
