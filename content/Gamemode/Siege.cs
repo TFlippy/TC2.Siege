@@ -8,13 +8,33 @@ namespace TC2.Siege
 		[IGamemode.Data("Siege", "")]
 		public partial struct Gamemode: IGamemode
 		{
-			public IFaction.Handle faction_defenders = "defenders";
-			public IFaction.Handle faction_attackers = "attackers";
+			[Save.Ignore] public IFaction.Handle faction_defenders = "defenders";
+			[Save.Ignore] public IFaction.Handle faction_attackers = "attackers";
+
+			[Save.Ignore] public uint target_count;
+			[Save.Ignore] public float match_time;
+
+			[Save.Ignore, Net.Ignore] public float t_next_restart;
+			[Save.Ignore, Net.Ignore] public float t_last_notification;
+
+			[Save.Ignore] public Siege.Gamemode.Flags flags;
+			[Save.Ignore] public Siege.Gamemode.Status status;
 
 			[Flags]
 			public enum Flags: uint
 			{
 				None = 0,
+			}
+
+			public enum Status: uint
+			{
+				Undefined = 0,
+
+				Preparing,
+				Running,
+				Ended,
+
+				Restarting,
 			}
 
 			public Gamemode()
@@ -54,17 +74,29 @@ namespace TC2.Siege
 				Constants.Equipment.enable_equip = true;
 				Constants.Equipment.enable_unequip = false;
 
+				Constants.Factions.enable_join_faction = false;
+				Constants.Factions.enable_leave_faction = false;
+				Constants.Factions.enable_found_faction = false;
+				Constants.Factions.enable_disband_faction = false;
+				Constants.Factions.enable_kick = false;
+				Constants.Factions.enable_leadership = false;
+
+				Constants.Questing.enable_quests = false;
+
 #if SERVER
 				Player.OnCreate += OnPlayerCreate;
 				static void OnPlayerCreate(ref Region.Data region, ref Player.Data player)
 				{
 					player.SetFaction("defenders");
 
-					var ent_character_soldier = Character.Create(ref region, "Soldier", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Military, origin: "soldier", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 5, beard_frame: 1);
-					var ent_character_engineer = Character.Create(ref region, "Engineer", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Engineering | Character.Flags.Military, origin: "engineer", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 2, beard_frame: 7);
-					var ent_character_medic = Character.Create(ref region, "Medic", prefab: "human.female", flags: Character.Flags.Human | Character.Flags.Medical | Character.Flags.Military, origin: "doctor", gender: Organic.Gender.Female, player_id: player.id, hair_frame: 10);
+					if (!player.GetControlledCharacter().IsValid())
+					{
+						var ent_character_soldier = Character.Create(ref region, "Soldier", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Military, origin: "soldier", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 5, beard_frame: 1);
+						var ent_character_engineer = Character.Create(ref region, "Engineer", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Engineering | Character.Flags.Military, origin: "engineer", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 2, beard_frame: 7);
+						var ent_character_medic = Character.Create(ref region, "Medic", prefab: "human.female", flags: Character.Flags.Human | Character.Flags.Medical | Character.Flags.Military, origin: "doctor", gender: Organic.Gender.Female, player_id: player.id, hair_frame: 10);
 
-					player.SetControlledCharacter(ent_character_soldier);
+						player.SetControlledCharacter(ent_character_soldier);
+					}
 				}
 #endif
 
@@ -737,6 +769,108 @@ namespace TC2.Siege
 			}
 		}
 
+#if SERVER
+		[ISystem.PreUpdate.Reset(ISystem.Mode.Single)]
+		public static void UpdateSiegeReset(ISystem.Info info, [Source.Global] ref Siege.Gamemode siege)
+		{
+			siege.target_count = 0;
+		}
+
+		[ISystem.VeryEarlyUpdate(ISystem.Mode.Single)]
+		public static void UpdateSiegeTargets(ISystem.Info info, Entity entity, [Source.Global] ref Siege.Gamemode siege, [Source.Owned] ref Siege.Target siege_target, [Source.Owned] in Faction.Data faction)
+		{
+			if (faction.id == siege.faction_defenders)
+			{
+				siege.target_count++;
+			}
+		}
+
+		[ISystem.VeryLateUpdate(ISystem.Mode.Single)]
+		public static void UpdateSiegeLate(ISystem.Info info, [Source.Global] ref Siege.Gamemode siege)
+		{
+			//App.WriteLine(siege.target_count);
+
+			ref var region = ref info.GetRegion();
+			if (region.GetConnectedPlayerCount() > 0)
+			{
+				var time = siege.match_time;
+
+				const float prep_time = 60.00f;
+
+				switch (siege.status)
+				{
+					case Gamemode.Status.Undefined:
+					{
+						if (!Constants.World.disable_gameplay)
+						{
+							siege.status = Gamemode.Status.Preparing;
+						}
+					}
+					break;
+
+					case Gamemode.Status.Preparing:
+					{
+						if (time >= prep_time - 30.00f && siege.t_last_notification < prep_time - 30.00f)
+						{
+							siege.t_last_notification = time;
+							Notification.Push(ref region, $"Match starting in 30 seconds!", Color32BGRA.Yellow, lifetime: 30.00f, "ui.alert.07", volume: 0.10f, pitch: 0.60f);
+						}
+						else if (time >= prep_time - 15.00f && siege.t_last_notification < prep_time - 15.00f)
+						{
+							siege.t_last_notification = time;
+							Notification.Push(ref region, $"Match starting in 15 seconds!", Color32BGRA.Yellow, lifetime: 15.00f, "ui.alert.07", volume: 0.20f, pitch: 0.80f);
+						}
+						else if (time >= prep_time - 5.00f && siege.t_last_notification < prep_time - 5.00f)
+						{
+							siege.t_last_notification = time;
+							Notification.Push(ref region, $"Match starting in 5 seconds!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.07", volume: 0.30f, pitch: 1.00f);
+						}
+						else if (time >= prep_time)
+						{
+							siege.status = Gamemode.Status.Running;
+						}
+					}
+					break;
+
+					case Gamemode.Status.Running:
+					{
+						if (siege.target_count == 0)
+						{
+							siege.status = Gamemode.Status.Ended;
+						}
+					}
+					break;
+
+					case Gamemode.Status.Ended:
+					{
+						if (siege.t_next_restart == 0.00f)
+						{
+							siege.t_last_notification = time;
+							Notification.Push(ref region, $"Defeat! Restarting in 10 seconds...", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.09", volume: 0.40f, pitch: 1.00f);
+
+							siege.t_next_restart = time + 10.00f;
+						}
+
+						if (time >= siege.t_next_restart)
+						{
+							ChangeMap(ref region, default);
+							siege.status = Gamemode.Status.Restarting;
+						}
+					}
+					break;
+
+					case Gamemode.Status.Restarting:
+					{
+
+					}
+					break;
+				}
+
+				siege.match_time += App.fixed_update_interval_s;
+			}
+		}
+#endif
+
 		[IComponent.Data(Net.SendType.Unreliable)]
 		public partial struct Target: IComponent
 		{
@@ -757,7 +891,7 @@ namespace TC2.Siege
 				{
 					siege_target.next_notification = info.WorldTime + 2.00f;
 
-					Notification.Push(ref region, $"{entity.GetFullName()} is under attack! ({(health.integrity * 100.00f):0}% health left)", Color32BGRA.Red, lifetime: 7.00f, "ui.alert.00", volume: 0.70f, pitch: 1.00f);
+					Notification.Push(ref region, $"{entity.GetFullName()} is under attack! ({(health.integrity * 100.00f):0}% left)", Color32BGRA.Yellow, lifetime: 7.00f, "ui.alert.00", volume: 0.70f, pitch: 1.00f);
 				}
 			}
 		}
@@ -1175,19 +1309,20 @@ namespace TC2.Siege
 
 		[ISystem.VeryLateUpdate(ISystem.Mode.Single)]
 		public static void OnUpdate(ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Spawner.Data spawner,
-		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Owned, Optional] in Faction.Data faction)
+		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Global] ref Siege.Gamemode siege, [Source.Owned, Optional] in Faction.Data faction)
 		{
-			if (Constants.World.enable_npc_spawning && Constants.World.enable_ai)
+			ref var region = ref info.GetRegion();
+
+			if (Constants.World.enable_npc_spawning && Constants.World.enable_ai && region.GetConnectedPlayerCount() > 0)
 			{
-				var time = info.WorldTime;
+				var time = siege.match_time;
 				if (time >= planner.next_update)
 				{
 					planner.next_update = time + 1.00f;
 
-					ref var region = ref info.GetRegion();
 					var random = XorRandom.New();
 
-					var difficulty = (info.WorldTime / 60.00f);
+					var difficulty = (time / 60.00f);
 
 					switch (planner.status)
 					{
@@ -1209,7 +1344,7 @@ namespace TC2.Siege
 								planner.status = Planner.Status.Dispatching;
 
 								//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
-								Notification.Push(ref region, $"A group of {planner.wave_size} kobolds is approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.11", volume: 0.60f, pitch: 0.80f);
+								Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f, "ui.alert.11", volume: 0.60f, pitch: 0.80f);
 
 							}
 						}
@@ -1326,7 +1461,7 @@ namespace TC2.Siege
 				{
 					siege = siege
 				};
-				gui.Submit();
+				//gui.Submit();
 			}
 		}
 #endif
