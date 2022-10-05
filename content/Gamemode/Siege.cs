@@ -112,661 +112,662 @@ namespace TC2.Siege
 			{
 				App.WriteLine("Siege Init!", App.Color.Magenta);
 
-				SetupLoadouts();
+				//SetupLoadouts();
 			}
 
-			private static void SetupLoadouts()
-			{
-				Spawn.kits = new Loadout.Kit[]
-				{
-					default,
-
-#region Soldier			
-					new("Armor (Soldier)", "", origin: "soldier", flags: Loadout.Kit.Flags.Required)
-					{
-						cost = 0.50f,
-
-						shipment = new Shipment.Data("Armor", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip),
-								[1] = Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip),
-							}
-						}
-					},
-
-					new("Shield", "", origin: "soldier")
-					{
-						cost = 0.50f,
-
-						shipment = new Shipment.Data("Shield", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("shield")
-							}
-						}
-					},
-
-					new("Machete", "", origin: "soldier")
-					{
-						cost = 0.20f,
-
-						shipment = new Shipment.Data("Machete", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("machete")
-							}
-						}
-					},
-
-					new("Revolver", "", origin: "soldier")
-					{
-						cost = 0.50f,
-
-						shipment = new Shipment.Data("Revolver", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("revolver"),
-								[1] = Shipment.Item.Resource("ammo_hc.match", 30),
-							}
-						}
-					},
-
-					new("Rifle", "", origin: "soldier")
-					{
-						cost = 1.00f,
-
-						shipment = new Shipment.Data("Rifle", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("rifle", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_hc.hv", 45)
-							}
-						}
-					},
-
-					new("SMG", "", origin: "soldier")
-					{
-						cost = 2.50f,
-
-						shipment = new Shipment.Data("SMG", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("smg", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_lc", 300)
-							}
-						}
-					},
-
-					new("Battle Rifle", "", origin: "soldier")
-					{
-						cost = 2.50f,
-
-						shipment = new Shipment.Data("Battle Rifle", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("battle_rifle", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_hc", 90)
-							}
-						}
-					},
-
-					new("ABR 740", "", origin: "soldier")
-					{
-						cost = 7.00f,
-
-						shipment = new Shipment.Data("ABR 740", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("bp.abr.740", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_hc.hv", 150)
-							}
-						}
-					},
-
-					//new("R750 Automat", "", origin: "soldier")
-					//{
-					//	cost = 15.00f,
-
-					//	shipment = new Shipment.Data("R750 Automat", Shipment.Flags.Unpack)
-					//	{
-					//		items =
-					//		{
-					//			[0] = Shipment.Item.Prefab("bp.r750", flags: Shipment.Item.Flags.Pickup),
-					//			[1] = Shipment.Item.Resource("ammo_hc.arc.mt", 200)
-					//		}
-					//	}
-					//},
-
-					new("Majzl A-749", "", origin: "soldier")
-					{
-						cost = 5.00f,
-
-						shipment = new Shipment.Data("Majzl A-749", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("bp.majzl.a749", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_mg", 80)
-							}
-						}
-					},
-
-					new("Auto-Shotgun", "", origin: "soldier")
-					{
-						cost = 6.50f,
-
-						shipment = new Shipment.Data("Auto-Shotgun", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("auto_shotgun"),
-								[1] = Shipment.Item.Resource("ammo_sg.buck", 32),
-							}
-						}
-					},
-
-					new("Grenade", "", origin: "soldier")
-					{
-						cost = 1.50f,
-
-						shipment = new Shipment.Data("Grenade", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("grenade")
-							}
-						}
-					},
-#endregion
-
-#region Engineer
-					new("Armor (Engineer)", "", origin: "engineer", flags: Loadout.Kit.Flags.Required)
-					{
-						cost = 0.50f,
-
-						shipment = new Shipment.Data("Armor", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("helmet.03", flags: Shipment.Item.Flags.Equip),
-								[1] = Shipment.Item.Prefab("armor.02", flags: Shipment.Item.Flags.Equip),
-							}
-						}
-					},
-
-					new("Crowbar", "", origin: "engineer")
-					{
-						cost = 0.30f,
-
-						shipment = new Shipment.Data("Crowbar", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("crowbar")
-							}
-						}
-					},
-
-					new("Pickaxe", "", origin: "engineer")
-					{
-						cost = 0.40f,
-
-						shipment = new Shipment.Data("Pickaxe", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("pickaxe")
-							}
-						}
-					},
-
-					new("Drill", "", origin: "engineer")
-					{
-						cost = 6.50f,
-
-						shipment = new Shipment.Data("Drill", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("drill")
-							}
-						}
-					},
-
-					new("Pistol", "", origin: "engineer")
-					{
-						cost = 0.30f,
-
-						shipment = new Shipment.Data("Pistol", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("pistol", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_lc", 60)
-							}
-						}
-					},
-
-					new("Pump Shotgun", "", origin: "engineer")
-					{
-						cost = 2.50f,
-
-						shipment = new Shipment.Data("Pump Shotgun", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("pump_shotgun"),
-								[1] = Shipment.Item.Resource("ammo_sg.buck", 32),
-							}
-						}
-					},
-
-					new("Scattergun (Grenades)", "", origin: "engineer")
-					{
-						cost = 5.00f,
-
-						shipment = new Shipment.Data("Scattergun", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("scattergun"),
-								[1] = Shipment.Item.Resource("ammo_sg.grenade", 32),
-							}
-						}
-					},
-
-					new("Bazooka", "", origin: "engineer")
-					{
-						cost = 10.00f,
-
-						shipment = new Shipment.Data("Bazooka", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("bazooka"),
-								[1] = Shipment.Item.Resource("ammo_rocket", 4),
-							}
-						}
-					},
-
-					new("Tools", "", origin: "engineer")
-					{
-						cost = 0.70f,
-
-						shipment = new Shipment.Data("Tools", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("wrench"),
-								[1] = Shipment.Item.Prefab("hammer"),
-								[2] = Shipment.Item.Resource("wood", 500.00f)
-							}
-						}
-					},
-
-					new("Mamut B-738", "", origin: "engineer")
-					{
-						cost = 12.00f,
-
-						shipment = new Shipment.Data("Mamut B-738", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("bp.mamut.b738", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_ac", 60)
-							}
-						}
-					},
-
-					new("Machine Gun Kit", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
-					{
-						cost = 50.00f,
-
-						shipment = new Shipment.Data("Machine Gun")
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("machine_gun"),
-								[1] = Shipment.Item.Resource("ammo_mg", 500),
-								[2] = Shipment.Item.Prefab("mount.tripod")
-							}
-						}
-					},
-
-					new("Binoculars", "", origin: "engineer")
-					{
-						cost = 0.50f,
-
-						shipment = new Shipment.Data("Binoculars", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("binoculars")
-							}
-						}
-					},
-
-					new("Artillery Shells (Explosive)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
-					{
-						cost = 15.00f,
-
-						shipment = new Shipment.Data("Shells")
-						{
-							items =
-							{
-								[0] = Shipment.Item.Resource("ammo_shell", 8)
-							}
-						}
-					},
-
-					new("Artillery Shells (Shrapnel)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
-					{
-						cost = 20.00f,
-
-						shipment = new Shipment.Data("Shells")
-						{
-							items =
-							{
-								[0] = Shipment.Item.Resource("ammo_shell.shrapnel", 8)
-							}
-						}
-					},
-
-					new("Artillery Shells (HV)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
-					{
-						cost = 20.00f,
-
-						shipment = new Shipment.Data("Shells")
-						{
-							items =
-							{
-								[0] = Shipment.Item.Resource("ammo_shell.hv", 8)
-							}
-						}
-					},
-
-					new("Artillery Shells (HE)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
-					{
-						cost = 20.00f,
-
-						shipment = new Shipment.Data("Shells")
-						{
-							items =
-							{
-								[0] = Shipment.Item.Resource("ammo_shell.he", 8)
-							}
-						}
-					},
-
-					new("Land Mines", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
-					{
-						cost = 10.00f,
-
-						shipment = new Shipment.Data("Land Mines")
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("landmine", 4),
-							}
-						}
-					},
-
-					new("Dynamite", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
-					{
-						cost = 10.00f,
-
-						shipment = new Shipment.Data("Dynamite", Shipment.Flags.None)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("dynamite", 4)
-							}
-						}
-					},
-
-					new("Supplies (Ammo)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
-					{
-						cost = 30.00f,
-
-						shipment = new Shipment.Data("Supplies (Ammo)")
-						{
-							items =
-							{
-								[0] = Shipment.Item.Resource("ammo_lc.hv", 400),
-								[1] = Shipment.Item.Resource("ammo_hc.hv", 400),
-								[2] = Shipment.Item.Resource("ammo_sg.buck", 140),
-								[3] = Shipment.Item.Resource("ammo_mg", 600),
-							}
-						}
-					},
-#endregion
-
-#region Medic
-					new("Armor (Medic)", "", origin: "doctor", flags: Loadout.Kit.Flags.Required)
-					{
-						cost = 0.50f,
-
-						shipment = new Shipment.Data("Armor", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("helmet.04", flags: Shipment.Item.Flags.Equip),
-								[1] = Shipment.Item.Prefab("armor.04", flags: Shipment.Item.Flags.Equip),
-							}
-						}
-					},
-
-					new("Shield", "", origin: "doctor")
-					{
-						cost = 0.50f,
-
-						shipment = new Shipment.Data("Shield", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("shield")
-							}
-						}
-					},
-
-					new("Knife", "", origin: "doctor")
-					{
-						cost = 0.20f,
-
-						shipment = new Shipment.Data("Knife", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("knife")
-							}
-						}
-					},
-
-					new("Pistol", "", origin: "doctor")
-					{
-						cost = 0.30f,
-
-						shipment = new Shipment.Data("Pistol", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("pistol"),
-								[1] = Shipment.Item.Resource("ammo_lc", 40)
-							}
-						}
-					},
-
-					new("Carbine", "", origin: "doctor")
-					{
-						cost = 1.00f,
-
-						shipment = new Shipment.Data("Carbine", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("carbine", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_hc.match", 40)
-							}
-						}
-					},
-
-					new("Machine Pistol", "", origin: "doctor")
-					{
-						cost = 2.50f,
-
-						shipment = new Shipment.Data("Machine Pistol", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("machine_pistol", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_lc", 150),
-							}
-						}
-					},
-
-					new("Mamut B-738", "", origin: "doctor")
-					{
-						cost = 12.00f,
-
-						shipment = new Shipment.Data("Mamut B-738", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("bp.mamut.b738", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_ac", 60)
-							}
-						}
-					},
-
-					new("Houser A-750", "", origin: "doctor")
-					{
-						cost = 7.00f,
-
-						shipment = new Shipment.Data("Houser A-750", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("bp.houser.a750", flags: Shipment.Item.Flags.Pickup),
-								[1] = Shipment.Item.Resource("ammo_hc.hv", 150)
-							}
-						}
-					},
-
-					new("Medkit", "", origin: "doctor")
-					{
-						cost = 0.50f,
-
-						shipment = new Shipment.Data("Medkit", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("medkit")
-							}
-						}
-					},
-
-					new("Arc Lance", "", origin: "doctor")
-					{
-						cost = 6.00f,
-
-						shipment = new Shipment.Data("Arc Lance", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("arc_lance")
-							}
-						}
-					},
-
-					new("Grenade", "", origin: "doctor")
-					{
-						cost = 1.50f,
-
-						shipment = new Shipment.Data("Grenade", Shipment.Flags.Unpack)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("grenade")
-							}
-						}
-					},
-
-					new("Morfitin-B", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
-					{
-						cost = 4.00f,
-
-						shipment = new Shipment.Data("Morfitin-B", Shipment.Flags.None)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("bp.morfitin.b", 4)
-							}
-						}
-					},
-
-					new("Paralyx", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
-					{
-						cost = 3.00f,
-
-						shipment = new Shipment.Data("Paralyx", Shipment.Flags.None)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("bp.paralyx", 4)
-							}
-						}
-					},
-
-					new("Codeine 20mg IR", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
-					{
-						cost = 2.00f,
-
-						shipment = new Shipment.Data("Codeine 20mg IR", Shipment.Flags.None)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("bp.codeine.20mg.ir", 4)
-							}
-						}
-					},
-
-					new("Pervitin 50mg ER", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
-					{
-						cost = 4.00f,
-
-						shipment = new Shipment.Data("Pervitin 50mg ER", Shipment.Flags.None)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("bp.pervitin.50mg.er", 4)
-							}
-						}
-					},
-
-					new("Pervitin 100mg ER", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
-					{
-						cost = 6.00f,
-
-						shipment = new Shipment.Data("Pervitin 100mg ER", Shipment.Flags.None)
-						{
-							items =
-							{
-								[0] = Shipment.Item.Prefab("bp.pervitin.100mg.er", 4)
-							}
-						}
-					},
-#endregion
-				};
-			}
+//			private static void SetupLoadouts()
+//			{
+//				Spawn.kits = new Loadout.Kit[]
+//				{
+//					default,
+
+//#region Soldier			
+//					new("Armor (Soldier)", "", origin: "soldier", flags: Loadout.Kit.Flags.Required)
+//					{
+//						cost = 0.50f,
+
+//						shipment = new Shipment.Data("Armor", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip),
+//								[1] = Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip),
+//							}
+//						}
+//					},
+
+//					new("Shield", "", origin: "soldier")
+//					{
+//						cost = 0.50f,
+
+//						shipment = new Shipment.Data("Shield", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("shield")
+//							}
+//						}
+//					},
+
+//					new("Machete", "", origin: "soldier")
+//					{
+//						cost = 0.20f,
+
+//						shipment = new Shipment.Data("Machete", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("machete")
+//							}
+//						}
+//					},
+
+//					new("Revolver", "", origin: "soldier")
+//					{
+//						cost = 0.50f,
+
+//						shipment = new Shipment.Data("Revolver", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("revolver"),
+//								[1] = Shipment.Item.Resource("ammo_hc.match", 30),
+//							}
+//						}
+//					},
+
+//					new("Rifle", "", origin: "soldier")
+//					{
+//						cost = 1.00f,
+
+//						shipment = new Shipment.Data("Rifle", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("rifle", flags: Shipment.Item.Flags.Pickup),
+//								[1] = Shipment.Item.Resource("ammo_hc.hv", 45)
+//							}
+//						}
+//					},
+
+//					new("SMG", "", origin: "soldier")
+//					{
+//						cost = 2.50f,
+
+//						shipment = new Shipment.Data("SMG", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("smg", flags: Shipment.Item.Flags.Pickup),
+//								[1] = Shipment.Item.Resource("ammo_lc", 300)
+//							}
+//						}
+//					},
+
+//					new("Battle Rifle", "", origin: "soldier")
+//					{
+//						cost = 2.50f,
+
+//						shipment = new Shipment.Data("Battle Rifle", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("battle_rifle", flags: Shipment.Item.Flags.Pickup),
+//								[1] = Shipment.Item.Resource("ammo_hc", 90)
+//							}
+//						}
+//					},
+
+//					new("ABR 740", "", origin: "soldier")
+//					{
+//						cost = 7.00f,
+
+//						shipment = new Shipment.Data("ABR 740", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("bp.abr.740", flags: Shipment.Item.Flags.Pickup),
+//								[1] = Shipment.Item.Resource("ammo_hc.hv", 150)
+//							}
+//						}
+//					},
+
+//					//new("R750 Automat", "", origin: "soldier")
+//					//{
+//					//	cost = 15.00f,
+
+//					//	shipment = new Shipment.Data("R750 Automat", Shipment.Flags.Unpack)
+//					//	{
+//					//		items =
+//					//		{
+//					//			[0] = Shipment.Item.Prefab("bp.r750", flags: Shipment.Item.Flags.Pickup),
+//					//			[1] = Shipment.Item.Resource("ammo_hc.arc.mt", 200)
+//					//		}
+//					//	}
+//					//},
+
+//					new("Majzl A-749", "", origin: "soldier")
+//					{
+//						cost = 5.00f,
+
+//						shipment = new Shipment.Data("Majzl A-749", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("bp.majzl.a749", flags: Shipment.Item.Flags.Pickup),
+//								[1] = Shipment.Item.Resource("ammo_mg", 80)
+//							}
+//						}
+//					},
+
+//					new("Auto-Shotgun", "", origin: "soldier")
+//					{
+//						cost = 6.50f,
+
+//						shipment = new Shipment.Data("Auto-Shotgun", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("auto_shotgun"),
+//								[1] = Shipment.Item.Resource("ammo_sg.buck", 32),
+//							}
+//						}
+//					},
+
+//					new("Grenade", "", origin: "soldier")
+//					{
+//						cost = 1.50f,
+
+//						shipment = new Shipment.Data("Grenade", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("grenade")
+//							}
+//						}
+//					},
+//#endregion
+
+//#region Engineer
+//					new("Armor (Engineer)", "", origin: "engineer", flags: Loadout.Kit.Flags.Required)
+//					{
+//						cost = 0.50f,
+
+//						shipment = new Shipment.Data("Armor", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("helmet.03", flags: Shipment.Item.Flags.Equip),
+//								[1] = Shipment.Item.Prefab("armor.02", flags: Shipment.Item.Flags.Equip),
+//							}
+//						}
+//					},
+
+//					new("Crowbar", "", origin: "engineer")
+//					{
+//						cost = 0.30f,
+
+//						shipment = new Shipment.Data("Crowbar", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("crowbar")
+//							}
+//						}
+//					},
+
+//					new("Pickaxe", "", origin: "engineer")
+//					{
+//						cost = 0.40f,
+
+//						shipment = new Shipment.Data("Pickaxe", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("pickaxe")
+//							}
+//						}
+//					},
+
+//					new("Drill", "", origin: "engineer")
+//					{
+//						cost = 6.50f,
+
+//						shipment = new Shipment.Data("Drill", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("drill")
+//							}
+//						}
+//					},
+
+//					new("Pistol", "", origin: "engineer")
+//					{
+//						cost = 0.30f,
+
+//						shipment = new Shipment.Data("Pistol", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("pistol", flags: Shipment.Item.Flags.Pickup),
+//								[1] = Shipment.Item.Resource("ammo_lc", 60)
+//							}
+//						}
+//					},
+
+//					new("Pump Shotgun", "", origin: "engineer")
+//					{
+//						cost = 2.50f,
+
+//						shipment = new Shipment.Data("Pump Shotgun", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("pump_shotgun"),
+//								[1] = Shipment.Item.Resource("ammo_sg.buck", 32),
+//							}
+//						}
+//					},
+
+//					new("Scattergun (Grenades)", "", origin: "engineer")
+//					{
+//						cost = 5.00f,
+
+//						shipment = new Shipment.Data("Scattergun", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("scattergun"),
+//								[1] = Shipment.Item.Resource("ammo_sg.grenade", 32),
+//							}
+//						}
+//					},
+
+//					new("Bazooka", "", origin: "engineer")
+//					{
+//						cost = 10.00f,
+
+//						shipment = new Shipment.Data("Bazooka", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("bazooka"),
+//								[1] = Shipment.Item.Resource("ammo_rocket", 4),
+//							}
+//						}
+//					},
+
+//					new("Tools", "", origin: "engineer")
+//					{
+//						cost = 0.70f,
+
+//						shipment = new Shipment.Data("Tools", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("wrench"),
+//								[1] = Shipment.Item.Prefab("hammer"),
+//								[2] = Shipment.Item.Resource("wood", 500.00f)
+//							}
+//						}
+//					},
+
+//					new("Mamut B-738", "", origin: "engineer")
+//					{
+//						cost = 12.00f,
+
+//						shipment = new Shipment.Data("Mamut B-738", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("bp.mamut.b738", flags: Shipment.Item.Flags.Pickup),
+//								[1] = Shipment.Item.Resource("ammo_ac", 60)
+//							}
+//						}
+//					},
+
+//					new("Machine Gun Kit", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
+//					{
+//						cost = 50.00f,
+
+//						shipment = new Shipment.Data("Machine Gun")
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("machine_gun"),
+//								[1] = Shipment.Item.Resource("ammo_mg", 500),
+//								[2] = Shipment.Item.Prefab("mount.tripod")
+//							}
+//						}
+//					},
+
+//					new("Binoculars", "", origin: "engineer")
+//					{
+//						cost = 0.50f,
+
+//						shipment = new Shipment.Data("Binoculars", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("binoculars")
+//							}
+//						}
+//					},
+
+//					new("Artillery Shells (Explosive)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
+//					{
+//						cost = 15.00f,
+
+//						shipment = new Shipment.Data("Shells")
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Resource("ammo_shell", 8)
+//							}
+//						}
+//					},
+
+//					new("Artillery Shells (Shrapnel)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
+//					{
+//						cost = 20.00f,
+
+//						shipment = new Shipment.Data("Shells")
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Resource("ammo_shell.shrapnel", 8)
+//							}
+//						}
+//					},
+
+//					new("Artillery Shells (HV)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
+//					{
+//						cost = 20.00f,
+
+//						shipment = new Shipment.Data("Shells")
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Resource("ammo_shell.hv", 8)
+//							}
+//						}
+//					},
+
+//					new("Artillery Shells (HE)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
+//					{
+//						cost = 20.00f,
+
+//						shipment = new Shipment.Data("Shells")
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Resource("ammo_shell.he", 8)
+//							}
+//						}
+//					},
+
+//					new("Land Mines", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
+//					{
+//						cost = 10.00f,
+
+//						shipment = new Shipment.Data("Land Mines")
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("landmine", 4),
+//							}
+//						}
+//					},
+
+//					new("Dynamite", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
+//					{
+//						cost = 10.00f,
+
+//						shipment = new Shipment.Data("Dynamite", Shipment.Flags.None)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("dynamite", 4)
+//							}
+//						}
+//					},
+
+//					new("Supplies (Ammo)", "", origin: "engineer", flags: Loadout.Kit.Flags.Unselect)
+//					{
+//						cost = 30.00f,
+
+//						shipment = new Shipment.Data("Supplies (Ammo)")
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Resource("ammo_lc.hv", 400),
+//								[1] = Shipment.Item.Resource("ammo_hc.hv", 400),
+//								[2] = Shipment.Item.Resource("ammo_sg.buck", 140),
+//								[3] = Shipment.Item.Resource("ammo_mg", 600),
+//							}
+//						}
+//					},
+//#endregion
+
+//#region Medic
+//					new("Armor (Medic)", "", origin: "doctor", flags: Loadout.Kit.Flags.Required)
+//					{
+//						cost = 0.50f,
+
+//						shipment = new Shipment.Data("Armor", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("helmet.04", flags: Shipment.Item.Flags.Equip),
+//								[1] = Shipment.Item.Prefab("armor.04", flags: Shipment.Item.Flags.Equip),
+//							}
+//						}
+//					},
+
+//					new("Shield", "", origin: "doctor")
+//					{
+//						cost = 0.50f,
+
+//						shipment = new Shipment.Data("Shield", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("shield")
+//							}
+//						}
+//					},
+
+//					new("Knife", "", origin: "doctor")
+//					{
+//						cost = 0.20f,
+
+//						shipment = new Shipment.Data("Knife", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("knife")
+//							}
+//						}
+//					},
+
+//					new("Pistol", "", origin: "doctor")
+//					{
+//						cost = 0.30f,
+
+//						shipment = new Shipment.Data("Pistol", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("pistol"),
+//								[1] = Shipment.Item.Resource("ammo_lc", 40)
+//							}
+//						}
+//					},
+
+//					new("Carbine", "", origin: "doctor")
+//					{
+//						cost = 1.00f,
+
+//						shipment = new Shipment.Data("Carbine", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("carbine", flags: Shipment.Item.Flags.Pickup),
+//								[1] = Shipment.Item.Resource("ammo_hc.match", 40)
+//							}
+//						}
+//					},
+
+//					new("Machine Pistol", "", origin: "doctor")
+//					{
+//						cost = 2.50f,
+
+//						shipment = new Shipment.Data("Machine Pistol", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("machine_pistol", flags: Shipment.Item.Flags.Pickup),
+//								[1] = Shipment.Item.Resource("ammo_lc", 150),
+//							}
+//						}
+//					},
+
+//					new("Mamut B-738", "", origin: "doctor")
+//					{
+//						cost = 12.00f,
+
+//						shipment = new Shipment.Data("Mamut B-738", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("bp.mamut.b738", flags: Shipment.Item.Flags.Pickup),
+//								[1] = Shipment.Item.Resource("ammo_ac", 60)
+//							}
+//						}
+//					},
+
+//					new("Houser A-750", "", origin: "doctor")
+//					{
+//						cost = 7.00f,
+
+//						shipment = new Shipment.Data("Houser A-750", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("bp.houser.a750", flags: Shipment.Item.Flags.Pickup),
+//								[1] = Shipment.Item.Resource("ammo_hc.hv", 150)
+//							}
+//						}
+//					},
+
+//					new("Medkit", "", origin: "doctor")
+//					{
+//						cost = 0.50f,
+
+//						shipment = new Shipment.Data("Medkit", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("medkit")
+//							}
+//						}
+//					},
+
+//					new("Arc Lance", "", origin: "doctor")
+//					{
+//						cost = 6.00f,
+
+//						shipment = new Shipment.Data("Arc Lance", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("arc_lance")
+//							}
+//						}
+//					},
+
+//					new("Grenade", "", origin: "doctor")
+//					{
+//						cost = 1.50f,
+
+//						shipment = new Shipment.Data("Grenade", Shipment.Flags.Unpack)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("grenade")
+//							}
+//						}
+//					},
+
+//					new("Morfitin-B", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
+//					{
+//						cost = 4.00f,
+
+//						shipment = new Shipment.Data("Morfitin-B", Shipment.Flags.None)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("bp.morfitin.b", 4)
+//							}
+//						}
+//					},
+
+//					new("Paralyx", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
+//					{
+//						cost = 3.00f,
+
+//						shipment = new Shipment.Data("Paralyx", Shipment.Flags.None)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("bp.paralyx", 4)
+//							}
+//						}
+//					},
+
+//					new("Codeine 20mg IR", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
+//					{
+//						cost = 2.00f,
+
+//						shipment = new Shipment.Data("Codeine 20mg IR", Shipment.Flags.None)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("bp.codeine.20mg.ir", 4)
+//							}
+//						}
+//					},
+
+//					new("Pervitin 50mg ER", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
+//					{
+//						cost = 4.00f,
+
+//						shipment = new Shipment.Data("Pervitin 50mg ER", Shipment.Flags.None)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("bp.pervitin.50mg.er", 4)
+//							}
+//						}
+//					},
+
+//					new("Pervitin 100mg ER", "", origin: "doctor", flags: Loadout.Kit.Flags.Unselect)
+//					{
+//						cost = 6.00f,
+
+//						shipment = new Shipment.Data("Pervitin 100mg ER", Shipment.Flags.None)
+//						{
+//							items =
+//							{
+//								[0] = Shipment.Item.Prefab("bp.pervitin.100mg.er", 4)
+//							}
+//						}
+//					},
+//#endregion
+//				};
+//			}
+		
 		}
 
 #if SERVER
