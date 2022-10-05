@@ -9,7 +9,6 @@
 	
 	shipment:
 	{
-		id: 0
 		name: "Morfitin-B"
 		items:
 		[
@@ -17,11 +16,7 @@
 				type: prefab
 				prefab: "bp.morfitin.b"
 				quantity: 4.000
-				mass_per_unit: 0.000
 			}
-			null
-			null
-			null
 		]
 		flags: none
 	}

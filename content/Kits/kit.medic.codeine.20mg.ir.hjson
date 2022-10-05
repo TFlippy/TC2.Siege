@@ -9,7 +9,6 @@
 	
 	shipment:
 	{
-		id: 0
 		name: "Codeine 20mg IR"
 		items:
 		[
@@ -17,11 +16,7 @@
 				type: prefab
 				prefab: "bp.codeine.20mg.ir"
 				quantity: 4.000
-				mass_per_unit: 0.000
 			}
-			null
-			null
-			null
 		]
 		flags: none
 	}

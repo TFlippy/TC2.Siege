@@ -9,7 +9,6 @@
 	
 	shipment:
 	{
-		id: 0
 		name: "Pistol"
 		items:
 		[
@@ -17,16 +16,12 @@
 				type: prefab
 				prefab: "pistol"
 				quantity: 1.000
-				mass_per_unit: 2.200
 			}
 			{
 				type: resource
 				material: "ammo_lc"
 				quantity: 60.000
-				mass_per_unit: 0.015
 			}
-			null
-			null
 		]
 		flags: unpack
 	}

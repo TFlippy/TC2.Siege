@@ -9,7 +9,6 @@
 	
 	shipment:
 	{
-		id: 0
 		name: "Shells"
 		items:
 		[
@@ -17,11 +16,7 @@
 				type: resource
 				material: "ammo_shell"
 				quantity: 8.000
-				mass_per_unit: 10.000
 			}
-			null
-			null
-			null
 		]
 		flags: none
 	}

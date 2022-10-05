@@ -9,7 +9,6 @@
 	
 	shipment:
 	{
-		id: 0
 		name: "Majzl A-749"
 		items:
 		[
@@ -17,16 +16,12 @@
 				type: prefab
 				prefab: "bp.majzl.a749"
 				quantity: 1.000
-				mass_per_unit: 0.000
 			}
 			{
 				type: resource
 				material: "ammo_mg"
 				quantity: 80.000
-				mass_per_unit: 0.120
 			}
-			null
-			null
 		]
 		flags: unpack
 	}

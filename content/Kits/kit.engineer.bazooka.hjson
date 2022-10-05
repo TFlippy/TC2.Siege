@@ -9,7 +9,6 @@
 	
 	shipment:
 	{
-		id: 0
 		name: "Bazooka"
 		items:
 		[
@@ -17,16 +16,12 @@
 				type: prefab
 				prefab: "bazooka"
 				quantity: 1.000
-				mass_per_unit: 20.000
 			}
 			{
 				type: resource
 				material: "ammo_rocket"
 				quantity: 4.000
-				mass_per_unit: 3.000
 			}
-			null
-			null
 		]
 		flags: unpack
 	}

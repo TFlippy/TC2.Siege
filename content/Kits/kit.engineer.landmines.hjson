@@ -9,7 +9,6 @@
 	
 	shipment:
 	{
-		id: 0
 		name: "Land Mines"
 		items:
 		[
@@ -17,11 +16,7 @@
 				type: prefab
 				prefab: "landmine"
 				quantity: 4.000
-				mass_per_unit: 5.000
 			}
-			null
-			null
-			null
 		]
 		flags: none
 	}
