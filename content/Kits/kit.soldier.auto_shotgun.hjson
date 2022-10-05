@@ -1,0 +1,34 @@
+{
+	name: "Auto-Shotgun"
+	desc: ""
+	
+	flags: none
+	character_flags: none
+	origin: "soldier"
+	cost: 6.500
+	
+	shipment:
+	{
+		id: 0
+		name: "Auto-Shotgun"
+		items:
+		[
+			{
+				type: prefab
+				prefab: "auto_shotgun"
+				quantity: 1.000
+				mass_per_unit: 7.000
+			}
+			{
+				type: resource
+				material: "ammo_sg.buck"
+				quantity: 32.000
+				mass_per_unit: 0.050
+			}
+			null
+			null
+		]
+		flags: dirty, unpack
+		mass: 0.000
+	}
+}

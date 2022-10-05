@@ -1,0 +1,29 @@
+{
+	name: "Land Mines"
+	desc: ""
+	
+	flags: unselect
+	character_flags: none
+	origin: "engineer"
+	cost: 10.000
+	
+	shipment:
+	{
+		id: 0
+		name: "Land Mines"
+		items:
+		[
+			{
+				type: prefab
+				prefab: "landmine"
+				quantity: 4.000
+				mass_per_unit: 5.000
+			}
+			null
+			null
+			null
+		]
+		flags: dirty
+		mass: 0.000
+	}
+}

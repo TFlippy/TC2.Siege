@@ -1,0 +1,39 @@
+{
+	name: "Machine Gun Kit"
+	desc: ""
+	
+	flags: unselect
+	character_flags: none
+	origin: "engineer"
+	cost: 50.000
+	
+	shipment:
+	{
+		id: 0
+		name: "Machine Gun"
+		items:
+		[
+			{
+				type: prefab
+				prefab: "machine_gun"
+				quantity: 1.000
+				mass_per_unit: 20.000
+			}
+			{
+				type: resource
+				material: "ammo_mg"
+				quantity: 500.000
+				mass_per_unit: 0.120
+			}
+			{
+				type: prefab
+				prefab: "mount.tripod"
+				quantity: 1.000
+				mass_per_unit: 100.000
+			}
+			null
+		]
+		flags: dirty
+		mass: 0.000
+	}
+}

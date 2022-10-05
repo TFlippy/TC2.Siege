@@ -1,0 +1,29 @@
+{
+	name: "Arc Lance"
+	desc: ""
+	
+	flags: none
+	character_flags: none
+	origin: "doctor"
+	cost: 6.000
+	
+	shipment:
+	{
+		id: 0
+		name: "Arc Lance"
+		items:
+		[
+			{
+				type: prefab
+				prefab: "arc_lance"
+				quantity: 1.000
+				mass_per_unit: 15.000
+			}
+			null
+			null
+			null
+		]
+		flags: dirty, unpack
+		mass: 0.000
+	}
+}

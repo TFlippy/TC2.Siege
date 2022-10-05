@@ -1,0 +1,29 @@
+{
+	name: "Pickaxe"
+	desc: ""
+	
+	flags: none
+	character_flags: none
+	origin: "engineer"
+	cost: 0.400
+	
+	shipment:
+	{
+		id: 0
+		name: "Pickaxe"
+		items:
+		[
+			{
+				type: prefab
+				prefab: "pickaxe"
+				quantity: 1.000
+				mass_per_unit: 5.000
+			}
+			null
+			null
+			null
+		]
+		flags: dirty, unpack
+		mass: 0.000
+	}
+}

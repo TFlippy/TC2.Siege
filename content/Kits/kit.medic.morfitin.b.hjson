@@ -1,0 +1,29 @@
+{
+	name: "Morfitin-B"
+	desc: ""
+	
+	flags: unselect
+	character_flags: none
+	origin: "doctor"
+	cost: 4.000
+	
+	shipment:
+	{
+		id: 0
+		name: "Morfitin-B"
+		items:
+		[
+			{
+				type: prefab
+				prefab: "bp.morfitin.b"
+				quantity: 4.000
+				mass_per_unit: 0.000
+			}
+			null
+			null
+			null
+		]
+		flags: dirty
+		mass: 0.000
+	}
+}

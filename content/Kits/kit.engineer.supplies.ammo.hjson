@@ -1,0 +1,44 @@
+{
+	name: "Supplies (Ammo)"
+	desc: ""
+	
+	flags: unselect
+	character_flags: none
+	origin: "engineer"
+	cost: 30.000
+	
+	shipment:
+	{
+		id: 0
+		name: "Supplies (Ammo)"
+		items:
+		[
+			{
+				type: resource
+				material: "ammo_lc.hv"
+				quantity: 400.000
+				mass_per_unit: 0.015
+			}
+			{
+				type: resource
+				material: "ammo_hc.hv"
+				quantity: 400.000
+				mass_per_unit: 0.025
+			}
+			{
+				type: resource
+				material: "ammo_sg.buck"
+				quantity: 140.000
+				mass_per_unit: 0.050
+			}
+			{
+				type: resource
+				material: "ammo_mg"
+				quantity: 600.000
+				mass_per_unit: 0.120
+			}
+		]
+		flags: dirty
+		mass: 0.000
+	}
+}

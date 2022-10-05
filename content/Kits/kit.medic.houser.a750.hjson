@@ -1,0 +1,34 @@
+{
+	name: "Houser A-750"
+	desc: ""
+	
+	flags: none
+	character_flags: none
+	origin: "doctor"
+	cost: 7.000
+	
+	shipment:
+	{
+		id: 0
+		name: "Houser A-750"
+		items:
+		[
+			{
+				type: prefab
+				prefab: "bp.houser.a750"
+				quantity: 1.000
+				mass_per_unit: 0.000
+			}
+			{
+				type: resource
+				material: "ammo_hc.hv"
+				quantity: 150.000
+				mass_per_unit: 0.025
+			}
+			null
+			null
+		]
+		flags: dirty, unpack
+		mass: 0.000
+	}
+}
