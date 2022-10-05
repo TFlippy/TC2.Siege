@@ -16,6 +16,7 @@
 				type: prefab
 				prefab: "bp.majzl.a749"
 				quantity: 1.000
+				flags: pickup
 			}
 			{
 				type: resource
