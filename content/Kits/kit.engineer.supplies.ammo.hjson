@@ -38,7 +38,6 @@
 				mass_per_unit: 0.120
 			}
 		]
-		flags: dirty
-		mass: 0.000
+		flags: none
 	}
 }
