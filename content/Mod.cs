@@ -1,7 +1,7 @@
 ﻿
 namespace TC2.Siege
 {
-	public sealed partial class ModInstance: Mod
+	public sealed partial class SiegeMod: Mod
 	{
 		protected override void OnRegister(ModContext context)
 		{

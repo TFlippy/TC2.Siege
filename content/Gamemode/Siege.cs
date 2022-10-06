@@ -44,6 +44,16 @@ namespace TC2.Siege
 
 			public static void Configure()
 			{
+				App.TryGetModInfo<SiegeMod>(out var mod_siege);
+
+				Shop.AddAssetFilter((string path, string identifier, ModInfo mod_info) =>
+				{
+					if (mod_info == mod_siege) return true;
+					else if (identifier.StartsWith("gunsmith.", StringComparison.OrdinalIgnoreCase)) return true;
+					else if (identifier.StartsWith("munitions.", StringComparison.OrdinalIgnoreCase)) return true;
+					else return false;
+				});
+
 				Constants.Materials.global_yield_modifier = 0.00f;
 				Constants.Harvestable.global_yield_modifier = 0.00f;
 				Constants.Block.global_yield_modifier = 0.00f;
