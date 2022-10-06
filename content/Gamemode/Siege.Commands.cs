@@ -24,7 +24,7 @@ namespace TC2.Siege
 			});
 		}
 
-		[ChatCommand.Region("nextmap", "", creative: true)]
+		[ChatCommand.Region("nextmap", "", admin: true)]
 		public static void NextMapCommand(ref ChatCommand.Context context, string map)
 		{
 			ref var region = ref context.GetRegion();
@@ -36,6 +36,44 @@ namespace TC2.Siege
 				//if (map_handle.id != 0)
 				{
 					Siege.ChangeMap(ref region, map_handle);
+				}
+			}
+		}
+
+		[ChatCommand.Region("difficulty", "", admin: true)]
+		public static void DifficultyCommand(ref ChatCommand.Context context, float? difficulty = null)
+		{
+			ref var region = ref context.GetRegion();
+			if (!region.IsNull())
+			{
+				ref var siege = ref region.GetSingletonComponent<Siege.Gamemode>();
+				if (!siege.IsNull())
+				{
+					if (difficulty.TryGetValue(out var v_difficulty))
+					{
+						var difficulty_old = siege.difficulty;
+						siege.difficulty = v_difficulty;
+
+						Server.SendChatMessage($"Set difficulty from {difficulty_old:0.00} to {siege.difficulty:0.00}.", channel: Chat.Channel.System, target_player_id: context.GetConnection().GetPlayerID());
+					}
+					else
+					{
+						Server.SendChatMessage($"Current difficulty: {siege.difficulty:0.00}.", channel: Chat.Channel.System, target_player_id: context.GetConnection().GetPlayerID());
+					}
+				}
+			}
+		}
+
+		[ChatCommand.Region("nextwave", "", admin: true)]
+		public static void NextWaveCommand(ref ChatCommand.Context context)
+		{
+			ref var region = ref context.GetRegion();
+			if (!region.IsNull())
+			{
+				ref var siege = ref region.GetSingletonComponent<Siege.Gamemode>();
+				if (!siege.IsNull())
+				{
+					siege.t_next_wave = siege.match_time;
 				}
 			}
 		}
