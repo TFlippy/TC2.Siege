@@ -23,16 +23,18 @@ namespace TC2.Siege
 				Dispatching,
 			}
 
+			public int last_wave;
+
 			public int wave_size;
 			public int wave_size_rem;
-			public float wave_interval = 60.00f;
+			//public float wave_interval = 60.00f;
 
 			public Siege.Planner.Flags flags;
 			public Siege.Planner.Status status;
 
 			[Save.Ignore, Net.Ignore] public float next_update;
 			[Save.Ignore, Net.Ignore] public float next_dispatch;
-			[Save.Ignore, Net.Ignore] public float next_wave;
+			//[Save.Ignore, Net.Ignore] public float next_wave;
 
 			public Planner()
 			{
@@ -298,13 +300,13 @@ namespace TC2.Siege
 			return arg.ent_target.IsAlive();
 		}
 
-		[ISystem.VeryLateUpdate(ISystem.Mode.Single)]
+		[ISystem.LateUpdate(ISystem.Mode.Single)]
 		public static void OnUpdate(ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Spawner.Data spawner,
-		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Global] ref Siege.Gamemode siege, [Source.Owned, Optional] in Faction.Data faction)
+		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Global] in Siege.Gamemode siege, [Source.Owned, Optional] in Faction.Data faction)
 		{
 			ref var region = ref info.GetRegion();
 
-			if (Constants.World.enable_npc_spawning && Constants.World.enable_ai && region.GetConnectedPlayerCount() > 0)
+			if (Constants.World.enable_npc_spawning && Constants.World.enable_ai && siege.status == Gamemode.Status.Running && region.GetConnectedPlayerCount() > 0)
 			{
 				var time = siege.match_time;
 				if (time >= planner.next_update)
@@ -313,29 +315,29 @@ namespace TC2.Siege
 
 					var random = XorRandom.New();
 
-					var difficulty = (time / 60.00f);
-
 					switch (planner.status)
 					{
 						case Planner.Status.Undefined:
 						{
-							planner.next_wave = time + 60.00f;
+							//planner.next_wave = time + 60.00f;
 							planner.status = Planner.Status.Waiting;
 						}
 						break;
 
 						case Planner.Status.Waiting:
 						{
-							if (time >= planner.next_wave)
+							if (siege.wave_current != planner.last_wave)
 							{
-								planner.next_wave = time + planner.wave_interval + Maths.Clamp(difficulty * 10.00f, 0.00f, 120.00f);
-								planner.wave_size = (int)Maths.Clamp(3 + MathF.Floor(MathF.Pow(difficulty, 0.80f)) * 2.00f, 0, 40);
+								planner.last_wave = siege.wave_current;
+
+								//planner.next_wave = time + planner.wave_interval + Maths.Clamp(difficulty * 10.00f, 0.00f, 120.00f);
+								planner.wave_size = (int)Maths.Clamp(3 + MathF.Floor(MathF.Pow(siege.difficulty, 0.80f)) * 2.00f, 0, 40);
 								planner.wave_size_rem = planner.wave_size;
 
 								planner.status = Planner.Status.Dispatching;
 
 								//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
-								Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f, "ui.alert.11", volume: 0.60f, pitch: 0.80f);
+								Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f);
 
 							}
 						}
@@ -343,7 +345,7 @@ namespace TC2.Siege
 
 						case Siege.Planner.Status.Dispatching:
 						{
-							if ((planner.next_wave - time) >= 30.00f)
+							if ((siege.t_next_wave - time) >= 30.00f)
 							{
 								if (time >= planner.next_dispatch)
 								{
