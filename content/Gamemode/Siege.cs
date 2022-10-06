@@ -32,6 +32,8 @@ namespace TC2.Siege
 			/// </summary>
 			[Save.Ignore] public float difficulty_player_mult = 0.10f;
 
+			[Save.Ignore] public float difficulty_wave_mult = 0.10f;
+
 			/// <summary>
 			/// Final multiplier for the per-wave difficulty step. 
 			/// </summary>
@@ -248,7 +250,9 @@ namespace TC2.Siege
 
 								var difficulty_step = siege.difficulty_step;
 								difficulty_step *= 1.00f + (player_count * siege.difficulty_player_mult);
+								difficulty_step *= 1.00f + (siege.wave_current * siege.difficulty_wave_mult);
 								difficulty_step *= siege.difficulty_mult;
+								difficulty_step = Maths.SnapCeil(difficulty_step, 0.25f);
 
 								siege.difficulty = Maths.Clamp(siege.difficulty + difficulty_step, 1.00f, siege.difficulty_max);
 
@@ -257,7 +261,7 @@ namespace TC2.Siege
 								sync |= true;
 
 								//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
-								Notification.Push(ref region, $"Wave #{siege.wave_current}! Difficulty increased by {difficulty_step:0.00} ({siege.difficulty:0.00}), next wave in {(siege.t_next_wave - siege.match_time):0} seconds.", Color32BGRA.Red, lifetime: 30.00f, "ui.alert.11", volume: 0.60f, pitch: 0.80f);
+								Notification.Push(ref region, $"Wave #{siege.wave_current}!", Color32BGRA.Red, lifetime: 30.00f, "ui.alert.11", volume: 0.60f, pitch: 0.80f);
 							}
 						}
 					}

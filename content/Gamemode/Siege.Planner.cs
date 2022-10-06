@@ -313,6 +313,20 @@ namespace TC2.Siege
 				{
 					planner.next_update = time + 1.00f;
 
+					if (siege.wave_current != planner.last_wave)
+					{
+						planner.last_wave = siege.wave_current;
+
+						//planner.next_wave = time + planner.wave_interval + Maths.Clamp(difficulty * 10.00f, 0.00f, 120.00f);
+						planner.wave_size = (int)Maths.Clamp(3 + MathF.Floor(MathF.Pow(siege.difficulty, 0.80f)) * 2.00f, 0, 40);
+						planner.wave_size_rem = planner.wave_size;
+
+						planner.status = Planner.Status.Dispatching;
+
+						//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
+						Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f);
+					}
+
 					var random = XorRandom.New();
 
 					switch (planner.status)
@@ -326,20 +340,20 @@ namespace TC2.Siege
 
 						case Planner.Status.Waiting:
 						{
-							if (siege.wave_current != planner.last_wave)
-							{
-								planner.last_wave = siege.wave_current;
+							//if (siege.wave_current != planner.last_wave)
+							//{
+							//	planner.last_wave = siege.wave_current;
 
-								//planner.next_wave = time + planner.wave_interval + Maths.Clamp(difficulty * 10.00f, 0.00f, 120.00f);
-								planner.wave_size = (int)Maths.Clamp(3 + MathF.Floor(MathF.Pow(siege.difficulty, 0.80f)) * 2.00f, 0, 40);
-								planner.wave_size_rem = planner.wave_size;
+							//	//planner.next_wave = time + planner.wave_interval + Maths.Clamp(difficulty * 10.00f, 0.00f, 120.00f);
+							//	planner.wave_size = (int)Maths.Clamp(3 + MathF.Floor(MathF.Pow(siege.difficulty, 0.80f)) * 2.00f, 0, 40);
+							//	planner.wave_size_rem = planner.wave_size;
 
-								planner.status = Planner.Status.Dispatching;
+							//	planner.status = Planner.Status.Dispatching;
 
-								//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
-								Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f);
+							//	//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
+							//	Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f);
 
-							}
+							//}
 						}
 						break;
 

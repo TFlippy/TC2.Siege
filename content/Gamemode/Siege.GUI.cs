@@ -27,17 +27,20 @@ namespace TC2.Siege
 
 						var time_left = MathF.Max(siege.t_next_wave - siege.match_time, 0.00f);
 
-						using (GUI.Group.New(size: new Vector2(GUI.GetRemainingWidth() - 100, GUI.GetRemainingHeight())))
+						using (GUI.Group.New(size: new Vector2(GUI.GetRemainingWidth() - 120, GUI.GetRemainingHeight())))
 						{
-							GUI.Title($"Next wave: {(time_left):0} s", size: 22, color: time_left > 10.00f ? GUI.font_color_yellow : GUI.font_color_red);
-							GUI.Title($"Difficulty: {siege.difficulty:0.0}", size: 22);
+							if (siege.status == Gamemode.Status.Running)
+							{
+								GUI.Title($"Next wave: {(time_left):0} s", size: 22, color: time_left > 10.00f ? GUI.font_color_yellow : GUI.font_color_red);
+								GUI.Title($"Difficulty: {siege.difficulty:0.0}", size: 22);
+							}
 						}
 
 						GUI.SameLine();
 
 						using (GUI.Group.New(size: new Vector2(GUI.GetRemainingWidth(), GUI.GetRemainingHeight())))
 						{
-							GUI.TitleCentered($"Wave: {siege.wave_current}", size: 32, pivot: new(0.50f, 0.50f));
+							GUI.TitleCentered($"Wave: {siege.wave_current}", size: 32, pivot: new(1.00f, 0.50f));
 						}
 
 						
