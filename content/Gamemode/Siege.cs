@@ -18,7 +18,7 @@ namespace TC2.Siege
 			/// Current match difficulty.
 			/// </summary>
 			[Save.Ignore] public float difficulty = 1.00f;
-			
+
 			/// <summary>
 			/// Base value of per-wave difficulty step.
 			/// </summary>
@@ -43,7 +43,7 @@ namespace TC2.Siege
 			[Save.Ignore] public float wave_interval_difficulty_mult = 1.00f;
 			[Save.Ignore] public int wave_current;
 
-			[Save.Ignore, Net.Ignore] public float t_next_wave;
+			[Save.Ignore] public float t_next_wave;
 			[Save.Ignore, Net.Ignore] public float t_next_restart;
 			[Save.Ignore, Net.Ignore] public float t_last_notification;
 
@@ -54,6 +54,8 @@ namespace TC2.Siege
 			public enum Flags: uint
 			{
 				None = 0,
+
+				Active = 1 << 0
 			}
 
 			public enum Status: uint
@@ -154,7 +156,7 @@ namespace TC2.Siege
 			}
 		}
 
-#if SERVER
+
 		//public static float GetDifficulty(ref this Siege.Gamemode siege, ref Region.Data region)
 		//{
 		//	var difficulty = siege.difficulty;
@@ -184,18 +186,19 @@ namespace TC2.Siege
 			//App.WriteLine(siege.target_count);
 
 			ref var region = ref info.GetRegion();
-			var player_count = region.GetConnectedPlayerCount();
 
-			if (player_count > 0)
+#if SERVER
+			var sync = false;
+			var player_count = region.GetConnectedPlayerCount();
+			sync |= siege.flags.TrySetFlag(Siege.Gamemode.Flags.Active, player_count > 0);
+#endif
+
+			if (siege.flags.HasAny(Siege.Gamemode.Flags.Active))
 			{
 				var time = siege.match_time;
 
+#if SERVER
 				const float prep_time = 60.00f;
-
-				//var difficulty = siege.difficulty;
-				//difficulty *= 1.00f + ((region.GetConnectedPlayerCount() - 1) * 0.10f * siege.difficulty_player_mult);
-				//siege.difficulty_computed = difficulty;
-
 				switch (siege.status)
 				{
 					case Gamemode.Status.Undefined:
@@ -249,9 +252,9 @@ namespace TC2.Siege
 
 								siege.difficulty = Maths.Clamp(siege.difficulty + difficulty_step, 1.00f, siege.difficulty_max);
 
-								siege.t_next_wave = time + siege.wave_interval + Maths.Clamp(siege.difficulty * siege.wave_interval_difficulty_mult, 0.00f, 120.00f);
+								siege.t_next_wave = time + Maths.Snap(siege.wave_interval + Maths.Clamp(siege.difficulty * siege.wave_interval_difficulty_mult, 0.00f, 120.00f), 15.00f);
 
-								region.SyncGlobal(ref siege);
+								sync |= true;
 
 								//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
 								Notification.Push(ref region, $"Wave #{siege.wave_current}! Difficulty increased by {difficulty_step:0.00} ({siege.difficulty:0.00}), next wave in {(siege.t_next_wave - siege.match_time):0} seconds.", Color32BGRA.Red, lifetime: 30.00f, "ui.alert.11", volume: 0.60f, pitch: 0.80f);
@@ -284,10 +287,18 @@ namespace TC2.Siege
 					}
 					break;
 				}
-
-				siege.match_time += App.fixed_update_interval_s;
-			}
-		}
 #endif
+
+				siege.match_time += info.DeltaTime;
+			}
+
+#if SERVER
+			if (sync)
+			{
+				region.SyncGlobal(ref siege);
+				App.WriteLine("Synced Siege");
+			}
+#endif
+		}
 	}
 }
