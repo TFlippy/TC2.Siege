@@ -16,6 +16,7 @@
 				type: prefab
 				prefab: "bp.pervitin.50mg.er"
 				quantity: 4.000
+				flags: despawn
 			}
 		]
 		flags: none

@@ -16,11 +16,13 @@
 				type: prefab
 				prefab: "wrench"
 				quantity: 1.000
+				flags: despawn
 			}
 			{
 				type: prefab
 				prefab: "hammer"
 				quantity: 1.000
+				flags: despawn
 			}
 			{
 				type: resource

@@ -16,7 +16,7 @@
 				type: prefab
 				prefab: "auto_shotgun"
 				quantity: 1.000
-				flags: pickup
+				flags: pickup, despawn
 			}
 			{
 				type: resource

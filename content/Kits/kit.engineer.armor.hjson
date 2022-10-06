@@ -16,13 +16,13 @@
 				type: prefab
 				prefab: "helmet.03"
 				quantity: 1.000
-				flags: equip
+				flags: equip, despawn
 			}
 			{
 				type: prefab
 				prefab: "armor.02"
 				quantity: 1.000
-				flags: equip
+				flags: equip, despawn
 			}
 		]
 		flags: unpack

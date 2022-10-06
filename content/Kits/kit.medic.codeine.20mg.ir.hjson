@@ -16,6 +16,7 @@
 				type: prefab
 				prefab: "bp.codeine.20mg.ir"
 				quantity: 4.000
+				flags: despawn
 			}
 		]
 		flags: none

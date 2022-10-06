@@ -16,6 +16,7 @@
 				type: prefab
 				prefab: "bp.paralyx"
 				quantity: 4.000
+				flags: despawn
 			}
 		]
 		flags: none
