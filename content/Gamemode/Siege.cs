@@ -256,7 +256,7 @@ namespace TC2.Siege
 
 								siege.difficulty = Maths.Clamp(siege.difficulty + difficulty_step, 1.00f, siege.difficulty_max);
 
-								siege.t_next_wave = time + Maths.Snap(siege.wave_interval + Maths.Clamp(siege.difficulty * siege.wave_interval_difficulty_mult, 0.00f, 120.00f), 15.00f);
+								siege.t_next_wave = time + Maths.Snap(siege.wave_interval + Maths.Clamp(siege.difficulty * 5.00f * siege.wave_interval_difficulty_mult, 0.00f, 300.00f), 15.00f);
 
 								sync |= true;
 

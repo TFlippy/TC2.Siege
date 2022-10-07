@@ -9,7 +9,9 @@ namespace TC2.Siege
 		public static void OnAddGuninventory(ISystem.Info info, Entity entity,
 		[Source.Owned, Pair.Of<Gun.Data>] ref Inventory1.Data inventory_magazine)
 		{
+			//App.WriteLine($"{inventory_magazine.Flags}; {entity.HasComponent<Entity.Data>()}");
 			inventory_magazine.Flags |= Inventory.Flags.No_Drop;
+			//App.WriteLine($"added gun no_drop {entity}; {inventory_magazine.Flags}");
 		}
 
 //#if SERVER

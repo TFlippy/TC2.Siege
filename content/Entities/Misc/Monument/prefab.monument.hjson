@@ -40,7 +40,8 @@ capturable:
 
 interactable:
 {
-	window_size: [288.000, 244.000]
+	// window_size: [288.000, 244.000]
+	window_size: [900.000, 600.000]
 }
 
 animated.renderer:
@@ -70,7 +71,7 @@ faction:
 
 nameable:
 {
-
+	flags: no_rename
 }
 
 claimable:
@@ -90,10 +91,10 @@ spawn:
 	flags: faction
 }
 
-// laboratory:
-// {
+laboratory:
+{
 
-// }
+}
 
 minimap.marker:
 {
