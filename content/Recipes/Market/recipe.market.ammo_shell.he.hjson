@@ -1,0 +1,48 @@
+{
+	name: "Artillery Shell (High-Explosive)"
+	desc: 
+		'''
+		Used for precision shelling or against heavily armored targets.
+		- Extremely high damage
+		- Small blast radius
+		- Very high accuracy
+		- Medium range
+		'''
+	
+	icon:
+	{
+		texture: "resource.ammo_shell.he"
+		size: [16, 16]
+		frame: [3, 0]
+	}
+
+	icon_extra:
+	{
+		texture: "ui_icons_gunsmith.mini"
+		size: [16, 16]
+		frame: [4, 0]
+	}
+	
+	min: 1
+	max: 1
+	step: 1
+	type: buy
+	tags: market
+	
+	requirements:
+	[
+		{
+			type: "money"
+			amount: 379.790
+		}
+	]
+	
+	products:
+	[
+		{
+			type: "resource"
+			material: "ammo_shell.he"
+			amount: 1.000
+		}
+	]
+}

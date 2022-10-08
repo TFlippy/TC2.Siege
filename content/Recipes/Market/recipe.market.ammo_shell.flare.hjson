@@ -1,0 +1,47 @@
+{
+	name: "Artillery Shell (Flare)"
+	desc: 
+		'''
+		Used for signalling or illuminating a large area.
+		- Emits a bright light
+		- Slow-falling
+		- Short range
+		'''
+	
+	icon:
+	{
+		texture: "resource.ammo_shell.flare"
+		size: [16, 16]
+		frame: [3, 0]
+	}
+
+	icon_extra:
+	{
+		texture: "ui_icons_gunsmith.mini"
+		size: [16, 16]
+		frame: [9, 0]
+	}
+	
+	min: 1
+	max: 1
+	step: 1
+	type: buy
+	tags: market
+	
+	requirements:
+	[
+		{
+			type: "money"
+			amount: 179.490
+		}
+	]
+	
+	products:
+	[
+		{
+			type: "resource"
+			material: "ammo_shell.flare"
+			amount: 1.000
+		}
+	]
+}

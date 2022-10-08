@@ -1,0 +1,45 @@
+{
+	name: "Shotgun Shell (Birdshot, High-Velocity)"
+	desc:
+		'''
+		Ammunition for shotguns. Fires many tiny projectiles,
+		typically used for hunting fowl (or when your aim is bad).
+		'''
+	
+	icon:
+	{
+		texture: "resource.ammo_sg.bird.hv"
+		size: [16, 16]
+		frame: [3, 0]
+	}
+
+	icon_extra:
+	{
+		texture: "ui_icons_gunsmith.mini"
+		size: [16, 16]
+		frame: [1, 0]
+	}
+	
+	min: 4
+	max: 24
+	step: 4
+	type: buy
+	tags: market
+	
+	requirements:
+	[
+		{
+			type: "money"
+			amount: 8.790
+		}
+	]
+	
+	products:
+	[
+		{
+			type: "resource"
+			material: "ammo_sg.bird.hv"
+			amount: 1.000
+		}
+	]
+}

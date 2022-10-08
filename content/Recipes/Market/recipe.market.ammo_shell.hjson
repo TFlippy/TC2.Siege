@@ -1,0 +1,48 @@
+{
+	name: "Artillery Shell (Standard)"
+	desc: 
+		'''
+		Used as a general-purpose artillery shell.
+		- Medium damage
+		- Large blast radius
+		- Low accuracy
+		- Medium range
+		'''
+	
+	icon:
+	{
+		texture: "resource.ammo_shell"
+		size: [16, 16]
+		frame: [3, 0]
+	}
+
+	icon_extra:
+	{
+		texture: "ui_icons_gunsmith.mini"
+		size: [16, 16]
+		frame: [0, 0]
+	}
+	
+	min: 1
+	max: 1
+	step: 1
+	type: buy
+	tags: market
+	
+	requirements:
+	[
+		{
+			type: "money"
+			amount: 279.790
+		}
+	]
+	
+	products:
+	[
+		{
+			type: "resource"
+			material: "ammo_shell"
+			amount: 1.000
+		}
+	]
+}
