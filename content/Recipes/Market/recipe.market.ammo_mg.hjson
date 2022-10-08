@@ -2,7 +2,11 @@
 	name: "Machine Gun Ammo (Standard)"
 	desc: 
 		'''
-		Ammunition for machine guns and other heavy weapons.
+		Used against vehicles and large or armored targets.
+		- High damage
+		- Medium accuracy
+		- High velocity
+		- Very high recoil	
 		'''
 	
 	icon:

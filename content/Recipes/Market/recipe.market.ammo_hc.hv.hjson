@@ -2,8 +2,11 @@
 	name: "High-Caliber Ammo (High-Velocity)"
 	desc:
 		'''
-		Ammunition for rifles
-		and other larger firearms.
+		Used against large or armored targets.
+		- Fairly high damage
+		- Very high accuracy
+		- High velocity
+		- High recoil	
 		'''
 	
 	icon:

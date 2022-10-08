@@ -2,7 +2,7 @@
 	name: "Artillery Shell (High-Explosive)"
 	desc: 
 		'''
-		Used for precision shelling or against heavily armored targets.
+		Used for precision shelling or against structures and heavily-armored targets.
 		- Extremely high damage
 		- Small blast radius
 		- Very high accuracy

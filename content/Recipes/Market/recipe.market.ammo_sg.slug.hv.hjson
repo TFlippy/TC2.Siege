@@ -2,8 +2,12 @@
 	name: "Shotgun Shell (Slug, High-Velocity)"
 	desc:
 		'''
-		Ammunition for shotguns. Fires single heavy projectile
-		with low velocity, which deals a large amount of damage.
+		Used against armored targets.
+		- Single heavy projectile
+		- High damage
+		- Medium accuracy
+		- High recoil
+		- Low range
 		'''
 	
 	icon:

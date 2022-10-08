@@ -2,7 +2,11 @@
 	name: "Small Rocket (Standard)"
 	desc: 
 		'''
-		Ammunition for rocket launchers. Uses gunpowder filling, reduced damage and radius, creates more smoke on impact. Not very accurate.
+		Used against structures, vehicles or large crowds of enemies.
+		- Medium damage
+		- Medium blast radius
+		- Low accuracy
+		- Low range
 		'''
 	
 	icon:

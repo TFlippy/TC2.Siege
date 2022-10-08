@@ -2,7 +2,11 @@
 	name: "Shotgun Shell (High-Explosive)"
 	desc:
 		'''
-		Ammunition for shotguns. Fires a small low-powered grenade.
+		Used against small structures or groups of enemies.
+		- Fairly high damage
+		- Small blast radius
+		- Low accuracy
+		- Low range
 		'''
 	
 	icon:

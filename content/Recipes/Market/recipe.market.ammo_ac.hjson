@@ -2,7 +2,10 @@
 	name: "Autocannon Ammo (Standard)"
 	desc: 
 		'''
-		Ammunition for autocannons.
+		Used against armored targets or aerial vehicles.
+		- High damage
+		- High accuracy
+		- Long range
 		'''
 	
 	icon:

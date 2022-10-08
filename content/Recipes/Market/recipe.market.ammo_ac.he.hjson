@@ -2,7 +2,11 @@
 	name: "Autocannon Ammo (High-Explosive)"
 	desc: 
 		'''
-		Ammunition for autocannons. Explodes upon impact.
+		Used against structures, vehicles or large crowds of enemies.
+		- High damage
+		- Small blast radius
+		- Medium accuracy
+		- Low range
 		'''
 	
 	icon:

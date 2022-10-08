@@ -2,8 +2,11 @@
 	name: "Low-Caliber Ammo (High-Velocity)"
 	desc:
 		'''
-		Ammunition for pistols, revolvers
-		and submachine guns.
+		Used against unarmored targets.
+		- Medium damage
+		- Very high accuracy
+		- High velocity
+		- Medium recoil	
 		'''
 	
 	icon:
