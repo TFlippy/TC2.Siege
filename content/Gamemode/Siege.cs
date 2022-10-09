@@ -168,6 +168,7 @@ namespace TC2.Siege
 				//Character.CharacterHUD.enabled = false;
 
 				Spawn.RespawnGUI.enabled = true;
+				Spawn.RespawnGUI.window_offset = new Vector2(0, 132);
 #endif
 			}
 
