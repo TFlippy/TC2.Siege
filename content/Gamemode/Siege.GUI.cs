@@ -26,14 +26,14 @@ namespace TC2.Siege
 						ref var world = ref Client.GetWorld();
 						ref var game_info = ref Client.GetGameInfo();
 
-						var time_left = MathF.Max(this.g_siege_state.t_next_wave - this.g_siege_state.match_time, 0.00f);
+						var time_left = MathF.Max(this.g_siege_state.t_next_wave - this.g_siege_state.t_match_elapsed, 0.00f);
 
 						using (GUI.Group.New(size: new Vector2(GUI.GetRemainingWidth() - 120, GUI.GetRemainingHeight())))
 						{
 							if (this.g_siege_state.status == Gamemode.Status.Running)
 							{
 								GUI.Title($"Next wave: {(time_left):0} s", size: 22, color: time_left > 10.00f ? GUI.font_color_title : GUI.font_color_yellow);
-								GUI.Title($"Next reward: {(MathF.Max(this.g_bounty.t_next_update - this.g_siege_state.match_time, 0.00f)):0} s", size: 22);
+								GUI.Title($"Next reward: {(MathF.Max(this.g_bounty.t_next_update - this.g_siege_state.t_match_elapsed, 0.00f)):0} s", size: 22);
 								GUI.Title($"Difficulty: {this.g_siege_state.difficulty:0.0}", size: 22);
 								//Shop.DrawProducts(ref region, default, default, default, this.g_bounty.rewards.AsSpan(), 1);
 							}

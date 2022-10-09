@@ -35,12 +35,11 @@ namespace TC2.Siege
 			{
 				ref var region = ref info.GetRegion();
 
-				var connected_count = region.GetConnectedPlayerCount();
-				if (g_siege_state.status == Gamemode.Status.Running && connected_count > 0)
+				if (g_siege_state.status == Gamemode.Status.Running && g_siege_state.flags.HasAny(Siege.Gamemode.Flags.Active) && g_siege_state.player_count > 0)
 				{
-					if (g_siege_state.match_time >= g_bounty.t_next_update)
+					if (g_siege_state.t_match_elapsed >= g_bounty.t_next_update)
 					{
-						g_bounty.t_next_update = g_siege_state.match_time + g_bounty.update_interval;
+						g_bounty.t_next_update = g_siege_state.t_match_elapsed + g_bounty.update_interval;
 
 						if (g_siege_state.wave_current != g_bounty.last_wave)
 						{
@@ -50,7 +49,7 @@ namespace TC2.Siege
 						if (g_bounty.rewards.AsSpan().HasAny())
 						{
 							var rewards_tmp = g_bounty.rewards;
-							var multiplier = Maths.Lerp(1.00f, 1.00f / connected_count, g_siege.loot_share_ratio);
+							var multiplier = Maths.Lerp(1.00f, 1.00f / (float)g_siege_state.player_count, g_siege.loot_share_ratio);
 
 							foreach (ref var reward in rewards_tmp.AsSpan())
 							{
@@ -61,7 +60,7 @@ namespace TC2.Siege
 								}
 							}
 
-							for (var i = 0u; i < connected_count; i++)
+							for (var i = 0u; i < g_siege_state.player_count; i++)
 							{
 								var ent_player = region.GetConnectedPlayerEntityByIndex(i);
 								Crafting.Produce(ref region, ent_player, ref rewards_tmp);

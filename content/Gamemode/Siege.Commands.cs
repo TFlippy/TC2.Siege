@@ -73,7 +73,29 @@ namespace TC2.Siege
 				ref var g_siege_state = ref region.GetSingletonComponent<Siege.Gamemode.State>();
 				if (!g_siege_state.IsNull())
 				{
-					g_siege_state.t_next_wave = g_siege_state.match_time;
+					g_siege_state.t_next_wave = g_siege_state.t_match_elapsed;
+					Server.SendChatMessage($"Forced next wave.", channel: Chat.Channel.System);
+				}
+			}
+		}
+
+		[ChatCommand.Region("pause", "", admin: true)]
+		public static void PauseCommand(ref ChatCommand.Context context, bool? value)
+		{
+			ref var region = ref context.GetRegion();
+			if (!region.IsNull())
+			{
+				ref var g_siege_state = ref region.GetSingletonComponent<Siege.Gamemode.State>();
+				if (!g_siege_state.IsNull())
+				{
+					var sync = false;
+					sync |= g_siege_state.flags.TrySetFlag(Siege.Gamemode.Flags.Paused, value ?? !g_siege_state.flags.HasAll(Siege.Gamemode.Flags.Paused));
+					Server.SendChatMessage(g_siege_state.flags.HasAll(Siege.Gamemode.Flags.Paused) ? "Paused Siege." : "Unpaused Siege.", channel: Chat.Channel.System);
+
+					if (sync)
+					{
+						region.SyncGlobal(ref g_siege_state);
+					}
 				}
 			}
 		}

@@ -351,9 +351,9 @@ namespace TC2.Siege
 		{
 			ref var region = ref info.GetRegion();
 
-			if (Constants.World.enable_npc_spawning && Constants.World.enable_ai && g_siege_state.status == Gamemode.Status.Running && region.GetConnectedPlayerCount() > 0)
+			if (Constants.World.enable_npc_spawning && Constants.World.enable_ai && g_siege_state.status == Gamemode.Status.Running && g_siege_state.flags.HasAny(Siege.Gamemode.Flags.Active))
 			{
-				var time = g_siege_state.match_time;
+				var time = g_siege_state.t_match_elapsed;
 				if (time >= planner.next_update)
 				{
 					planner.next_update = time + 1.00f;

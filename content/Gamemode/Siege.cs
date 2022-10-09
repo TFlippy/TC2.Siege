@@ -46,7 +46,8 @@ namespace TC2.Siege
 			{
 				None = 0,
 
-				Active = 1 << 0
+				Active = 1 << 0,
+				Paused = 1 << 1,
 			}
 
 			public enum Status: uint
@@ -66,21 +67,22 @@ namespace TC2.Siege
 				[Save.Ignore] public IFaction.Handle faction_defenders = "defenders";
 				[Save.Ignore] public IFaction.Handle faction_attackers = "attackers";
 
-				[Save.Ignore] public uint target_count;
-				[Save.Ignore] public float match_time;
+				[Save.Ignore] public ushort wave_current;
+				[Save.Ignore] public byte target_count;
+				[Save.Ignore] public byte player_count;
 
 				/// <summary>
 				/// Current match difficulty.
 				/// </summary>
 				[Save.Ignore] public float difficulty = 1.00f;
-				[Save.Ignore] public int wave_current;
-
-				[Save.Ignore] public float t_next_wave;
-				[Save.Ignore, Net.Ignore] public float t_next_restart;
-				[Save.Ignore, Net.Ignore] public float t_last_notification;
 
 				[Save.Ignore] public Siege.Gamemode.Flags flags;
 				[Save.Ignore] public Siege.Gamemode.Status status;
+
+				[Save.Ignore] public float t_match_elapsed;
+				[Save.Ignore] public float t_next_wave;
+				[Save.Ignore, Net.Ignore] public float t_next_restart;
+				[Save.Ignore, Net.Ignore] public float t_last_notification;
 
 				public State()
 				{
@@ -208,12 +210,14 @@ namespace TC2.Siege
 #if SERVER
 			var sync = false;
 			var player_count = region.GetConnectedPlayerCount();
-			sync |= g_siege_state.flags.TrySetFlag(Siege.Gamemode.Flags.Active, player_count > 0);
+
+			sync |= g_siege_state.player_count.TrySet((byte)player_count);
+			sync |= g_siege_state.flags.TrySetFlag(Siege.Gamemode.Flags.Active, player_count > 0 && !g_siege_state.flags.HasAny(Siege.Gamemode.Flags.Paused));
 #endif
 
 			if (g_siege_state.flags.HasAny(Siege.Gamemode.Flags.Active))
 			{
-				var time = g_siege_state.match_time;
+				var time = g_siege_state.t_match_elapsed;
 
 #if SERVER
 				const float prep_time = 60.00f;
@@ -309,7 +313,7 @@ namespace TC2.Siege
 				}
 #endif
 
-				g_siege_state.match_time += info.DeltaTime;
+				g_siege_state.t_match_elapsed += info.DeltaTime;
 			}
 
 #if SERVER
