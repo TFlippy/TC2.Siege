@@ -33,12 +33,13 @@ namespace TC2.Siege
 							if (this.siege.status == Gamemode.Status.Running)
 							{
 								GUI.Title($"Next wave: {(time_left):0} s", size: 22, color: time_left > 10.00f ? GUI.font_color_title : GUI.font_color_yellow);
+								GUI.Title($"Next reward: {(MathF.Max(this.g_bounty.t_next_update - this.siege.match_time, 0.00f)):0} s", size: 22);
 								GUI.Title($"Difficulty: {this.siege.difficulty:0.0}", size: 22);
 								//Shop.DrawProducts(ref region, default, default, default, this.g_bounty.rewards.AsSpan(), 1);
 							}
 							else
 							{
-								GUI.TitleCentered($"{this.siege.status}", size: 32, pivot: new(0.00f, 0.50f));
+								GUI.TitleCentered($"{this.siege.status}", size: 32, pivot: new(0.00f, 0.50f), color: GUI.font_color_yellow);
 							}
 						}
 

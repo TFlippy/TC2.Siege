@@ -1,4 +1,5 @@
-﻿using Keg.Extensions;
+﻿using Keg.Engine.Game;
+using Keg.Extensions;
 using TC2.Base.Components;
 
 namespace TC2.Siege
@@ -16,9 +17,16 @@ namespace TC2.Siege
 			[IGlobal.Data(false, Net.SendType.Unreliable)]
 			public partial struct Global: IGlobal
 			{
-				public FixedArray8<Crafting.Product> rewards;
+				[Save.Ignore] public FixedArray8<Crafting.Product> rewards;
 
-				public int last_wave;
+				public float update_interval = 30.00f;
+				[Save.Ignore] public int last_wave;
+				[Save.Ignore] public float t_next_update;
+
+				public Global()
+				{
+
+				}
 			}
 
 #if SERVER
@@ -30,23 +38,41 @@ namespace TC2.Siege
 				var connected_count = region.GetConnectedPlayerCount();
 				if (siege.status == Gamemode.Status.Running && connected_count > 0)
 				{
-					if (siege.wave_current != g_bounty.last_wave)
+					if (siege.match_time >= g_bounty.t_next_update)
 					{
-						g_bounty.last_wave = siege.wave_current;
+						g_bounty.t_next_update = siege.match_time + g_bounty.update_interval;
 
-						var rewards_tmp = g_bounty.rewards;
-						var multiplier = Maths.Lerp(1.00f, 1.00f / connected_count, siege.loot_share_ratio);
-
-						for (var i = 0u; i < connected_count; i++)
+						if (siege.wave_current != g_bounty.last_wave)
 						{
-							var ent_player = region.GetConnectedPlayerEntityByIndex(i);
-							Crafting.Produce(ref region, ent_player, ref rewards_tmp, amount_multiplier: multiplier);
+							g_bounty.last_wave = siege.wave_current;
 						}
 
-						g_bounty.rewards = default;
+						if (g_bounty.rewards.AsSpan().HasAny())
+						{
+							var rewards_tmp = g_bounty.rewards;
+							var multiplier = Maths.Lerp(1.00f, 1.00f / connected_count, siege.loot_share_ratio);
 
-						//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f);
+							foreach (ref var reward in rewards_tmp.AsSpan())
+							{
+								if (reward.type == Crafting.Product.Type.Money)
+								{
+									reward.amount = Money.ToBataPrice(reward.amount * multiplier);
+									Notification.Push(ref region, $"Received payment of {reward.amount:0.00} coins.", Color32BGRA.Green, lifetime: 10.00f, sound: "quest_complete", volume: 0.25f, pitch: 0.90f);
+								}
+							}
 
+							for (var i = 0u; i < connected_count; i++)
+							{
+								var ent_player = region.GetConnectedPlayerEntityByIndex(i);
+								Crafting.Produce(ref region, ent_player, ref rewards_tmp);
+							}
+
+							g_bounty.rewards = default;
+							region.SyncGlobal(ref g_bounty);
+
+							//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f);
+
+						}
 					}
 				}
 			}
@@ -55,14 +81,12 @@ namespace TC2.Siege
 			public static void OnRemove(ISystem.Info info, Entity entity, [Source.Owned] ref Siege.Bounty.Data bounty, [Source.Global] ref Siege.Bounty.Global g_bounty)
 			{
 				ref var region = ref info.GetRegion();
-				App.WriteLine("on remove");
 
 				var rewards_total = g_bounty.rewards.AsSpan();
 				foreach (ref var reward in bounty.rewards.AsSpan())
 				{
 					if (reward.type != Crafting.Product.Type.Undefined)
 					{
-						App.WriteLine($"add reward {reward.type} {reward.amount}");
 						rewards_total.Add(reward);
 					}
 				}

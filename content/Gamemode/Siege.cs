@@ -166,16 +166,43 @@ namespace TC2.Siege
 			}
 		}
 
+		[IGlobal.Data(false, Net.SendType.Reliable)]
+		public partial struct State: IGlobal
+		{
+			[Save.Ignore] public IFaction.Handle faction_defenders = "defenders";
+			[Save.Ignore] public IFaction.Handle faction_attackers = "attackers";
 
-		//public static float GetDifficulty(ref this Siege.Gamemode siege, ref Region.Data region)
-		//{
-		//	var difficulty = siege.difficulty;
-		//	difficulty *= 1.00f + ((region.GetConnectedPlayerCount() - 1) * 0.10f * siege.difficulty_player_mult);
+			[Save.Ignore] public uint target_count;
+			[Save.Ignore] public float match_time;
 
-		//	return difficulty;
-		//}
+			/// <summary>
+			/// Current match difficulty.
+			/// </summary>
+			[Save.Ignore] public float difficulty = 1.00f;
+			[Save.Ignore] public int wave_current;
 
-		[ISystem.PreUpdate.Reset(ISystem.Mode.Single)]
+			[Save.Ignore] public float t_next_wave;
+			[Save.Ignore, Net.Ignore] public float t_next_restart;
+			[Save.Ignore, Net.Ignore] public float t_last_notification;
+
+			[Save.Ignore] public Siege.Gamemode.Flags flags;
+			[Save.Ignore] public Siege.Gamemode.Status status;
+
+			public State()
+			{
+
+			}
+		}
+
+			//public static float GetDifficulty(ref this Siege.Gamemode siege, ref Region.Data region)
+			//{
+			//	var difficulty = siege.difficulty;
+			//	difficulty *= 1.00f + ((region.GetConnectedPlayerCount() - 1) * 0.10f * siege.difficulty_player_mult);
+
+			//	return difficulty;
+			//}
+
+			[ISystem.PreUpdate.Reset(ISystem.Mode.Single)]
 		public static void UpdateSiegeReset(ISystem.Info info, [Source.Global] ref Siege.Gamemode siege)
 		{
 			siege.target_count = 0;
