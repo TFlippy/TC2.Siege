@@ -5,7 +5,7 @@
 	flags: none
 	character_flags: none
 	origin: "engineer"
-	cost: 10.000
+	cost: 18.000
 	
 	shipment:
 	{
@@ -20,7 +20,7 @@
 			{
 				type: resource
 				material: "ammo_rocket"
-				quantity: 4.000
+				quantity: 8.000
 			}
 		]
 		flags: unpack

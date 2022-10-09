@@ -14,7 +14,7 @@ namespace TC2.Siege
 			/// Maths.Lerp(1.00f, 1.00f / player_count, reward_share_ratio);
 			/// </code>
 			/// </summary>
-			[Save.Ignore] public float reward_share_ratio = 0.50f;
+			[Save.Ignore] public float reward_share_ratio = 0.70f;
 
 			[Save.Ignore] public float reward_mult = 1.50f;
 

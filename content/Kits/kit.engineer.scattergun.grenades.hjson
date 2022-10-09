@@ -5,7 +5,7 @@
 	flags: none
 	character_flags: none
 	origin: "engineer"
-	cost: 5.000
+	cost: 20.000
 	
 	shipment:
 	{

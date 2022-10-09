@@ -1,4 +1,5 @@
-﻿using Keg.Extensions;
+﻿using Keg.Engine.Game;
+using Keg.Extensions;
 using TC2.Base.Components;
 
 namespace TC2.Siege
@@ -23,6 +24,8 @@ namespace TC2.Siege
 				Dispatching,
 			}
 
+			public EntRef<Transform.Data> ref_target;
+
 			public int last_wave;
 
 			public int wave_size;
@@ -34,6 +37,7 @@ namespace TC2.Siege
 
 			[Save.Ignore, Net.Ignore] public float next_update;
 			[Save.Ignore, Net.Ignore] public float next_dispatch;
+			[Save.Ignore, Net.Ignore] public float next_search;
 			//[Save.Ignore, Net.Ignore] public float next_wave;
 
 			public Planner()
@@ -406,12 +410,29 @@ namespace TC2.Siege
 						{
 							if ((g_siege_state.t_next_wave - time) >= 30.00f)
 							{
+								if (time >= planner.next_search)
+								{
+									if (TryFindTarget(ref region, entity, faction.id, transform.position, out var ent_target, out var target_position))
+									{
+										planner.ref_target.Set(ent_target);
+									}
+									else
+									{
+
+									}
+
+									planner.next_search = time + random.NextFloatRange(10.00f, 15.00f);
+								}
+
 								if (time >= planner.next_dispatch)
 								{
 									planner.next_dispatch = time + random.NextFloatRange(5.00f, 10.00f);
 
-									if (TryFindTarget(ref region, entity, faction.id, transform.position, out var ent_target, out var target_position))
+									if (planner.ref_target.IsAlive() && planner.ref_target.TryGetHandle(out var h_target_transform))
 									{
+										var ent_target = h_target_transform.entity;
+										var target_position = h_target_transform.data.position;
+
 										var arg = new GetAllUnitsQueryArgs(entity, ent_target, faction.id, transform.position, target_position, 0, planner.wave_size_rem, default);
 
 										region.Query<Siege.GetAllUnitsQuery>(Func2).Execute(ref arg);
@@ -461,6 +482,10 @@ namespace TC2.Siege
 
 											App.WriteLine($"Spawning reinforcements... ({planner.wave_size_rem} left)");
 										}
+									}
+									else
+									{
+										planner.ref_target.Set(default);
 									}
 								}
 							}
