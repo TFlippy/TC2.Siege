@@ -23,9 +23,9 @@
 		frame: [1, 0]
 	}
 	
-	min: 10
+	min: 20
 	max: 60
-	step: 10
+	step: 20
 	type: buy
 	tags: market
 	
