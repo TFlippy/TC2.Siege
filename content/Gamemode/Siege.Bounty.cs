@@ -63,7 +63,7 @@ namespace TC2.Siege
 						if (g_bounty.rewards.AsSpan().HasAny())
 						{
 							var rewards_tmp = g_bounty.rewards;
-							var multiplier = Maths.Lerp(1.00f, 1.00f / (float)g_siege_state.player_count, g_siege.loot_share_ratio);
+							var multiplier = Maths.Lerp(1.00f, 1.00f / (float)g_siege_state.player_count, g_siege.reward_share_ratio) * g_siege.reward_mult;
 
 							foreach (ref var reward in rewards_tmp.AsSpan())
 							{

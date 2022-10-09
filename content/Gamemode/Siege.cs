@@ -9,12 +9,14 @@ namespace TC2.Siege
 		public partial struct Gamemode: IGamemode
 		{
 			/// <summary>
-			/// Loot sharing ratio based on player count.
+			/// Reward sharing ratio based on player count.
 			/// <code>
-			/// Maths.Lerp(1.00f, 1.00f / player_count, loot_share_ratio);
+			/// Maths.Lerp(1.00f, 1.00f / player_count, reward_share_ratio);
 			/// </code>
 			/// </summary>
-			[Save.Ignore] public float loot_share_ratio = 0.50f;
+			[Save.Ignore] public float reward_share_ratio = 0.50f;
+
+			[Save.Ignore] public float reward_mult = 1.50f;
 
 			/// <summary>
 			/// Base value of per-wave difficulty step.
@@ -130,6 +132,7 @@ namespace TC2.Siege
 
 				Constants.Respawn.respawn_cooldown_base = 5.00f;
 				Constants.Respawn.respawn_cooldown_token_modifier = 0.00f;
+				Constants.Respawn.respawn_cost_base = 0.00f;
 
 				Constants.Characters.allow_custom_characters = false;
 				Constants.Characters.allow_switching = true;

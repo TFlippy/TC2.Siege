@@ -80,7 +80,7 @@ namespace TC2.Siege
 		}
 
 		[ChatCommand.Region("pause", "", admin: true)]
-		public static void PauseCommand(ref ChatCommand.Context context, bool? value)
+		public static void PauseCommand(ref ChatCommand.Context context, bool? value = null)
 		{
 			ref var region = ref context.GetRegion();
 			if (!region.IsNull())

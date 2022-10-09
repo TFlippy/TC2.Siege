@@ -39,14 +39,14 @@ namespace TC2.Siege
 									var rewards = this.g_bounty.rewards.AsSpan();
 									if (rewards.HasAny())
 									{
-										var multiplier = Maths.Lerp(1.00f, 1.00f / (float)g_siege_state.player_count, g_siege.loot_share_ratio);
+										var multiplier = Maths.Lerp(1.00f, 1.00f / (float)g_siege_state.player_count, g_siege.reward_share_ratio) * g_siege.reward_mult;
 
 										foreach (ref var reward in rewards)
 										{
 											if (reward.type == Crafting.Product.Type.Money)
 											{
 												var amount = Money.ToBataPrice(reward.amount * multiplier);
-												GUI.Title($"+{amount:0.00} coins in {(MathF.Max(this.g_bounty.t_next_payout - this.g_siege_state.t_match_elapsed, 0.00f)):0} s", font: GUI.Font.Monaco, size: 14, color: GUI.font_color_green);
+												GUI.Title($"Payout of {amount:0.00} coins in {(MathF.Max(this.g_bounty.t_next_payout - this.g_siege_state.t_match_elapsed, 0.00f)):0}s", font: GUI.Font.Monaco, size: 14, color: GUI.font_color_green);
 
 												break;
 											}
@@ -68,7 +68,7 @@ namespace TC2.Siege
 						using (GUI.Group.New(size: new Vector2(GUI.GetRemainingWidth(), GUI.GetRemainingHeight())))
 						{
 							GUI.TitleCentered($"Wave: {this.g_siege_state.wave_current}", size: 32, pivot: new(1.00f, 0.00f));
-							GUI.TitleCentered($"Threat: {this.g_siege_state.difficulty:0.0}", size: 22, pivot: new(1.00f, 1.00f));
+							GUI.TitleCentered($"Threat: {this.g_siege_state.difficulty:0.0}", size: 20, pivot: new(1.00f, 1.00f));
 						}
 					}
 				}
