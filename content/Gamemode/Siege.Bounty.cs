@@ -19,9 +19,12 @@ namespace TC2.Siege
 			{
 				[Save.Ignore] public FixedArray8<Crafting.Product> rewards;
 
-				public float update_interval = 30.00f;
+				public float update_interval = 10.00f;
+				public float payout_interval = 30.00f;
+
 				[Save.Ignore] public int last_wave;
 				[Save.Ignore] public float t_next_update;
+				[Save.Ignore] public float t_next_payout;
 
 				public Global()
 				{
@@ -46,6 +49,17 @@ namespace TC2.Siege
 							g_bounty.last_wave = g_siege_state.wave_current;
 						}
 
+						if (g_bounty.t_next_payout == 0.00f && g_bounty.rewards.AsSpan().HasAny())
+						{
+							g_bounty.t_next_payout = g_siege_state.t_match_elapsed + g_bounty.payout_interval;
+							region.SyncGlobal(ref g_bounty);
+						}
+					}
+
+					if (g_bounty.t_next_payout != 0.00f && g_siege_state.t_match_elapsed >= g_bounty.t_next_payout)
+					{
+						g_bounty.t_next_payout = 0.00f;
+
 						if (g_bounty.rewards.AsSpan().HasAny())
 						{
 							var rewards_tmp = g_bounty.rewards;
@@ -68,9 +82,6 @@ namespace TC2.Siege
 
 							g_bounty.rewards = default;
 							region.SyncGlobal(ref g_bounty);
-
-							//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f);
-
 						}
 					}
 				}

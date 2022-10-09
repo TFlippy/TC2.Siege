@@ -15,7 +15,7 @@ namespace TC2.Siege
 			public void Draw()
 			{
 				var window_pos = (GUI.CanvasSize * new Vector2(0.50f, 0.00f)) + new Vector2(0, 64 + 4);
-				using (var window = GUI.Window.Standalone("Siege", position: window_pos, size: new Vector2(400, 0), pivot: new Vector2(0.50f, 0.00f), padding: new(4)))
+				using (var window = GUI.Window.Standalone("Siege", position: window_pos, size: new Vector2(400, 52), pivot: new Vector2(0.50f, 0.00f), padding: new(4)))
 				{
 					this.StoreCurrentWindowTypeID();
 					if (window.show)
@@ -28,13 +28,33 @@ namespace TC2.Siege
 
 						var time_left = MathF.Max(this.g_siege_state.t_next_wave - this.g_siege_state.t_match_elapsed, 0.00f);
 
-						using (GUI.Group.New(size: new Vector2(GUI.GetRemainingWidth() - 120, GUI.GetRemainingHeight())))
+						using (GUI.Group.New(size: new Vector2(GUI.GetRemainingWidth() - 140, GUI.GetRemainingHeight())))
 						{
 							if (this.g_siege_state.status == Gamemode.Status.Running)
 							{
-								GUI.Title($"Next wave: {(time_left):0} s", size: 22, color: time_left > 10.00f ? GUI.font_color_title : GUI.font_color_yellow);
-								GUI.Title($"Next reward: {(MathF.Max(this.g_bounty.t_next_update - this.g_siege_state.t_match_elapsed, 0.00f)):0} s", size: 22);
-								GUI.Title($"Difficulty: {this.g_siege_state.difficulty:0.0}", size: 22);
+								GUI.Title($"Incoming in {(time_left):0} s", size: 22, color: time_left > 10.00f ? GUI.font_color_title : GUI.font_color_yellow);
+
+								if (this.g_bounty.t_next_payout != 0.00f)
+								{
+									var rewards = this.g_bounty.rewards.AsSpan();
+									if (rewards.HasAny())
+									{
+										var multiplier = Maths.Lerp(1.00f, 1.00f / (float)g_siege_state.player_count, g_siege.loot_share_ratio);
+
+										foreach (ref var reward in rewards)
+										{
+											if (reward.type == Crafting.Product.Type.Money)
+											{
+												var amount = Money.ToBataPrice(reward.amount * multiplier);
+												GUI.Title($"+{amount:0.00} coins in {(MathF.Max(this.g_bounty.t_next_payout - this.g_siege_state.t_match_elapsed, 0.00f)):0} s", font: GUI.Font.Monaco, size: 14, color: GUI.font_color_green);
+
+												break;
+											}
+										}
+										//GUI.Title($"+{this.g_bounty.} {(MathF.Max(this.g_bounty.t_next_update - this.g_siege_state.t_match_elapsed, 0.00f)):0} s", size: 22);
+									}
+								}
+								//GUI.Title($"Difficulty: {this.g_siege_state.difficulty:0.0}", size: 22);
 								//Shop.DrawProducts(ref region, default, default, default, this.g_bounty.rewards.AsSpan(), 1);
 							}
 							else
@@ -47,7 +67,8 @@ namespace TC2.Siege
 
 						using (GUI.Group.New(size: new Vector2(GUI.GetRemainingWidth(), GUI.GetRemainingHeight())))
 						{
-							GUI.TitleCentered($"Wave: {this.g_siege_state.wave_current}", size: 32, pivot: new(1.00f, 0.50f));
+							GUI.TitleCentered($"Wave: {this.g_siege_state.wave_current}", size: 32, pivot: new(1.00f, 0.00f));
+							GUI.TitleCentered($"Difficulty: {this.g_siege_state.difficulty:0.0}", size: 22, pivot: new(1.00f, 1.00f));
 						}
 					}
 				}
