@@ -31,26 +31,26 @@ namespace TC2.Siege
 
 #if SERVER
 			[ISystem.LateUpdate(ISystem.Mode.Single)]
-			public static void OnUpdateWave(ISystem.Info info, [Source.Global] in Siege.Gamemode siege, [Source.Global] ref Siege.Bounty.Global g_bounty)
+			public static void OnUpdateRewards(ISystem.Info info, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state, [Source.Global] ref Siege.Bounty.Global g_bounty)
 			{
 				ref var region = ref info.GetRegion();
 
 				var connected_count = region.GetConnectedPlayerCount();
-				if (siege.status == Gamemode.Status.Running && connected_count > 0)
+				if (g_siege_state.status == Gamemode.Status.Running && connected_count > 0)
 				{
-					if (siege.match_time >= g_bounty.t_next_update)
+					if (g_siege_state.match_time >= g_bounty.t_next_update)
 					{
-						g_bounty.t_next_update = siege.match_time + g_bounty.update_interval;
+						g_bounty.t_next_update = g_siege_state.match_time + g_bounty.update_interval;
 
-						if (siege.wave_current != g_bounty.last_wave)
+						if (g_siege_state.wave_current != g_bounty.last_wave)
 						{
-							g_bounty.last_wave = siege.wave_current;
+							g_bounty.last_wave = g_siege_state.wave_current;
 						}
 
 						if (g_bounty.rewards.AsSpan().HasAny())
 						{
 							var rewards_tmp = g_bounty.rewards;
-							var multiplier = Maths.Lerp(1.00f, 1.00f / connected_count, siege.loot_share_ratio);
+							var multiplier = Maths.Lerp(1.00f, 1.00f / connected_count, g_siege.loot_share_ratio);
 
 							foreach (ref var reward in rewards_tmp.AsSpan())
 							{

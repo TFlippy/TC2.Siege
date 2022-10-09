@@ -347,23 +347,23 @@ namespace TC2.Siege
 
 		[ISystem.LateUpdate(ISystem.Mode.Single)]
 		public static void OnUpdate(ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Spawner.Data spawner,
-		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Global] in Siege.Gamemode siege, [Source.Owned, Optional] in Faction.Data faction)
+		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state, [Source.Owned, Optional] in Faction.Data faction)
 		{
 			ref var region = ref info.GetRegion();
 
-			if (Constants.World.enable_npc_spawning && Constants.World.enable_ai && siege.status == Gamemode.Status.Running && region.GetConnectedPlayerCount() > 0)
+			if (Constants.World.enable_npc_spawning && Constants.World.enable_ai && g_siege_state.status == Gamemode.Status.Running && region.GetConnectedPlayerCount() > 0)
 			{
-				var time = siege.match_time;
+				var time = g_siege_state.match_time;
 				if (time >= planner.next_update)
 				{
 					planner.next_update = time + 1.00f;
 
-					if (siege.wave_current != planner.last_wave)
+					if (g_siege_state.wave_current != planner.last_wave)
 					{
-						planner.last_wave = siege.wave_current;
+						planner.last_wave = g_siege_state.wave_current;
 
 						//planner.next_wave = time + planner.wave_interval + Maths.Clamp(difficulty * 10.00f, 0.00f, 120.00f);
-						planner.wave_size = (int)Maths.Clamp(3 + MathF.Floor(MathF.Pow(siege.difficulty, 0.80f)) * 2.00f, 0, 40);
+						planner.wave_size = (int)Maths.Clamp(3 + MathF.Floor(MathF.Pow(g_siege_state.difficulty, 0.80f)) * 2.00f, 0, 40);
 						planner.wave_size_rem = planner.wave_size;
 
 						planner.status = Planner.Status.Dispatching;
@@ -404,7 +404,7 @@ namespace TC2.Siege
 
 						case Siege.Planner.Status.Dispatching:
 						{
-							if ((siege.t_next_wave - time) >= 30.00f)
+							if ((g_siege_state.t_next_wave - time) >= 30.00f)
 							{
 								if (time >= planner.next_dispatch)
 								{

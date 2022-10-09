@@ -46,19 +46,19 @@ namespace TC2.Siege
 			ref var region = ref context.GetRegion();
 			if (!region.IsNull())
 			{
-				ref var siege = ref region.GetSingletonComponent<Siege.Gamemode>();
-				if (!siege.IsNull())
+				ref var g_siege_state = ref region.GetSingletonComponent<Siege.Gamemode.State>();
+				if (!g_siege_state.IsNull())
 				{
 					if (difficulty.TryGetValue(out var v_difficulty))
 					{
-						var difficulty_old = siege.difficulty;
-						siege.difficulty = v_difficulty;
+						var difficulty_old = g_siege_state.difficulty;
+						g_siege_state.difficulty = v_difficulty;
 
-						Server.SendChatMessage($"Set difficulty from {difficulty_old:0.00} to {siege.difficulty:0.00}.", channel: Chat.Channel.System, target_player_id: context.GetConnection().GetPlayerID());
+						Server.SendChatMessage($"Set difficulty from {difficulty_old:0.00} to {g_siege_state.difficulty:0.00}.", channel: Chat.Channel.System, target_player_id: context.GetConnection().GetPlayerID());
 					}
 					else
 					{
-						Server.SendChatMessage($"Current difficulty: {siege.difficulty:0.00}.", channel: Chat.Channel.System, target_player_id: context.GetConnection().GetPlayerID());
+						Server.SendChatMessage($"Current difficulty: {g_siege_state.difficulty:0.00}.", channel: Chat.Channel.System, target_player_id: context.GetConnection().GetPlayerID());
 					}
 				}
 			}
@@ -70,10 +70,10 @@ namespace TC2.Siege
 			ref var region = ref context.GetRegion();
 			if (!region.IsNull())
 			{
-				ref var siege = ref region.GetSingletonComponent<Siege.Gamemode>();
-				if (!siege.IsNull())
+				ref var g_siege_state = ref region.GetSingletonComponent<Siege.Gamemode.State>();
+				if (!g_siege_state.IsNull())
 				{
-					siege.t_next_wave = siege.match_time;
+					g_siege_state.t_next_wave = g_siege_state.match_time;
 				}
 			}
 		}

@@ -8,12 +8,6 @@ namespace TC2.Siege
 		[IGamemode.Data("Siege", "")]
 		public partial struct Gamemode: IGamemode
 		{
-			[Save.Ignore] public IFaction.Handle faction_defenders = "defenders";
-			[Save.Ignore] public IFaction.Handle faction_attackers = "attackers";
-
-			[Save.Ignore] public uint target_count;
-			[Save.Ignore] public float match_time;
-
 			/// <summary>
 			/// Loot sharing ratio based on player count.
 			/// <code>
@@ -21,11 +15,6 @@ namespace TC2.Siege
 			/// </code>
 			/// </summary>
 			[Save.Ignore] public float loot_share_ratio = 0.50f;
-
-			/// <summary>
-			/// Current match difficulty.
-			/// </summary>
-			[Save.Ignore] public float difficulty = 1.00f;
 
 			/// <summary>
 			/// Base value of per-wave difficulty step.
@@ -51,14 +40,6 @@ namespace TC2.Siege
 
 			[Save.Ignore] public float wave_interval = 60.00f;
 			[Save.Ignore] public float wave_interval_difficulty_mult = 1.00f;
-			[Save.Ignore] public int wave_current;
-
-			[Save.Ignore] public float t_next_wave;
-			[Save.Ignore, Net.Ignore] public float t_next_restart;
-			[Save.Ignore, Net.Ignore] public float t_last_notification;
-
-			[Save.Ignore] public Siege.Gamemode.Flags flags;
-			[Save.Ignore] public Siege.Gamemode.Status status;
 
 			[Flags]
 			public enum Flags: uint
@@ -77,6 +58,34 @@ namespace TC2.Siege
 				Ended,
 
 				Restarting,
+			}
+
+			[IGlobal.Data(false, Net.SendType.Reliable)]
+			public partial struct State: IGlobal
+			{
+				[Save.Ignore] public IFaction.Handle faction_defenders = "defenders";
+				[Save.Ignore] public IFaction.Handle faction_attackers = "attackers";
+
+				[Save.Ignore] public uint target_count;
+				[Save.Ignore] public float match_time;
+
+				/// <summary>
+				/// Current match difficulty.
+				/// </summary>
+				[Save.Ignore] public float difficulty = 1.00f;
+				[Save.Ignore] public int wave_current;
+
+				[Save.Ignore] public float t_next_wave;
+				[Save.Ignore, Net.Ignore] public float t_next_restart;
+				[Save.Ignore, Net.Ignore] public float t_last_notification;
+
+				[Save.Ignore] public Siege.Gamemode.Flags flags;
+				[Save.Ignore] public Siege.Gamemode.Status status;
+
+				public State()
+				{
+
+				}
 			}
 
 			public Gamemode()
@@ -166,59 +175,31 @@ namespace TC2.Siege
 			}
 		}
 
-		[IGlobal.Data(false, Net.SendType.Reliable)]
-		public partial struct State: IGlobal
+		//public static float GetDifficulty(ref this Siege.Gamemode siege, ref Region.Data region)
+		//{
+		//	var difficulty = siege.difficulty;
+		//	difficulty *= 1.00f + ((region.GetConnectedPlayerCount() - 1) * 0.10f * siege.difficulty_player_mult);
+
+		//	return difficulty;
+		//}
+
+		[ISystem.PreUpdate.Reset(ISystem.Mode.Single)]
+		public static void UpdateSiegeReset(ISystem.Info info, [Source.Global] ref Siege.Gamemode.State g_siege_state)
 		{
-			[Save.Ignore] public IFaction.Handle faction_defenders = "defenders";
-			[Save.Ignore] public IFaction.Handle faction_attackers = "attackers";
-
-			[Save.Ignore] public uint target_count;
-			[Save.Ignore] public float match_time;
-
-			/// <summary>
-			/// Current match difficulty.
-			/// </summary>
-			[Save.Ignore] public float difficulty = 1.00f;
-			[Save.Ignore] public int wave_current;
-
-			[Save.Ignore] public float t_next_wave;
-			[Save.Ignore, Net.Ignore] public float t_next_restart;
-			[Save.Ignore, Net.Ignore] public float t_last_notification;
-
-			[Save.Ignore] public Siege.Gamemode.Flags flags;
-			[Save.Ignore] public Siege.Gamemode.Status status;
-
-			public State()
-			{
-
-			}
-		}
-
-			//public static float GetDifficulty(ref this Siege.Gamemode siege, ref Region.Data region)
-			//{
-			//	var difficulty = siege.difficulty;
-			//	difficulty *= 1.00f + ((region.GetConnectedPlayerCount() - 1) * 0.10f * siege.difficulty_player_mult);
-
-			//	return difficulty;
-			//}
-
-			[ISystem.PreUpdate.Reset(ISystem.Mode.Single)]
-		public static void UpdateSiegeReset(ISystem.Info info, [Source.Global] ref Siege.Gamemode siege)
-		{
-			siege.target_count = 0;
+			g_siege_state.target_count = 0;
 		}
 
 		[ISystem.VeryEarlyUpdate(ISystem.Mode.Single)]
-		public static void UpdateSiegeTargets(ISystem.Info info, Entity entity, [Source.Global] ref Siege.Gamemode siege, [Source.Owned] ref Siege.Target.Data siege_target, [Source.Owned] in Faction.Data faction)
+		public static void UpdateSiegeTargets(ISystem.Info info, Entity entity, [Source.Global] ref Siege.Gamemode.State g_siege_state, [Source.Owned] ref Siege.Target.Data siege_target, [Source.Owned] in Faction.Data faction)
 		{
-			if (faction.id == siege.faction_defenders)
+			if (faction.id == g_siege_state.faction_defenders)
 			{
-				siege.target_count++;
+				g_siege_state.target_count++;
 			}
 		}
 
 		[ISystem.VeryLateUpdate(ISystem.Mode.Single)]
-		public static void UpdateSiegeLate(ISystem.Info info, [Source.Global] ref Siege.Gamemode siege)
+		public static void UpdateSiegeLate(ISystem.Info info, [Source.Global] ref Siege.Gamemode g_siege, [Source.Global] ref Siege.Gamemode.State g_siege_state)
 		{
 			//App.WriteLine(siege.target_count);
 
@@ -227,76 +208,76 @@ namespace TC2.Siege
 #if SERVER
 			var sync = false;
 			var player_count = region.GetConnectedPlayerCount();
-			sync |= siege.flags.TrySetFlag(Siege.Gamemode.Flags.Active, player_count > 0);
+			sync |= g_siege_state.flags.TrySetFlag(Siege.Gamemode.Flags.Active, player_count > 0);
 #endif
 
-			if (siege.flags.HasAny(Siege.Gamemode.Flags.Active))
+			if (g_siege_state.flags.HasAny(Siege.Gamemode.Flags.Active))
 			{
-				var time = siege.match_time;
+				var time = g_siege_state.match_time;
 
 #if SERVER
 				const float prep_time = 60.00f;
-				switch (siege.status)
+				switch (g_siege_state.status)
 				{
 					case Gamemode.Status.Undefined:
 					{
 						if (!Constants.World.disable_gameplay)
 						{
-							siege.status = Gamemode.Status.Preparing;
+							g_siege_state.status = Gamemode.Status.Preparing;
 						}
 					}
 					break;
 
 					case Gamemode.Status.Preparing:
 					{
-						if (time >= prep_time - 30.00f && siege.t_last_notification < prep_time - 30.00f)
+						if (time >= prep_time - 30.00f && g_siege_state.t_last_notification < prep_time - 30.00f)
 						{
-							siege.t_last_notification = time;
+							g_siege_state.t_last_notification = time;
 							Notification.Push(ref region, $"Match starting in 30 seconds!", Color32BGRA.Yellow, lifetime: 30.00f, "ui.alert.07", volume: 0.10f, pitch: 0.60f);
 						}
-						else if (time >= prep_time - 15.00f && siege.t_last_notification < prep_time - 15.00f)
+						else if (time >= prep_time - 15.00f && g_siege_state.t_last_notification < prep_time - 15.00f)
 						{
-							siege.t_last_notification = time;
+							g_siege_state.t_last_notification = time;
 							Notification.Push(ref region, $"Match starting in 15 seconds!", Color32BGRA.Yellow, lifetime: 15.00f, "ui.alert.07", volume: 0.20f, pitch: 0.80f);
 						}
-						else if (time >= prep_time - 5.00f && siege.t_last_notification < prep_time - 5.00f)
+						else if (time >= prep_time - 5.00f && g_siege_state.t_last_notification < prep_time - 5.00f)
 						{
-							siege.t_last_notification = time;
+							g_siege_state.t_last_notification = time;
 							Notification.Push(ref region, $"Match starting in 5 seconds!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.07", volume: 0.30f, pitch: 1.00f);
 						}
 						else if (time >= prep_time)
 						{
-							siege.status = Gamemode.Status.Running;
+							g_siege_state.status = Gamemode.Status.Running;
 						}
 					}
 					break;
 
 					case Gamemode.Status.Running:
 					{
-						if (siege.target_count == 0)
+						if (g_siege_state.target_count == 0)
 						{
-							siege.status = Gamemode.Status.Ended;
+							g_siege_state.status = Gamemode.Status.Ended;
 						}
 						else
 						{
-							if (time >= siege.t_next_wave)
+							if (time >= g_siege_state.t_next_wave)
 							{
-								siege.wave_current++;
+								g_siege_state.wave_current++;
 
-								var difficulty_step = siege.difficulty_step;
-								difficulty_step *= 1.00f + (player_count * siege.difficulty_player_mult);
-								difficulty_step *= 1.00f + (siege.wave_current * siege.difficulty_wave_mult);
-								difficulty_step *= siege.difficulty_mult;
+								var difficulty_step = g_siege.difficulty_step;
+								difficulty_step *= 1.00f + (player_count * g_siege.difficulty_player_mult);
+								difficulty_step *= 1.00f + (g_siege_state.wave_current * g_siege.difficulty_wave_mult);
+								difficulty_step *= g_siege.difficulty_mult;
 								difficulty_step = Maths.SnapCeil(difficulty_step, 0.25f);
 
-								siege.difficulty = Maths.Clamp(siege.difficulty + difficulty_step, 1.00f, siege.difficulty_max);
+								g_siege_state.difficulty = Maths.Clamp(g_siege_state.difficulty + difficulty_step, 1.00f, g_siege.difficulty_max);
 
-								siege.t_next_wave = time + Maths.Snap(siege.wave_interval + Maths.Clamp(siege.difficulty * 5.00f * siege.wave_interval_difficulty_mult, 0.00f, 300.00f), 15.00f);
+								g_siege_state.t_next_wave = time + Maths.Snap(g_siege.wave_interval + Maths.Clamp(g_siege_state.difficulty * 5.00f * g_siege.wave_interval_difficulty_mult, 0.00f, 300.00f), 15.00f);
 
 								sync |= true;
 
 								//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
-								Notification.Push(ref region, $"Wave #{siege.wave_current}!", Color32BGRA.Red, lifetime: 30.00f, "ui.alert.11", volume: 0.60f, pitch: 0.80f);
+								Notification.Push(ref region, $"Wave #{g_siege_state.wave_current}!", Color32BGRA.Red, lifetime: 30.00f, "ui.alert.11", volume: 0.60f, pitch: 0.80f);
 							}
 						}
 					}
@@ -304,18 +285,18 @@ namespace TC2.Siege
 
 					case Gamemode.Status.Ended:
 					{
-						if (siege.t_next_restart == 0.00f)
+						if (g_siege_state.t_next_restart == 0.00f)
 						{
-							siege.t_last_notification = time;
+							g_siege_state.t_last_notification = time;
 							Notification.Push(ref region, $"Defeat! Restarting in 10 seconds...", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.09", volume: 0.40f, pitch: 1.00f);
 
-							siege.t_next_restart = time + 10.00f;
+							g_siege_state.t_next_restart = time + 10.00f;
 						}
 
-						if (time >= siege.t_next_restart)
+						if (time >= g_siege_state.t_next_restart)
 						{
 							ChangeMap(ref region, default);
-							siege.status = Gamemode.Status.Restarting;
+							g_siege_state.status = Gamemode.Status.Restarting;
 						}
 					}
 					break;
@@ -328,13 +309,13 @@ namespace TC2.Siege
 				}
 #endif
 
-				siege.match_time += info.DeltaTime;
+				g_siege_state.match_time += info.DeltaTime;
 			}
 
 #if SERVER
 			if (sync)
 			{
-				region.SyncGlobal(ref siege);
+				region.SyncGlobal(ref g_siege_state);
 				App.WriteLine("Synced Siege");
 			}
 #endif
