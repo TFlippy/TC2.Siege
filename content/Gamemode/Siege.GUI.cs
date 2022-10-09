@@ -8,8 +8,9 @@ namespace TC2.Siege
 #if CLIENT
 		public partial struct SiegeDefenderGUI: IGUICommand
 		{
-			public Entity ent_siege;
+			//public Entity ent_siege;
 			public Siege.Gamemode siege;
+			public Siege.Bounty.Global g_bounty;
 
 			public void Draw()
 			{
@@ -25,14 +26,19 @@ namespace TC2.Siege
 						ref var world = ref Client.GetWorld();
 						ref var game_info = ref Client.GetGameInfo();
 
-						var time_left = MathF.Max(siege.t_next_wave - siege.match_time, 0.00f);
+						var time_left = MathF.Max(this.siege.t_next_wave - this.siege.match_time, 0.00f);
 
 						using (GUI.Group.New(size: new Vector2(GUI.GetRemainingWidth() - 120, GUI.GetRemainingHeight())))
 						{
-							if (siege.status == Gamemode.Status.Running)
+							if (this.siege.status == Gamemode.Status.Running)
 							{
-								GUI.Title($"Next wave: {(time_left):0} s", size: 22, color: time_left > 10.00f ? GUI.font_color_yellow : GUI.font_color_red);
-								GUI.Title($"Difficulty: {siege.difficulty:0.0}", size: 22);
+								GUI.Title($"Next wave: {(time_left):0} s", size: 22, color: time_left > 10.00f ? GUI.font_color_title : GUI.font_color_yellow);
+								GUI.Title($"Difficulty: {this.siege.difficulty:0.0}", size: 22);
+								//Shop.DrawProducts(ref region, default, default, default, this.g_bounty.rewards.AsSpan(), 1);
+							}
+							else
+							{
+								GUI.TitleCentered($"{this.siege.status}", size: 32, pivot: new(0.00f, 0.50f));
 							}
 						}
 
@@ -40,29 +46,22 @@ namespace TC2.Siege
 
 						using (GUI.Group.New(size: new Vector2(GUI.GetRemainingWidth(), GUI.GetRemainingHeight())))
 						{
-							GUI.TitleCentered($"Wave: {siege.wave_current}", size: 32, pivot: new(1.00f, 0.50f));
+							GUI.TitleCentered($"Wave: {this.siege.wave_current}", size: 32, pivot: new(1.00f, 0.50f));
 						}
-
-						
-
-						
-
-						//GUI.Title("Siege");
-
-						//GUI.DrawButton("Test", new(120, 40));
 					}
 				}
 			}
 		}
 
 		[ISystem.EarlyGUI(ISystem.Mode.Single)]
-		public static void OnGUIDefender(Entity entity, [Source.Owned] in Player.Data player, [Source.Global] in Siege.Gamemode siege)
+		public static void OnGUIDefender(Entity entity, [Source.Owned] in Player.Data player, [Source.Global] in Siege.Gamemode siege, [Source.Global] in Siege.Bounty.Global g_bounty)
 		{
 			if (player.IsLocal() && player.faction_id == siege.faction_defenders)
 			{
 				var gui = new SiegeDefenderGUI()
 				{
-					siege = siege
+					siege = siege,
+					g_bounty = g_bounty
 				};
 				gui.Submit();
 			}

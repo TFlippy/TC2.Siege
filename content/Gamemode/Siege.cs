@@ -15,6 +15,14 @@ namespace TC2.Siege
 			[Save.Ignore] public float match_time;
 
 			/// <summary>
+			/// Loot sharing ratio based on player count.
+			/// <code>
+			/// Maths.Lerp(1.00f, 1.00f / player_count, loot_share_ratio);
+			/// </code>
+			/// </summary>
+			[Save.Ignore] public float loot_share_ratio = 0.50f;
+
+			/// <summary>
 			/// Current match difficulty.
 			/// </summary>
 			[Save.Ignore] public float difficulty = 1.00f;
@@ -174,7 +182,7 @@ namespace TC2.Siege
 		}
 
 		[ISystem.VeryEarlyUpdate(ISystem.Mode.Single)]
-		public static void UpdateSiegeTargets(ISystem.Info info, Entity entity, [Source.Global] ref Siege.Gamemode siege, [Source.Owned] ref Siege.Target siege_target, [Source.Owned] in Faction.Data faction)
+		public static void UpdateSiegeTargets(ISystem.Info info, Entity entity, [Source.Global] ref Siege.Gamemode siege, [Source.Owned] ref Siege.Target.Data siege_target, [Source.Owned] in Faction.Data faction)
 		{
 			if (faction.id == siege.faction_defenders)
 			{

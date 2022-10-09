@@ -47,11 +47,13 @@ namespace TC2.Siege
 		{
 			var random = XorRandom.New();
 			var loadout = new Loadout.Data();
+			var bounty = new Siege.Bounty.Data();
 
 			ref var shipment = ref loadout.shipments[0];
 			shipment.flags.SetFlag(Shipment.Flags.Unpack, true);
 
 			var items_span = shipment.items.AsSpan();
+			var rewards_span = bounty.rewards.AsSpan();
 
 			// TODO: add proper .hjson loot tables
 			switch (random.NextIntRange(0, 10))
@@ -72,24 +74,31 @@ namespace TC2.Siege
 					if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("sledgehammer", flags: Shipment.Item.Flags.Pickup));
+						rewards_span.Add(Crafting.Product.Money(10));
 					}
 					else if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("drill", flags: Shipment.Item.Flags.Pickup));
+						rewards_span.Add(Crafting.Product.Money(30));
 					}
 					else if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("chainsaw", flags: Shipment.Item.Flags.Pickup));
+						rewards_span.Add(Crafting.Product.Money(20));
 					}
 					else
 					{
 						items_span.Add(Shipment.Item.Prefab("shield", flags: Shipment.Item.Flags.Pickup));
+						rewards_span.Add(Crafting.Product.Money(20));
 					}
 
 					//if (random.NextBool(0.75f))
 					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip));
+						rewards_span.Add(Crafting.Product.Money(30));
 					}
+
+					rewards_span.Add(Crafting.Product.Money(20));
 				}
 				break;
 
@@ -101,32 +110,40 @@ namespace TC2.Siege
 					{
 						items_span.Add(Shipment.Item.Prefab("blunderbuss", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_musket.shot", 50));
+						rewards_span.Add(Crafting.Product.Money(10));
 					}
 					else if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("scattergun", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_sg.slug", 32));
+						rewards_span.Add(Crafting.Product.Money(30));
 					}
 					else if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("pump_shotgun", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_sg.buck", 32));
+						rewards_span.Add(Crafting.Product.Money(20));
 					}
 					else
 					{
 						items_span.Add(Shipment.Item.Prefab("auto_shotgun", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_sg.buck", 32));
+						rewards_span.Add(Crafting.Product.Money(30));
 					}
 
 					if (random.NextBool(0.15f))
 					{
 						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip));
+						rewards_span.Add(Crafting.Product.Money(15));
 					}
 
 					if (random.NextBool(0.15f))
 					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip));
+						rewards_span.Add(Crafting.Product.Money(20));
 					}
+
+					rewards_span.Add(Crafting.Product.Money(40));
 				}
 				break;
 
@@ -140,37 +157,46 @@ namespace TC2.Siege
 					{
 						items_span.Add(Shipment.Item.Prefab("smg", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_lc", 200));
+						rewards_span.Add(Crafting.Product.Money(30));
 					}
 					else if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("carbine", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_hc", 50));
+						rewards_span.Add(Crafting.Product.Money(50));
 					}
 					else if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("rifle", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_hc", 50));
+						rewards_span.Add(Crafting.Product.Money(50));
 					}
 					else if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("machine_pistol", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_lc", 200));
+						rewards_span.Add(Crafting.Product.Money(50));
 					}
 					else if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("battle_rifle", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_hc", 80));
+						rewards_span.Add(Crafting.Product.Money(60));
 					}
 					else
 					{
 						items_span.Add(Shipment.Item.Prefab("revolver", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_lc", 50));
+						rewards_span.Add(Crafting.Product.Money(30));
 					}
 
 					if (random.NextBool(0.20f))
 					{
 						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip));
+						rewards_span.Add(Crafting.Product.Money(20));
 					}
+
+					rewards_span.Add(Crafting.Product.Money(50));
 				}
 				break;
 
@@ -182,23 +208,29 @@ namespace TC2.Siege
 					{
 						items_span.Add(Shipment.Item.Prefab("auto_shotgun", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_sg.slug", 64));
+						rewards_span.Add(Crafting.Product.Money(60));
 					}
 					else if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("battle_rifle", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_hc.hv", 80));
+						rewards_span.Add(Crafting.Product.Money(50));
 					}
 					else
 					{
 						items_span.Add(Shipment.Item.Prefab("auto_shotgun", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_sg.grenade", 64));
+						rewards_span.Add(Crafting.Product.Money(100));
 					}
 
 					if (random.NextBool(1.00f))
 					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip));
 						items_span.Add(Shipment.Item.Prefab("helmet.01", flags: Shipment.Item.Flags.Equip));
+						rewards_span.Add(Crafting.Product.Money(50));
 					}
+
+					rewards_span.Add(Crafting.Product.Money(80));
 				}
 				break;
 
@@ -209,23 +241,29 @@ namespace TC2.Siege
 					{
 						items_span.Add(Shipment.Item.Prefab("bazooka", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_rocket", 16));
+						rewards_span.Add(Crafting.Product.Money(100));
 					}
 					else if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("scattergun", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_sg.grenade", 32));
+						rewards_span.Add(Crafting.Product.Money(60));
 					}
 					else
 					{
 						items_span.Add(Shipment.Item.Prefab("pump_shotgun", flags: Shipment.Item.Flags.Pickup));
 						items_span.Add(Shipment.Item.Resource("ammo_sg.grenade", 32));
+						rewards_span.Add(Crafting.Product.Money(70));
 					}
 
 					if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip));
 						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip));
+						rewards_span.Add(Crafting.Product.Money(50));
 					}
+
+					rewards_span.Add(Crafting.Product.Money(70));
 				}
 				break;
 			}
@@ -234,6 +272,13 @@ namespace TC2.Siege
 			if (!loadout_new.IsNull())
 			{
 				loadout_new = loadout;
+			}
+
+			ref var bounty_new = ref ent_kobold.GetOrAddComponent<Siege.Bounty.Data>(sync: false, ignore_mask: true);
+			if (!bounty_new.IsNull())
+			{
+				bounty_new = bounty;
+				App.WriteLine($"add bounty {bounty_new.rewards[0].type} {bounty_new.rewards[0].amount}");
 			}
 		}
 
@@ -268,7 +313,7 @@ namespace TC2.Siege
 			var arg = new GetAllTargetsQueryArgs(ent_planner, faction.id, position_src, default, default, float.MaxValue, default);
 
 			region.Query<Siege.GetAllTargetsQuery>(Func).Execute(ref arg);
-			static void Func(ISystem.Info info, Entity entity, in Siege.Target target, in Transform.Data transform)
+			static void Func(ISystem.Info info, Entity entity, in Siege.Target.Data target, in Transform.Data transform)
 			{
 				ref var arg = ref info.GetParameter<GetAllTargetsQueryArgs>();
 				if (!arg.IsNull())
