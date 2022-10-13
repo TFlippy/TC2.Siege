@@ -59,10 +59,10 @@
 			color: "0xffffffff"
 		}
 		{
-			prefab: "monument"
+			prefab: "site"
 			name: "Cottage"
 			faction: "defenders"
-			position: [488.250, 39.000]
+			position: [488.250, 40.750]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
@@ -196,8 +196,8 @@
 		}
 		{
 			prefab: "barrel.metal.wreck.00"
-			position: [149.3416, 42.42986]
-			rotation: 0.000205
+			position: [149.3418, 42.42984]
+			rotation: 0.000234
 			scale: [1.000, 1.000]
 		}
 		{
@@ -227,10 +227,11 @@
 			scale: [1.036112, 1.002778]
 		}
 		{
-			prefab: "workbench"
-			position: [34.125, 40.250]
+			prefab: "laboratory"
+			faction: "defenders"
+			position: [44.375, 38.375]
 			rotation: 0.000
-			scale: [-1.000, 1.000]
+			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "tree.oak"
@@ -240,9 +241,9 @@
 		}
 		{
 			prefab: "wreck.oven.00"
-			position: [491.625, 40.000]
+			position: [491.375, 40.000]
 			rotation: 0.000
-			scale: [-1.000, 1.000]
+			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "wreck.lamp_post.02"
@@ -265,7 +266,7 @@
 		{
 			prefab: "log.00"
 			position: [82.48453, 58.40384]
-			rotation: -0.220227
+			rotation: -0.220228
 			scale: [1.000, 1.000]
 		}
 		{
@@ -275,10 +276,10 @@
 			scale: [-1.000, 1.000]
 		}
 		{
-			prefab: "lamp_post.metal.02"
-			position: [19.625, 47.875]
-			rotation: 0.000
-			scale: [-1.000, 1.000]
+			prefab: "ornament.01"
+			position: [56.375, 40.875]
+			rotation: -0.017453
+			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "shrubbery.00"
@@ -312,14 +313,14 @@
 		}
 		{
 			prefab: "wreck.trashcan"
-			position: [99.52529, 54.52929]
-			rotation: -1.775061
+			position: [99.52528, 54.52929]
+			rotation: -1.77507
 			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "crate.small"
 			position: [118.0938, 53.50501]
-			rotation: -0
+			rotation: -0.000002
 			scale: [1.000, 1.000]
 		}
 		{
@@ -426,14 +427,14 @@
 		}
 		{
 			prefab: "mushroom.red.01"
-			position: [283.750, 57.125]
+			position: [283.750, 57.12498]
 			rotation: -0.139626
 			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "barricade.wood.01"
-			position: [64.7865, 59.15478]
-			rotation: -0.025828
+			position: [64.78783, 59.15487]
+			rotation: -0.026961
 			scale: [1.000, 1.000]
 		}
 		{
@@ -444,8 +445,8 @@
 		}
 		{
 			prefab: "chair.wood.00"
-			position: [141.6837, 42.72892]
-			rotation: -0.00171
+			position: [141.6835, 42.72879]
+			rotation: -0.001927
 			scale: [1.000, 1.000]
 		}
 		{
@@ -508,21 +509,23 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "barrel.metal.wreck.00"
-			position: [229.1122, 69.080]
-			rotation: -0.000001
+			prefab: "flagpost.metal"
+			faction: "defenders"
+			position: [190.625, 16.625]
+			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "barrel.metal.00"
-			position: [231.7089, 69.33003]
-			rotation: 1.570797
+			prefab: "resource.phlogiston"
+			position: [187.4113, 29.23001]
+			rotation: 0.000
 			scale: [1.000, 1.000]
+			quantity: 100.000
 		}
 		{
 			prefab: "barricade.wood.01"
-			position: [137.8811, 42.40469]
-			rotation: 0.045279
+			position: [137.882, 42.40471]
+			rotation: 0.045262
 			scale: [1.000, 1.000]
 		}
 		{
@@ -703,7 +706,7 @@
 		}
 		{
 			prefab: "boulder.00.moss"
-			position: [172.375, 20.875]
+			position: [172.3748, 20.875]
 			rotation: -0.017453
 			scale: [1.000, 1.000]
 		}
@@ -758,13 +761,13 @@
 		{
 			prefab: "trashcan"
 			position: [179.3083, 21.443]
-			rotation: -1.719403
+			rotation: -1.719408
 			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "barrel.metal.00"
-			position: [186.3763, 29.30501]
-			rotation: 0.000
+			position: [186.3765, 29.30499]
+			rotation: 0.000013
 			scale: [1.000, 1.000]
 		}
 		{
@@ -795,7 +798,7 @@
 		{
 			prefab: "pallet.ingot.iron.wreck.00"
 			position: [185.0074, 36.79251]
-			rotation: 0.000001
+			rotation: -0.000001
 			scale: [1.000, 1.000]
 		}
 		{
@@ -833,12 +836,6 @@
 			prefab: "windmill.metal"
 			position: [384.625, 56.875]
 			rotation: -0.017453
-			scale: [1.000, 1.000]
-		}
-		{
-			prefab: "lamp_post.metal.02"
-			position: [363.000, 57.750]
-			rotation: -0.087266
 			scale: [1.000, 1.000]
 		}
 		{
@@ -881,7 +878,7 @@
 		}
 		{
 			prefab: "tree.oak.stump"
-			position: [441.875, 56.750]
+			position: [441.8748, 56.750]
 			rotation: -0.069813
 			scale: [1.000, 1.000]
 		}
@@ -893,7 +890,7 @@
 		}
 		{
 			prefab: "tree.pine.stump"
-			position: [409.250, 62.000]
+			position: [409.2498, 62.00002]
 			rotation: -0.034907
 			scale: [1.000, 1.000]
 		}
@@ -947,7 +944,7 @@
 		}
 		{
 			prefab: "lantern"
-			position: [381.9696, 59.50691]
+			position: [381.9708, 59.50707]
 			rotation: 0.000006
 			scale: [1.000, 1.000]
 		}
@@ -960,13 +957,13 @@
 		{
 			prefab: "log.00"
 			position: [424.1069, 58.37423]
-			rotation: -0.168924
+			rotation: -0.168921
 			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "wreck.trashcan"
 			position: [353.3441, 61.29873]
-			rotation: -1.73531
+			rotation: -1.735302
 			scale: [1.000, 1.000]
 		}
 		{
@@ -1006,28 +1003,28 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "monument"
+			prefab: "site"
 			name: "Imperial Checkpoint"
 			faction: "defenders"
-			position: [34.000, 51.625]
+			position: [11.625, 50.250]
 			rotation: -0
-			scale: [-1.000, 1.000]
+			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "monument"
+			prefab: "site"
 			name: "Artillery Bunker"
 			faction: "defenders"
-			position: [173.000, 35.375]
+			position: [153.500, 42.625]
 			rotation: -0.017453
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "monument"
+			prefab: "site"
 			name: "Lumber Mill"
 			faction: "defenders"
-			position: [365.750, 57.875]
+			position: [366.500, 59.375]
 			rotation: 0.000
-			scale: [1.000, 1.000]
+			scale: [-1.000, 1.000]
 		}
 		{
 			prefab: "tree.oak"
@@ -1151,12 +1148,6 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "wreck.hand_crank.00"
-			position: [501.625, 42.000]
-			rotation: 0.017453
-			scale: [1.000, 1.000]
-		}
-		{
 			prefab: "wreck.chain_fence.00"
 			position: [506.625, 42.875]
 			rotation: 0.000
@@ -1170,8 +1161,8 @@
 		}
 		{
 			prefab: "wreck.chair.wood.01"
-			position: [500.5005, 42.35492]
-			rotation: 0.000125
+			position: [500.5005, 42.3549]
+			rotation: 0.000156
 			scale: [1.000, 1.000]
 		}
 		{
@@ -1182,14 +1173,14 @@
 		}
 		{
 			prefab: "wreck.lamp_post.02"
-			position: [494.875, 42.125]
-			rotation: -0.261799
+			position: [494.750, 42.000]
+			rotation: -0.244346
 			scale: [-1.000, 1.000]
 		}
 		{
 			prefab: "lantern"
-			position: [503.0511, 42.41464]
-			rotation: -0.000009
+			position: [502.0071, 42.43534]
+			rotation: 0.000001
 			scale: [1.000, 1.000]
 		}
 		{
@@ -1230,7 +1221,7 @@
 		}
 		{
 			prefab: "mushroom.red.01"
-			position: [548.4999, 22.625]
+			position: [548.4995, 22.625]
 			rotation: -0.174533
 			scale: [1.000, 1.000]
 		}
@@ -1248,7 +1239,7 @@
 		}
 		{
 			prefab: "mushroom.brown"
-			position: [427.750, 59.000]
+			position: [427.7502, 59.000]
 			rotation: -0.10472
 			scale: [-1.000, 1.000]
 		}
@@ -1345,8 +1336,8 @@
 		}
 		{
 			prefab: "barrel.metal.wreck.00"
-			position: [122.8018, 53.06057]
-			rotation: -0.092108
+			position: [122.8018, 53.06055]
+			rotation: -0.092112
 			scale: [1.000, 1.000]
 		}
 		{
@@ -1386,13 +1377,13 @@
 		{
 			prefab: "wreck.trashcan"
 			position: [391.3757, 43.54124]
-			rotation: -0.066005
+			rotation: -0.065987
 			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "cannon"
 			position: [194.1837, 21.20501]
-			rotation: -0
+			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
 		{
@@ -1400,48 +1391,6 @@
 			position: [341.8687, 60.96344]
 			rotation: 0.065105
 			scale: [-1.000, 1.000]
-		}
-		{
-			prefab: "resource.ammo_shell.he"
-			position: [182.4299, 20.85501]
-			rotation: 0.000
-			scale: [1.000, 1.000]
-			quantity: 1.000
-		}
-		{
-			prefab: "resource.ammo_shell.hv"
-			position: [183.3317, 20.85095]
-			rotation: 0.000
-			scale: [1.000, 1.000]
-			quantity: 1.000
-		}
-		{
-			prefab: "resource.ammo_shell.hv"
-			position: [189.4545, 20.85501]
-			rotation: 0.000
-			scale: [-1.000, 1.000]
-			quantity: 1.000
-		}
-		{
-			prefab: "resource.ammo_shell.he"
-			position: [185.2229, 20.85501]
-			rotation: 0.000
-			scale: [1.000, 1.000]
-			quantity: 1.000
-		}
-		{
-			prefab: "resource.ammo_shell.shrapnel"
-			position: [181.000, 20.85164]
-			rotation: 0.000
-			scale: [1.000, 1.000]
-			quantity: 1.000
-		}
-		{
-			prefab: "resource.ammo_shell.shrapnel"
-			position: [193.8551, 30.48001]
-			rotation: 0.000
-			scale: [1.000, 1.000]
-			quantity: 1.000
 		}
 		{
 			prefab: "gate.metal"
@@ -1459,7 +1408,7 @@
 		}
 		{
 			prefab: "lamp_post.metal.02"
-			position: [11.02778, 47.87293]
+			position: [27.750, 47.875]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
@@ -1512,20 +1461,14 @@
 		}
 		{
 			prefab: "chain_fence.00"
-			position: [39.875, 52.375]
-			rotation: 0.000
-			scale: [1.000, 1.000]
-		}
-		{
-			prefab: "lamp_post.metal.02"
-			position: [35.625, 51.250]
-			rotation: 0.000
+			position: [47.000, 53.750]
+			rotation: 0.174533
 			scale: [-1.000, 1.000]
 		}
 		{
 			prefab: "market"
 			faction: "defenders"
-			position: [24.625, 48.875]
+			position: [23.000, 48.750]
 			rotation: 0.000
 			scale: [-1.000, 1.000]
 		}
@@ -1543,11 +1486,11 @@
 		}
 		{
 			prefab: "truss.metal.00"
-			position: [52.500, 50.000]
+			position: [38.875, 32.875]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 			offset_a: [0.000, 0.000]
-			offset_b: [-14.875, 0.125]
+			offset_b: [-0.625, 8.500]
 		}
 		{
 			prefab: "billboard.12"
@@ -1562,14 +1505,14 @@
 			scale: [0.872223, 0.886111]
 		}
 		{
-			prefab: "soundscape.city.day.00"
+			prefab: "soundscape.city.day.01"
 			position: [17.06944, 44.12412]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "planter.00"
-			position: [44.500, 40.10501]
+			prefab: "manufactory"
+			position: [35.250, 51.625]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
@@ -1587,7 +1530,7 @@
 		}
 		{
 			prefab: "painting.00"
-			position: [46.625, 38.875]
+			position: [187.500, 34.375]
 			rotation: -0.034907
 			scale: [0.936111, 0.938889]
 		}
@@ -1647,8 +1590,8 @@
 		}
 		{
 			prefab: "lamp_post.metal.01"
-			position: [36.500, 34.000]
-			rotation: -1.58825
+			position: [35.250, 33.250]
+			rotation: -1.623156
 			scale: [-1.000, 1.000]
 		}
 		{
@@ -1661,7 +1604,7 @@
 		}
 		{
 			prefab: "chain_fence.00"
-			position: [32.500, 39.875]
+			position: [36.125, 39.750]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
@@ -1674,8 +1617,8 @@
 		}
 		{
 			prefab: "barrel.metal.00"
-			position: [44.10388, 53.17997]
-			rotation: 0.000046
+			position: [37.0046, 53.17802]
+			rotation: 0.001179
 			scale: [1.000, 1.000]
 		}
 		{
@@ -1716,8 +1659,8 @@
 		}
 		{
 			prefab: "wreck.keg"
-			position: [333.9225, 48.35489]
-			rotation: 1.571006
+			position: [333.9225, 48.35484]
+			rotation: 1.57112
 			scale: [1.000, 1.000]
 		}
 		{
@@ -1728,8 +1671,8 @@
 		}
 		{
 			prefab: "wreck.chair.wood.01"
-			position: [337.751, 43.65066]
-			rotation: 0.099673
+			position: [337.7512, 43.65064]
+			rotation: 0.099686
 			scale: [1.000, 1.000]
 		}
 		{
@@ -1761,7 +1704,7 @@
 		{
 			prefab: "wrench"
 			position: [188.1084, 30.03001]
-			rotation: 1.570798
+			rotation: 1.570794
 			scale: [1.000, 1.000]
 		}
 		{
@@ -1796,21 +1739,21 @@
 		}
 		{
 			prefab: "lamp_post.metal.00"
-			position: [153.500, 40.875]
+			position: [160.000, 40.750]
 			rotation: 0.034907
 			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "barricade.wood.01"
-			position: [30.91672, 40.35501]
+			position: [31.00002, 40.35501]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
 		{
 			prefab: "tractor"
 			faction: "defenders"
-			position: [187.6137, 36.91781]
-			rotation: 0.024995
+			position: [187.6137, 36.9178]
+			rotation: 0.024994
 			scale: [1.000, 1.000]
 		}
 		{
@@ -1840,7 +1783,7 @@
 		{
 			prefab: "cabin.metal.02"
 			position: [189.2686, 36.60498]
-			rotation: 0.000014
+			rotation: 0.000002
 			scale: [1.000, 1.000]
 		}
 		{
@@ -1850,16 +1793,40 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "resource.phlogiston"
-			position: [187.4113, 29.23001]
-			rotation: -0
+			prefab: "crank"
+			position: [504.250, 41.875]
+			rotation: 0.000
 			scale: [1.000, 1.000]
-			quantity: 100.000
 		}
 		{
-			prefab: "flagpost.metal"
+			prefab: "market"
 			faction: "defenders"
-			position: [190.625, 16.625]
+			position: [105.250, 52.250]
+			rotation: -0.034907
+			scale: [1.000, 1.000]
+		}
+		{
+			prefab: "barricade.wood.01"
+			position: [514.3395, 44.03988]
+			rotation: 0.038572
+			scale: [1.000, 1.000]
+		}
+		{
+			prefab: "trashcan"
+			position: [49.4622, 55.54568]
+			rotation: -1.29417
+			scale: [1.000, 1.000]
+		}
+		{
+			prefab: "autocannon"
+			position: [54.58403, 40.20501]
+			rotation: 0.000001
+			scale: [1.000, 1.000]
+		}
+		{
+			prefab: "storage"
+			faction: "defenders"
+			position: [41.500, 52.125]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
