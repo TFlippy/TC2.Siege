@@ -27,7 +27,7 @@ namespace TC2.Siege
 						{
 							siege_target.next_notification = info.WorldTime + 2.00f;
 
-							Notification.Push(ref region, $"{entity.GetFullName()} is under attack! ({(health.integrity * 100.00f):0}% left)", Color32BGRA.Yellow, lifetime: 7.00f, "ui.alert.00", volume: 0.70f, pitch: 1.00f);
+							Notification.Push(ref region, $"{entity.GetFullName()} is under attack! ({(health.integrity * 100.00f):0}% left)", Color32BGRA.Yellow, lifetime: 7.00f, "buzzer.02", volume: 0.20f, pitch: 0.90f);
 						}
 					}
 				}
@@ -37,7 +37,7 @@ namespace TC2.Siege
 				{
 					ref var region = ref info.GetRegion();
 
-					Notification.Push(ref region, $"{entity.GetFullName()} has been destroyed!", Color32BGRA.Red, lifetime: 10.00f, "ui.alert.02", volume: 0.80f, pitch: 0.80f);
+					Notification.Push(ref region, $"{entity.GetFullName()} has been destroyed!", Color32BGRA.Red, lifetime: 10.00f, "buzzer.02", volume: 0.20f, pitch: 0.80f);
 				}
 #endif
 			}
