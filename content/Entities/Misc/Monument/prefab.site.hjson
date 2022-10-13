@@ -8,11 +8,11 @@ body:
 	
 	@shape.box:
 	{
-		size: [6.000, 6.000]
-		offset: [0.000, 0.000]
+		size: [2.000, 8.500]
+		offset: [-0.750, 0.500]
 		friction: 0.500
 		elasticity: 0.500
-		material: stone
+		material: metal
 		layer: entity, solid, building
 		mask: world
 	}
@@ -20,7 +20,7 @@ body:
 
 health:
 {
-	max: 80000.000
+	max: 40000.000
 }
 
 threat:
@@ -48,10 +48,10 @@ animated.renderer:
 {
 	sprite:
 	{
-		texture: "monument"
+		texture: "site"
 	}
 	z: -400.000
-	mask: "monument.mask"
+	// mask: "monument.mask"
 }
 
 transform:
@@ -59,10 +59,10 @@ transform:
 
 }
 
-faction.colorable:
-{
+// faction.colorable:
+// {
 	
-}
+// }
 
 faction:
 {
@@ -91,10 +91,10 @@ spawn:
 	flags: faction
 }
 
-laboratory:
-{
+// laboratory:
+// {
 
-}
+// }
 
 minimap.marker:
 {
@@ -105,4 +105,20 @@ minimap.marker:
 		frame: [1, 0]
 	}
 	// flags: faction
+}
+
+lamp:
+{
+	flicker: 0.000
+	blink_frequency: 1.000
+	blink_amplitude: 0.500
+	
+	@light:
+	{
+		color: [1.000, 0.400, 0.000, 2.000]
+		offset: [-1.750, -4.875]
+		scale: [48.000, 48.000]
+		intensity: 1.000
+		texture: "light_invsqr"
+	}
 }
