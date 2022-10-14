@@ -99,16 +99,6 @@ namespace TC2.Siege
 
 			public static void Configure()
 			{
-				App.TryGetModInfo<SiegeMod>(out var mod_siege);
-
-				Shop.AddAssetFilter((string path, string identifier, ModInfo mod_info) =>
-				{
-					if (mod_info == mod_siege) return true;
-					else if (identifier.StartsWith("gunsmith.", StringComparison.OrdinalIgnoreCase)) return true;
-					else if (identifier.StartsWith("munitions.", StringComparison.OrdinalIgnoreCase)) return true;
-					else return false;
-				});
-
 				Constants.Materials.global_yield_modifier = 0.00f;
 				Constants.Harvestable.global_yield_modifier = 0.00f;
 				Constants.Block.global_yield_modifier = 0.00f;
@@ -148,6 +138,67 @@ namespace TC2.Siege
 				Constants.Factions.enable_leadership = false;
 
 				Constants.Questing.enable_quests = false;
+
+				App.TryGetModInfo<SiegeMod>(out var mod_siege);
+
+				Shop.AddAssetFilter((string path, string identifier, ModInfo mod_info) =>
+				{
+					if (mod_info == mod_siege) return true;
+					else if (identifier.StartsWith("gunsmith.", StringComparison.OrdinalIgnoreCase)) return true;
+					else if (identifier.StartsWith("munitions.", StringComparison.OrdinalIgnoreCase)) return true;
+					else return false;
+				});
+
+				IOrigin.Database.AddAssetFilter((string path, string identifier, ModInfo mod_info) =>
+				{
+					if (mod_info == mod_siege) return true;
+					else return false;
+				});
+
+				Augment.AddPostProcessor((ref IBlueprint.Data blueprint, ref Augment.Context context) =>
+				{
+					Span<Crafting.Requirement> requirements_tmp = stackalloc Crafting.Requirement[context.requirements_new.Length];
+					context.requirements_new.CopyTo(requirements_tmp);
+					context.requirements_new.Clear();
+
+					var price = 0.00f;
+					var complexity = 1.00f;
+
+					foreach (ref var req in requirements_tmp)
+					{
+						switch (req.type)
+						{
+							case Crafting.Requirement.Type.Work:
+							{
+								price += MathF.Sqrt(req.amount * req.difficulty * 0.50f) * (req.difficulty * 0.10f);
+								complexity += 0.05f;
+							}
+							break;
+
+							case Crafting.Requirement.Type.Resource:
+							{
+								ref var material = ref req.material.GetDefinition();
+								if (!material.IsNull())
+								{
+									price += material.market_price * req.amount;
+									complexity += 0.15f;
+								}
+							}
+							break;
+						}
+					}
+
+					var price_final = Money.ToBataPrice(price * complexity);
+					if (price_final >= 0.00f)
+					{
+						context.requirements_new.Add(Crafting.Requirement.Money(price_final));
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				});
 
 #if SERVER
 				Player.OnCreate += OnPlayerCreate;
