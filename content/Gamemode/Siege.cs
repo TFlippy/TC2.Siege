@@ -141,7 +141,7 @@ namespace TC2.Siege
 
 				App.TryGetModInfo<SiegeMod>(out var mod_siege);
 
-				Shop.AddAssetFilter((string path, string identifier, ModInfo mod_info) =>
+				IRecipe.Database.AddAssetFilter((string path, string identifier, ModInfo mod_info) =>
 				{
 					if (mod_info == mod_siege) return true;
 					else if (identifier.StartsWith("gunsmith.", StringComparison.OrdinalIgnoreCase)) return true;
