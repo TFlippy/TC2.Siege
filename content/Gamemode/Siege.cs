@@ -192,6 +192,16 @@ namespace TC2.Siege
 					if (price_final >= 0.00f)
 					{
 						context.requirements_new.Add(Crafting.Requirement.Money(price_final));
+
+						ref var recipe_new = ref context.GetRecipeNew();
+
+						if (recipe_new.tags.TrySetFlag(Crafting.Recipe.Tags.Gunsmith | Crafting.Recipe.Tags.Forge | Crafting.Recipe.Tags.Munitions, false))
+						{
+							recipe_new.tags.SetFlag(Crafting.Recipe.Tags.Manufactory, true);
+						}
+
+						recipe_new.type = Crafting.Recipe.Type.Buy;
+
 						return true;
 					}
 					else

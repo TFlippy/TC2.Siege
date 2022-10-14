@@ -14,7 +14,7 @@
 		[
 			{
 				type: prefab
-				prefab: "landmine"
+				prefab: "boban.vz8"
 				quantity: 4.000
 			}
 		]
