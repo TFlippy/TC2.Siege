@@ -1,0 +1,126 @@
+{
+	name: "Sapper"
+	desc:
+		'''
+		TODO
+		'''
+	
+	money: 500.000
+	genders: male, female
+	character_flags: construction, scientist, educated, professional, engineering
+	
+	experience:
+	{
+		levels:
+		{
+			handguns:
+			{
+				level: 7
+			}
+			rifles:
+			{
+				level: 8
+			}
+			explosives:
+			{
+				level: 12
+			}
+			mining:
+			{
+				level: 7
+			}
+			woodcutting:
+			{
+				level: 2
+			}
+			construction:
+			{
+				level: 7
+			}
+			masonry:
+			{
+				level: 5
+			}
+			carpentry:
+			{
+				level: 4
+			}
+			engineering:
+			{
+				level: 8
+			}
+			blacksmithing:
+			{
+				level: 6
+			}
+			strength:
+			{
+				level: 8
+			}
+			dexterity:
+			{
+				level: 7
+			}
+			endurance:
+			{
+				level: 7
+			}
+			intellect:
+			{
+				level: 10
+			}
+			geology:
+			{
+				level: 5
+			}
+			metallurgy:
+			{
+				level: 9
+			}
+			medicine:
+			{
+				level: 5
+			}
+			commerce:
+			{
+				level: 2
+			}
+			charisma:
+			{
+				level: 5
+			}
+			leadership:
+			{
+				level: 7
+			}
+			blades:
+			{
+				level: 2
+			}
+			axes:
+			{
+				level: 7
+			}
+			clubs:
+			{
+				level: 5
+			}
+			chemistry:
+			{
+				level: 5
+			}
+			farming:
+			{
+				level: 0
+			}
+			animals:
+			{
+				level: 1
+			}
+			scavenging:
+			{
+				level: 10
+			}
+		}
+	}
+}

@@ -1,10 +1,10 @@
 {
-	name: "Armor (Engineer)"
+	name: "Armor (Sapper)"
 	desc: ""
 	
 	flags: required
 	character_flags: none
-	origin: "engineer"
+	origin: "imperial.sapper"
 	cost: 0.000
 	
 	shipment:

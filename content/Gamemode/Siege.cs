@@ -157,9 +157,9 @@ namespace TC2.Siege
 
 					if (!player.GetControlledCharacter().IsValid())
 					{
-						var ent_character_soldier = Character.Create(ref region, "Soldier", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Military, origin: "soldier", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 5, beard_frame: 1);
-						var ent_character_engineer = Character.Create(ref region, "Engineer", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Engineering | Character.Flags.Military, origin: "engineer", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 2, beard_frame: 7);
-						var ent_character_medic = Character.Create(ref region, "Medic", prefab: "human.female", flags: Character.Flags.Human | Character.Flags.Medical | Character.Flags.Military, origin: "doctor", gender: Organic.Gender.Female, player_id: player.id, hair_frame: 10);
+						var ent_character_soldier = Character.Create(ref region, "Soldier", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Military, origin: "imperial.soldier", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 5, beard_frame: 1);
+						var ent_character_sapper = Character.Create(ref region, "Sapper", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Engineering | Character.Flags.Military, origin: "imperial.sapper", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 2, beard_frame: 7);
+						var ent_character_medic = Character.Create(ref region, "Medic", prefab: "human.female", flags: Character.Flags.Human | Character.Flags.Medical | Character.Flags.Military, origin: "imperial.medic", gender: Organic.Gender.Female, player_id: player.id, hair_frame: 10);
 
 						player.SetControlledCharacter(ent_character_soldier);
 					}

@@ -1,0 +1,126 @@
+{
+	name: "Soldier"
+	desc:
+		'''
+		TODO
+		'''
+	
+	money: 500.000
+	genders: male, female
+	character_flags: military, professional, armed
+	
+	experience:
+	{
+		levels:
+		{
+			handguns:
+			{
+				level: 14
+			}
+			rifles:
+			{
+				level: 15
+			}
+			explosives:
+			{
+				level: 7
+			}
+			mining:
+			{
+				level: 1
+			}
+			woodcutting:
+			{
+				level: 3
+			}
+			construction:
+			{
+				level: 3
+			}
+			masonry:
+			{
+				level: 1
+			}
+			carpentry:
+			{
+				level: 3
+			}
+			engineering:
+			{
+				level: 3
+			}
+			blacksmithing:
+			{
+				level: 1
+			}
+			strength:
+			{
+				level: 13
+			}
+			dexterity:
+			{
+				level: 7
+			}
+			endurance:
+			{
+				level: 14
+			}
+			intellect:
+			{
+				level: 7
+			}
+			geology:
+			{
+				level: 1
+			}
+			metallurgy:
+			{
+				level: 1
+			}
+			medicine:
+			{
+				level: 5
+			}
+			commerce:
+			{
+				level: 2
+			}
+			charisma:
+			{
+				level: 5
+			}
+			leadership:
+			{
+				level: 12
+			}
+			blades:
+			{
+				level: 7
+			}
+			axes:
+			{
+				level: 5
+			}
+			clubs:
+			{
+				level: 7
+			}
+			chemistry:
+			{
+				level: 2
+			}
+			farming:
+			{
+				level: 0
+			}
+			animals:
+			{
+				level: 4
+			}
+			scavenging:
+			{
+				level: 5
+			}
+		}
+	}
+}

@@ -1,22 +1,21 @@
 {
-	name: "Pickaxe"
+	name: "Drill"
 	desc: ""
 	
 	flags: none
 	character_flags: none
-	origin: "engineer"
-	cost: 0.400
+	origin: "imperial.sapper"
+	cost: 6.500
 	
 	shipment:
 	{
-		name: "Pickaxe"
+		name: "Drill"
 		items:
 		[
 			{
 				type: prefab
-				prefab: "pickaxe"
+				prefab: "drill"
 				quantity: 1.000
-				flags: despawn
 			}
 		]
 		flags: unpack

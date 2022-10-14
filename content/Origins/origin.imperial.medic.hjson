@@ -1,0 +1,126 @@
+{
+	name: "Medic"
+	desc:
+		'''
+		TODO
+		'''
+	
+	money: 500.000
+	genders: male, female
+	character_flags: educated, medical, professional
+	
+	experience:
+	{
+		levels:
+		{
+			handguns:
+			{
+				level: 10
+			}
+			rifles:
+			{
+				level: 6
+			}
+			explosives:
+			{
+				level: 3
+			}
+			mining:
+			{
+				level: 0
+			}
+			woodcutting:
+			{
+				level: 2
+			}
+			construction:
+			{
+				level: 2
+			}
+			masonry:
+			{
+				level: 2
+			}
+			carpentry:
+			{
+				level: 2
+			}
+			engineering:
+			{
+				level: 5
+			}
+			blacksmithing:
+			{
+				level: 3
+			}
+			strength:
+			{
+				level: 6
+			}
+			dexterity:
+			{
+				level: 12
+			}
+			endurance:
+			{
+				level: 4
+			}
+			intellect:
+			{
+				level: 10
+			}
+			geology:
+			{
+				level: 0
+			}
+			metallurgy:
+			{
+				level: 1
+			}
+			medicine:
+			{
+				level: 12
+			}
+			commerce:
+			{
+				level: 4
+			}
+			charisma:
+			{
+				level: 8
+			}
+			leadership:
+			{
+				level: 7
+			}
+			blades:
+			{
+				level: 11
+			}
+			axes:
+			{
+				level: 7
+			}
+			clubs:
+			{
+				level: 4
+			}
+			chemistry:
+			{
+				level: 9
+			}
+			farming:
+			{
+				level: 5
+			}
+			animals:
+			{
+				level: 8
+			}
+			scavenging:
+			{
+				level: 5
+			}
+		}
+	}
+}

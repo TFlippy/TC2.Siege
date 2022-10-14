@@ -4,7 +4,7 @@
 	
 	flags: none
 	character_flags: none
-	origin: "doctor"
+	origin: "imperial.medic"
 	cost: 17.000
 	
 	shipment:

@@ -4,7 +4,7 @@
 	
 	flags: unselect
 	character_flags: none
-	origin: "engineer"
+	origin: "imperial.sapper"
 	cost: 30.000
 	
 	shipment:

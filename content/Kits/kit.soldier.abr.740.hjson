@@ -4,7 +4,7 @@
 	
 	flags: none
 	character_flags: none
-	origin: "soldier"
+	origin: "imperial.soldier"
 	cost: 7.000
 	
 	shipment:
