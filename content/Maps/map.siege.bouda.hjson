@@ -59,7 +59,7 @@
 			color: "0xffffffff"
 		}
 		{
-			prefab: "site"
+			prefab: "station"
 			name: "Cottage"
 			faction: "defenders"
 			position: [488.250, 40.750]
@@ -1003,7 +1003,7 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "site"
+			prefab: "station"
 			name: "Imperial Checkpoint"
 			faction: "defenders"
 			position: [11.625, 50.250]
@@ -1011,7 +1011,7 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "site"
+			prefab: "station"
 			name: "Artillery Bunker"
 			faction: "defenders"
 			position: [153.500, 42.625]
@@ -1019,7 +1019,7 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "site"
+			prefab: "station"
 			name: "Lumber Mill"
 			faction: "defenders"
 			position: [366.500, 59.375]

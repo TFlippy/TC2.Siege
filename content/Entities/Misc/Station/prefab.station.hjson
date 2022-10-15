@@ -1,4 +1,4 @@
-$name: "Site"
+$name: "Station"
 $desc: ""
 $tags: []
 
@@ -48,22 +48,22 @@ animated.renderer:
 {
 	sprite:
 	{
-		texture: "site"
+		texture: "station"
 	}
 	offset: [0.000, -4.000]
 	z: -400.000
-	// mask: "monument.mask"
+	mask: "station.mask"
+}
+
+faction.colorable:
+{
+
 }
 
 transform:
 {
 
 }
-
-// faction.colorable:
-// {
-	
-// }
 
 faction:
 {

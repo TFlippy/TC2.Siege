@@ -296,17 +296,17 @@ namespace TC2.Siege
 						if (time >= prep_time - 30.00f && g_siege_state.t_last_notification < prep_time - 30.00f)
 						{
 							g_siege_state.t_last_notification = time;
-							Notification.Push(ref region, $"Match starting in 30 seconds!", Color32BGRA.Yellow, lifetime: 30.00f, "ui.alert.07", volume: 0.10f, pitch: 0.60f);
+							Notification.Push(ref region, $"Match starting in 30 seconds!", Color32BGRA.Yellow, lifetime: 30.00f, "ui.alert.07", volume: 0.10f, pitch: 0.60f, send_type: Net.SendType.Reliable);
 						}
 						else if (time >= prep_time - 15.00f && g_siege_state.t_last_notification < prep_time - 15.00f)
 						{
 							g_siege_state.t_last_notification = time;
-							Notification.Push(ref region, $"Match starting in 15 seconds!", Color32BGRA.Yellow, lifetime: 15.00f, "ui.alert.07", volume: 0.20f, pitch: 0.80f);
+							Notification.Push(ref region, $"Match starting in 15 seconds!", Color32BGRA.Yellow, lifetime: 15.00f, "ui.alert.07", volume: 0.20f, pitch: 0.80f, send_type: Net.SendType.Reliable);
 						}
 						else if (time >= prep_time - 5.00f && g_siege_state.t_last_notification < prep_time - 5.00f)
 						{
 							g_siege_state.t_last_notification = time;
-							Notification.Push(ref region, $"Match starting in 5 seconds!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.07", volume: 0.30f, pitch: 1.00f);
+							Notification.Push(ref region, $"Match starting in 5 seconds!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.07", volume: 0.30f, pitch: 1.00f, send_type: Net.SendType.Reliable);
 						}
 						else if (time >= prep_time)
 						{
@@ -341,7 +341,7 @@ namespace TC2.Siege
 
 								//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
 								//Notification.Push(ref region, $"Wave #{g_siege_state.wave_current}!", Color32BGRA.Red, lifetime: 30.00f, "ui.alert.11", volume: 0.60f, pitch: 0.80f);
-								Notification.Push(ref region, $"Wave #{g_siege_state.wave_current}!", Color32BGRA.Red, lifetime: 30.00f, "siren.00", volume: 0.20f, pitch: 1.00f);
+								Notification.Push(ref region, $"Wave #{g_siege_state.wave_current}!", Color32BGRA.Red, lifetime: 30.00f, "siren.00", volume: 0.20f, pitch: 1.00f, send_type: Net.SendType.Reliable);
 							}
 						}
 					}
@@ -352,7 +352,7 @@ namespace TC2.Siege
 						if (g_siege_state.t_next_restart == 0.00f)
 						{
 							g_siege_state.t_last_notification = time;
-							Notification.Push(ref region, $"Defeat! Restarting in 10 seconds...", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.09", volume: 0.40f, pitch: 1.00f);
+							Notification.Push(ref region, $"Defeat! Restarting in 10 seconds...", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.09", volume: 0.40f, pitch: 1.00f, send_type: Net.SendType.Reliable);
 
 							g_siege_state.t_next_restart = time + 10.00f;
 						}

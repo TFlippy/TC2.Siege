@@ -303,31 +303,13 @@ namespace TC2.Siege
 			}
 		}
 
-		//[ISystem.Event<Spawner.SpawnEvent>(ISystem.Mode.Single)]
-		//public static void OnSpawn(ISystem.Info info, Entity entity, ref Spawner.SpawnEvent data,
-		//[Source.Owned] ref Spawner.Data spawner, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Siege.Planner planner, [Source.Owned] ref Selection.Data selection)
-		//{
-		//	//App.WriteLine($"spawn event {data.ent_target}");
-
-		//	SetKoboldLoadout(data.ent_target);
-
-		//	ref var ai = ref data.ent_target.GetComponent<AI.Data>();
-		//	if (!ai.IsNull())
-		//	{
-		//		ai.stance = AI.Stance.Aggressive;
-		//	}
-
-		//	foreach (var h_inventory in data.ent_target.GetInventories())
-		//	{
-		//		h_inventory.Flags |= Inventory.Flags.Unlimited | Inventory.Flags.No_Drop;
-		//	}
-
-		//	ref var marker = ref data.ent_target.GetOrAddComponent<Minimap.Marker.Data>(sync: true);
-		//	if (!marker.IsNull())
-		//	{
-		//		marker.sprite = new Sprite("ui_icons_minimap", 16, 16, 0, 0);
-		//	}
-		//}
+		[ISystem.Event<Spawner.SpawnEvent>(ISystem.Mode.Single)]
+		public static void OnSpawn(ISystem.Info info, Entity entity, ref Spawner.SpawnEvent data,
+		[Source.Owned] ref Spawner.Data spawner, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Siege.Planner planner, [Source.Owned] ref Selection.Data selection)
+		{
+			//App.WriteLine($"spawn event {data.ent_target}");
+			SetKoboldLoadout(data.ent_target);
+		}
 
 		public static bool TryFindTarget(ref Region.Data region, Entity ent_planner, IFaction.Handle faction, Vector2 position_src, out Entity ent_target, out Vector2 position_target)
 		{
@@ -441,7 +423,7 @@ namespace TC2.Siege
 
 						//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
 						//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f);
-						Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f);
+						Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f, send_type: Net.SendType.Reliable);
 					}
 
 					var random = XorRandom.New();
