@@ -458,7 +458,7 @@ namespace TC2.Siege
 
 						case Siege.Planner.Status.Dispatching:
 						{
-							if ((g_siege_state.t_next_wave - time) >= 30.00f)
+							if ((g_siege_state.t_next_wave - time) >= 60.00f)
 							{
 								if (time >= planner.next_search)
 								{
@@ -494,17 +494,17 @@ namespace TC2.Siege
 												//App.WriteLine(behavior.idle_timer);
 												if (faction.id == arg.faction_id && (behavior.idle_timer >= 2.00f || behavior.type == AI.Behavior.Type.None || movement.type == AI.Movement.Type.None))
 												{
-													if (Vector2.DistanceSquared(transform.position, arg.position) <= (32 * 32))
-													{
-														if (arg.wave_size_rem > 0)
-														{
-															arg.wave_size_rem--;
-														}
-														else
-														{
-															return;
-														}
-													}
+													//if (Vector2.DistanceSquared(transform.position, arg.target_position) <= (128 * 128))
+													//{
+													//	if (arg.wave_size_rem > 0)
+													//	{
+													//		arg.wave_size_rem--;
+													//	}
+													//	else
+													//	{
+													//		return;
+													//	}
+													//}
 
 													//ref var region = ref info.GetRegion();
 													arg.selection[arg.selection_count++].Set(entity);
@@ -513,7 +513,7 @@ namespace TC2.Siege
 											}
 										}
 
-										planner.wave_size_rem = arg.wave_size_rem;
+										//planner.wave_size_rem = arg.wave_size_rem;
 
 										if (arg.selection_count > 0)
 										{

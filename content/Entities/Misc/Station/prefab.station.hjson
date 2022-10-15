@@ -13,20 +13,21 @@ body:
 		friction: 0.500
 		elasticity: 0.500
 		material: metal
-		layer: entity, solid, building
+		layer: entity, building
 		mask: world
 	}
 }
 
 health:
 {
-	max: 80000.000
+	max: 15000.000
 }
 
-// threat:
-// {
-// 	priority: 2.000
-// }
+threat:
+{
+	priority: 1.000
+	flags: capturable
+}
 
 siege.target:
 {
@@ -40,7 +41,7 @@ capturable:
 
 interactable:
 {
-	window_size: [288.000, 244.000]
+	window_size: [344.000, 96.000]
 	// window_size: [900.000, 600.000]
 }
 
