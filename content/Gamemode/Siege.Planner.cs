@@ -244,7 +244,7 @@ namespace TC2.Siege
 					if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("bazooka", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
-						items_span.Add(Shipment.Item.Resource("ammo_rocket", 16));
+						items_span.Add(Shipment.Item.Resource("ammo_rocket.hv", 16));
 						rewards_span.Add(Crafting.Product.Money(100));
 					}
 					else if (random.NextBool(0.50f))

@@ -40,8 +40,8 @@ capturable:
 
 interactable:
 {
-	// window_size: [288.000, 244.000]
-	window_size: [900.000, 600.000]
+	window_size: [288.000, 244.000]
+	// window_size: [900.000, 600.000]
 }
 
 animated.renderer:

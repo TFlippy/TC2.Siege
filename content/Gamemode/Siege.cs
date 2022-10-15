@@ -242,14 +242,6 @@ namespace TC2.Siege
 			}
 		}
 
-		//public static float GetDifficulty(ref this Siege.Gamemode siege, ref Region.Data region)
-		//{
-		//	var difficulty = siege.difficulty;
-		//	difficulty *= 1.00f + ((region.GetConnectedPlayerCount() - 1) * 0.10f * siege.difficulty_player_mult);
-
-		//	return difficulty;
-		//}
-
 		[ISystem.PreUpdate.Reset(ISystem.Mode.Single)]
 		public static void UpdateSiegeReset(ISystem.Info info, [Source.Global] ref Siege.Gamemode.State g_siege_state)
 		{

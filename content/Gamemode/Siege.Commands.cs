@@ -102,29 +102,36 @@ namespace TC2.Siege
 
 		public static void ChangeMap(ref Region.Data region, Map.Handle map)
 		{
-			ref var world = ref Server.GetWorld();
+			
 
 			//ref var region = ref world.GetAnyRegion();
 			if (!region.IsNull())
 			{
 				var region_id_old = region.GetID();
 
+				ref var world = ref Server.GetWorld();
 				if (world.TryGetFirstAvailableRegionID(out var region_id_new))
 				{
-					world.UnloadRegion(region_id_old).ContinueWith(() =>
+					region.Wait().ContinueWith(() =>
 					{
+						Net.SetActiveRegionForAllPlayers(0);
+
 						ref var world = ref Server.GetWorld();
-
-						ref var region_new = ref world.ImportRegion(region_id_new, map);
-						if (!region_new.IsNull())
+						world.UnloadRegion(region_id_old).ContinueWith(() =>
 						{
-							world.SetContinueRegionID(region_id_new);
+							ref var world = ref Server.GetWorld();
 
-							region_new.Wait().ContinueWith(() =>
+							ref var region_new = ref world.ImportRegion(region_id_new, map);
+							if (!region_new.IsNull())
 							{
-								Net.SetActiveRegionForAllPlayers(region_id_new);
-							});
-						}
+								world.SetContinueRegionID(region_id_new);
+
+								region_new.Wait().ContinueWith(() =>
+								{
+									Net.SetActiveRegionForAllPlayers(region_id_new);
+								});
+							}
+						});
 					});
 				}
 			}
