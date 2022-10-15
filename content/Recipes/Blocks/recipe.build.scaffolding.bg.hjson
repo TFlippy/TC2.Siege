@@ -1,0 +1,53 @@
+{
+	name: "Scaffolding (Background)"
+	desc:
+		'''
+		Fairly durable metal scaffolding.
+		Has a high placement length.
+		'''
+	
+	icon:
+	{
+		texture: "block_icons"
+		size: [16, 16]
+		frame: [6, 1]
+	}
+	
+	type: build
+	flags: none
+	tags: construction
+	rank: -94.000
+	
+	placement:
+	{
+		type: line
+		flags: none
+		
+		size: [0.375, 0.375]
+		
+		cooldown: 0.500
+		min_claim: 1.000
+		
+		length_max: 10.000
+		length_step: 0.125
+		
+		sound: "metal_place_01"
+	}
+	
+	requirements:
+	[
+		{
+			type: "money"
+			amount: 2.990
+		}
+	]
+	
+	products:
+	[
+		{
+			type: block
+			block: "scaffolding"
+			tile_flags: none
+		}
+	]
+}

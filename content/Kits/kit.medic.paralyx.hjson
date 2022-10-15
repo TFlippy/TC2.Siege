@@ -2,7 +2,7 @@
 	name: "Paralyx"
 	desc: ""
 	
-	flags: unselect
+	flags: unselect, merge
 	character_flags: none
 	origin: "imperial.medic"
 	cost: 3.000
@@ -19,6 +19,6 @@
 				flags: despawn
 			}
 		]
-		flags: none
+		flags: storable
 	}
 }

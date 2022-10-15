@@ -1,0 +1,50 @@
+{
+	name: "Rail [WIP]"
+	desc:
+		'''
+		A rail with a sliding mount on it.
+		'''
+	
+	icon:
+	{
+		texture: "track.cap"
+	}
+	
+	type: build
+	flags: none
+	tags: construction
+
+	dismantle_work: 10.000
+	dismantle_yield: 0.800
+
+	placement:
+	{ 
+		type: line
+		flags: allow_placement_over_buildings
+		
+		length_min: 1.000
+		length_max: 32.000
+		length_step: 0.500
+
+		size: [0.500, 0.500]
+		cooldown: 0.300
+		min_claim: 1.000
+		sound: "building_place"
+	}
+
+	requirements:
+	[
+		{
+			type: "money"
+			amount: 459.990
+		}
+	]
+
+	products:
+	[
+		{
+			type: "prefab"
+			prefab: "track"
+		}
+	]
+}

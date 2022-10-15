@@ -1,0 +1,33 @@
+{
+	name: "Crane Arm (Articulated)"
+	desc: "An advanced crane arm with a configurable articulated rotary joint."
+	
+	icon:
+	{
+		texture: "crane.arm.articulated"
+	}
+	
+	min: 1
+	max: 1
+	step: 1
+	
+	type: buy
+	tags: manufactory
+	
+	requirements:
+	[
+		{
+			type: "money"
+			amount: 3279.990
+		}
+	]
+	
+	products:
+	[
+		{
+			type: "prefab"
+			prefab: "crane.arm.articulated"
+			amount: 1.000
+		}
+	]
+}

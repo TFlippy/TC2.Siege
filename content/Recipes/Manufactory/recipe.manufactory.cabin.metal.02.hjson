@@ -1,0 +1,33 @@
+{
+	name: "Cabin (Tank)"
+	desc: "Heavily armored metal cabin with an attachment slot on top and a gunner seat."
+	
+	icon:
+	{
+		texture: "cabin.metal.icon.02"
+	}
+	
+	min: 1
+	max: 1
+	step: 1
+	
+	type: buy
+	tags: manufactory
+	
+	requirements:
+	[
+		{
+			type: "money"
+			amount: 2179.990
+		}
+	]
+	
+	products:
+	[
+		{
+			type: "prefab"
+			prefab: "cabin.metal.02"
+			amount: 1.000
+		}
+	]
+}
