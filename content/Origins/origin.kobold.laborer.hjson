@@ -87,11 +87,11 @@
 			}
 			charisma:
 			{
-				level: 1
+				level: 2
 			}
 			leadership:
 			{
-				level: 0
+				level: 2
 			}
 			blades:
 			{

@@ -6,12 +6,12 @@ namespace TC2.Siege
 	public static partial class Siege
 	{
 		[Query]
-		public delegate void GetAllTargetsQuery(ISystem.Info info, Entity entity, [Source.Owned] in Siege.Target.Data target, [Source.Owned] in Transform.Data transform);
+		public delegate void GetAllTargetsQuery(ISystem.Info info, Entity entity, [Source.Owned] in Siege.Target.Data target, [Source.Owned] in Transform.Data transform, [Source.Owned, Optional] in Faction.Data faction);
 
 		[Query]
 		public delegate void GetAllUnitsQuery(ISystem.Info info, Entity entity, [Source.Owned] in Commandable.Data commandable, [Source.Owned, Override] in AI.Movement movement, [Source.Owned, Override] in AI.Behavior behavior, [Source.Owned] in Transform.Data transform, [Source.Owned] in Faction.Data faction);
 
-		private struct GetAllTargetsQueryArgs
+		private struct FindTargetArgs
 		{
 			public Entity ent_search;
 			public IFaction.Handle faction_id;
@@ -21,7 +21,7 @@ namespace TC2.Siege
 			public float target_dist_nearest_sq;
 			public Vector2 target_position;
 
-			public GetAllTargetsQueryArgs(Entity ent_search, IAsset2<IFaction, IFaction.Data>.Handle faction_id, Vector2 position, Entity ent_root, Entity ent_target, float target_dist_nearest_sq, Vector2 target_position)
+			public FindTargetArgs(Entity ent_search, IFaction.Handle faction_id, Vector2 position, Entity ent_root, Entity ent_target, float target_dist_nearest_sq, Vector2 target_position)
 			{
 				this.ent_search = ent_search;
 				this.faction_id = faction_id;

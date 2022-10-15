@@ -284,48 +284,65 @@ namespace TC2.Siege
 				bounty_new = bounty;
 				//App.WriteLine($"add bounty {bounty_new.rewards[0].type} {bounty_new.rewards[0].amount}");
 			}
-		}
 
-		[ISystem.Event<Spawner.SpawnEvent>(ISystem.Mode.Single)]
-		public static void OnSpawn(ISystem.Info info, Entity entity, ref Spawner.SpawnEvent data,
-		[Source.Owned] ref Spawner.Data spawner, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Siege.Planner planner, [Source.Owned] ref Selection.Data selection)
-		{
-			//App.WriteLine($"spawn event {data.ent_target}");
-
-			SetKoboldLoadout(data.ent_target);
-
-			ref var ai = ref data.ent_target.GetComponent<AI.Data>();
+			ref var ai = ref ent_kobold.GetComponent<AI.Data>();
 			if (!ai.IsNull())
 			{
 				ai.stance = AI.Stance.Aggressive;
 			}
 
-			foreach (var h_inventory in data.ent_target.GetInventories())
+			foreach (var h_inventory in ent_kobold.GetInventories())
 			{
 				h_inventory.Flags |= Inventory.Flags.Unlimited | Inventory.Flags.No_Drop;
 			}
 
-			ref var marker = ref data.ent_target.GetOrAddComponent<Minimap.Marker.Data>(sync: true);
+			ref var marker = ref ent_kobold.GetOrAddComponent<Minimap.Marker.Data>(sync: true);
 			if (!marker.IsNull())
 			{
 				marker.sprite = new Sprite("ui_icons_minimap", 16, 16, 0, 0);
 			}
 		}
 
+		//[ISystem.Event<Spawner.SpawnEvent>(ISystem.Mode.Single)]
+		//public static void OnSpawn(ISystem.Info info, Entity entity, ref Spawner.SpawnEvent data,
+		//[Source.Owned] ref Spawner.Data spawner, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Siege.Planner planner, [Source.Owned] ref Selection.Data selection)
+		//{
+		//	//App.WriteLine($"spawn event {data.ent_target}");
+
+		//	SetKoboldLoadout(data.ent_target);
+
+		//	ref var ai = ref data.ent_target.GetComponent<AI.Data>();
+		//	if (!ai.IsNull())
+		//	{
+		//		ai.stance = AI.Stance.Aggressive;
+		//	}
+
+		//	foreach (var h_inventory in data.ent_target.GetInventories())
+		//	{
+		//		h_inventory.Flags |= Inventory.Flags.Unlimited | Inventory.Flags.No_Drop;
+		//	}
+
+		//	ref var marker = ref data.ent_target.GetOrAddComponent<Minimap.Marker.Data>(sync: true);
+		//	if (!marker.IsNull())
+		//	{
+		//		marker.sprite = new Sprite("ui_icons_minimap", 16, 16, 0, 0);
+		//	}
+		//}
+
 		public static bool TryFindTarget(ref Region.Data region, Entity ent_planner, IFaction.Handle faction, Vector2 position_src, out Entity ent_target, out Vector2 position_target)
 		{
-			var arg = new GetAllTargetsQueryArgs(ent_planner, faction.id, position_src, default, default, float.MaxValue, default);
+			var arg = new FindTargetArgs(ent_planner, faction.id, position_src, default, default, float.MaxValue, default);
 
 			region.Query<Siege.GetAllTargetsQuery>(Func).Execute(ref arg);
-			static void Func(ISystem.Info info, Entity entity, in Siege.Target.Data target, in Transform.Data transform)
+			static void Func(ISystem.Info info, Entity entity, in Siege.Target.Data target, in Transform.Data transform, in Faction.Data faction)
 			{
-				ref var arg = ref info.GetParameter<GetAllTargetsQueryArgs>();
+				ref var arg = ref info.GetParameter<FindTargetArgs>();
 				if (!arg.IsNull())
 				{
 					ref var region = ref info.GetRegion();
 
 					var dist_sq = Vector2.DistanceSquared(transform.position, arg.position);
-					if ((target.faction_id == 0 || target.faction_id != arg.faction_id) && dist_sq < arg.target_dist_nearest_sq)
+					if ((faction.id == 0 || faction.id != arg.faction_id) && dist_sq < arg.target_dist_nearest_sq)
 					{
 						if (arg.ent_root.id == 0)
 						{
@@ -349,8 +366,58 @@ namespace TC2.Siege
 			return arg.ent_target.IsAlive();
 		}
 
+		private struct FindNearestSpawnArgs
+		{
+			public IFaction.Handle faction_id;
+
+			public Vector2 position_target;
+			public float target_dist_nearest_sq;
+
+			public Entity ent_spawn;
+			public Vector2 position_spawn;
+
+			public FindNearestSpawnArgs(IFaction.Handle faction_id, Vector2 position_target)
+			{
+				this.faction_id = faction_id;
+
+				this.position_target = position_target;
+				this.target_dist_nearest_sq = float.MaxValue;
+
+				this.ent_spawn = default;
+				this.position_spawn = default;
+			}
+		}
+
+		public static bool TryFindNearestSpawn(ref Region.Data region, IFaction.Handle faction, Vector2 position_target, out Entity ent_spawn, out Vector2 position_spawn)
+		{
+			var arg = new FindNearestSpawnArgs(faction, position_target);
+
+			region.Query<Region.GetSpawnsQuery>(Func).Execute(ref arg);
+			static void Func(ISystem.Info info, Entity entity, [Source.Owned] in Spawn.Data spawn, [Source.Owned, Optional] in Nameable.Data nameable, [Source.Owned] in Transform.Data transform, [Source.Owned, Optional] in Faction.Data faction)
+			{
+				ref var arg = ref info.GetParameter<FindNearestSpawnArgs>();
+				if (!arg.IsNull())
+				{
+					ref var region = ref info.GetRegion();
+
+					var dist_sq = Vector2.DistanceSquared(transform.position, arg.position_target);
+					if (faction.id == arg.faction_id && dist_sq < arg.target_dist_nearest_sq)
+					{
+						arg.ent_spawn = entity;
+						arg.target_dist_nearest_sq = dist_sq;
+						arg.position_spawn = transform.position;
+					}
+				}
+			}
+
+			ent_spawn = arg.ent_spawn;
+			position_spawn = arg.position_spawn;
+
+			return arg.ent_spawn.IsAlive();
+		}
+
 		[ISystem.LateUpdate(ISystem.Mode.Single)]
-		public static void OnUpdate(ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Spawner.Data spawner,
+		public static void OnUpdate(ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform,
 		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state, [Source.Owned, Optional] in Faction.Data faction)
 		{
 			ref var region = ref info.GetRegion();
@@ -373,6 +440,7 @@ namespace TC2.Siege
 						planner.status = Planner.Status.Dispatching;
 
 						//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
+						//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f);
 						Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f);
 					}
 
@@ -469,7 +537,7 @@ namespace TC2.Siege
 										{
 											selection.units = arg.selection;
 
-											selection.order_type = Commandable.OrderType.Attack;
+											selection.order_type = Commandable.OrderType.Capture;
 
 											control.mouse.position = target_position;
 											control.mouse.SetKeyPressed(Mouse.Key.Right, true);
@@ -478,7 +546,29 @@ namespace TC2.Siege
 										if (planner.wave_size_rem > 0)
 										{
 											planner.next_dispatch = time + random.NextFloatRange(1.00f, 3.00f);
-											spawner.next_spawn = time;
+
+											var total_count = region.GetTotalTagCount("kobold", "dead");
+											if (total_count < g_siege.max_npc_count)
+											{
+												if (TryFindNearestSpawn(ref region, faction.id, target_position, out var ent_spawn, out var pos_spawn))
+												{
+													var group_size_tmp = 1 + random.NextIntRange(0, 2);
+													for (int i = 0; i < group_size_tmp && total_count + i < g_siege.max_npc_count; i++)
+													{
+														var ent_spawner = entity;
+														region.SpawnPrefab("kobold.male", pos_spawn + random.NextVector2(1.00f), faction_id: faction.id).ContinueWith((ent) =>
+														{
+															SetKoboldLoadout(ent);
+														});
+
+														planner.wave_size_rem = Math.Max(planner.wave_size_rem - 1, 0);
+													}
+												}
+												else
+												{
+													App.WriteLine("Failed to find an NPC spawn point!");
+												}
+											}
 
 											App.WriteLine($"Spawning reinforcements... ({planner.wave_size_rem} left)");
 										}

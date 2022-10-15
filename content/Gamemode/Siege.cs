@@ -43,6 +43,8 @@ namespace TC2.Siege
 			[Save.Ignore] public float wave_interval = 60.00f;
 			[Save.Ignore] public float wave_interval_difficulty_mult = 1.00f;
 
+			[Save.Ignore] public uint max_npc_count = 32;
+
 			[Flags]
 			public enum Flags: uint
 			{

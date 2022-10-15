@@ -10,8 +10,6 @@ namespace TC2.Siege
 			[IComponent.Data(Net.SendType.Unreliable)]
 			public partial struct Data: IComponent
 			{
-				public IFaction.Handle faction_id;
-
 				[Save.Ignore, Net.Ignore] public float next_notification;
 
 #if SERVER
