@@ -46,12 +46,15 @@ namespace TC2.Siege
 							ref var work = ref capturable.order.work[0];
 							var capture_progress = work.current;
 
-							var delta = siege_target.last_capture_progress - capture_progress;
+							var delta = capture_progress - siege_target.last_capture_progress;
 							if (MathF.Abs(delta) >= 10.00f)
 							{
 								siege_target.last_capture_progress = capture_progress;
 
-								Notification.Push(ref region, $"{entity.GetFullName()} is being captured! ({(Maths.NormalizeClamp(work.current, work.required) * 100.00f):0}%)", Color32BGRA.Yellow, lifetime: 5.00f, "buzzer.02", volume: 0.20f, pitch: 0.90f);
+								if (float.IsNegative(delta))
+								{
+									Notification.Push(ref region, $"{entity.GetFullName()} is being captured! ({(Maths.NormalizeClamp(work.current, work.required) * 100.00f):0}%)", Color32BGRA.Yellow, lifetime: 5.00f, "buzzer.02", volume: 0.20f, pitch: 0.90f);
+								}
 							}
 						}
 

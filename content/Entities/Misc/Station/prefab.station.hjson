@@ -20,7 +20,7 @@ body:
 
 health:
 {
-	max: 15000.000
+	max: 80000.000
 }
 
 threat:
@@ -36,7 +36,8 @@ siege.target:
 
 capturable:
 {
-
+	max_distance: 8.000
+	amount: 1500.000
 }
 
 interactable:
