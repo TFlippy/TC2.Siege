@@ -519,7 +519,7 @@ namespace TC2.Siege
 										{
 											selection.units = arg.selection;
 
-											selection.order_type = Commandable.OrderType.Capture;
+											selection.order_type = Commandable.OrderType.Attack;
 
 											control.mouse.position = target_position;
 											control.mouse.SetKeyPressed(Mouse.Key.Right, true);
@@ -527,7 +527,7 @@ namespace TC2.Siege
 
 										if (planner.wave_size_rem > 0)
 										{
-											planner.next_dispatch = time + random.NextFloatRange(1.00f, 3.00f);
+											planner.next_dispatch = time + random.NextFloatRange(4.00f, 10.00f);
 
 											var total_count = region.GetTotalTagCount("kobold", "dead");
 											if (total_count < g_siege.max_npc_count)

@@ -43,7 +43,7 @@ spawner:
 	group_size: 1
 	group_size_extra: 1
 
-	max_count: 4
+	max_count: 1
 }
 
 spawn:
