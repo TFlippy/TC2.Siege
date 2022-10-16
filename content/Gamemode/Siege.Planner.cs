@@ -37,6 +37,7 @@ namespace TC2.Siege
 
 			[Save.Ignore, Net.Ignore] public float next_update;
 			[Save.Ignore, Net.Ignore] public float next_dispatch;
+			[Save.Ignore, Net.Ignore] public float next_spawn;
 			[Save.Ignore, Net.Ignore] public float next_search;
 			//[Save.Ignore, Net.Ignore] public float next_wave;
 
@@ -60,7 +61,7 @@ namespace TC2.Siege
 			var rewards_span = bounty.rewards.AsSpan();
 
 			// TODO: add proper .hjson loot tables
-			switch (random.NextIntRange(0, 10))
+			switch (random.NextIntRange(0, 11))
 			{
 				// Melee
 				case 0:
@@ -99,6 +100,12 @@ namespace TC2.Siege
 					//if (random.NextBool(0.75f))
 					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
+						rewards_span.Add(Crafting.Product.Money(30));
+					}
+
+					if (random.NextBool(0.75f))
+					{
+						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(30));
 					}
 
@@ -141,7 +148,7 @@ namespace TC2.Siege
 						rewards_span.Add(Crafting.Product.Money(15));
 					}
 
-					if (random.NextBool(0.15f))
+					if (random.NextBool(0.35f))
 					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(20));
@@ -227,14 +234,25 @@ namespace TC2.Siege
 						rewards_span.Add(Crafting.Product.Money(100));
 					}
 
-					if (random.NextBool(1.00f))
+					//if (random.NextBool(1.00f))
 					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
-						items_span.Add(Shipment.Item.Prefab("helmet.01", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
+						items_span.Add(Shipment.Item.Prefab(random.NextBool(0.50f) ? "helmet.00" : "helmet.01", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(50));
 					}
 
 					rewards_span.Add(Crafting.Product.Money(80));
+				}
+				break;
+
+				// Turtle
+				case 10:
+				{
+					items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
+					items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
+					items_span.Add(Shipment.Item.Prefab("shield.heavy", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
+
+					rewards_span.Add(Crafting.Product.Money(100));
 				}
 				break;
 
@@ -244,7 +262,7 @@ namespace TC2.Siege
 					if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("bazooka", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
-						items_span.Add(Shipment.Item.Resource("ammo_rocket.hv", 16));
+						items_span.Add(Shipment.Item.Resource("ammo_rocket", 16));
 						rewards_span.Add(Crafting.Product.Money(100));
 					}
 					else if (random.NextBool(0.50f))
@@ -260,7 +278,7 @@ namespace TC2.Siege
 						rewards_span.Add(Crafting.Product.Money(70));
 					}
 
-					if (random.NextBool(0.50f))
+					//if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
@@ -398,7 +416,7 @@ namespace TC2.Siege
 			return arg.ent_spawn.IsAlive();
 		}
 
-		[ISystem.LateUpdate(ISystem.Mode.Single)]
+		[ISystem.Update(ISystem.Mode.Single)]
 		public static void OnUpdate(ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform,
 		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state, [Source.Owned, Optional] in Faction.Data faction)
 		{
@@ -458,7 +476,7 @@ namespace TC2.Siege
 
 						case Siege.Planner.Status.Dispatching:
 						{
-							if ((g_siege_state.t_next_wave - time) >= 60.00f)
+							if ((g_siege_state.t_next_wave - time) >= 30.00f)
 							{
 								if (time >= planner.next_search)
 								{
@@ -472,6 +490,43 @@ namespace TC2.Siege
 									}
 
 									planner.next_search = time + random.NextFloatRange(10.00f, 15.00f);
+								}
+
+								if (planner.wave_size_rem > 0 && time >= planner.next_spawn)
+								{
+									planner.next_spawn = time + random.NextFloatRange(2.00f, 4.00f);
+
+									var total_count = region.GetTotalTagCount("kobold", "dead");
+									if (total_count < g_siege.max_npc_count)
+									{
+										var target_position = transform.position; ;
+
+										if (planner.ref_target.IsAlive() && planner.ref_target.TryGetHandle(out var h_target_transform))
+										{
+											target_position = h_target_transform.data.position;
+										}
+
+										if (TryFindNearestSpawn(ref region, faction.id, target_position, out var ent_spawn, out var pos_spawn))
+										{
+											var group_size_tmp = 1 + random.NextIntRange(0, 2);
+											for (int i = 0; i < group_size_tmp && total_count + i < g_siege.max_npc_count; i++)
+											{
+												var ent_spawner = entity;
+												region.SpawnPrefab("kobold.male", pos_spawn + new Vector2(random.NextFloatRange(-2, 2), 0.00f), faction_id: faction.id).ContinueWith((ent) =>
+												{
+													SetKoboldLoadout(ent);
+												});
+
+												planner.wave_size_rem = Math.Max(planner.wave_size_rem - 1, 0);
+											}
+										}
+										else
+										{
+											App.WriteLine("Failed to find an NPC spawn point!");
+										}
+									}
+
+									App.WriteLine($"Spawning reinforcements... ({planner.wave_size_rem} left)");
 								}
 
 								if (time >= planner.next_dispatch)
@@ -492,7 +547,7 @@ namespace TC2.Siege
 											if (!arg.IsNull() && arg.selection_count < arg.selection.Length)
 											{
 												//App.WriteLine(behavior.idle_timer);
-												if (faction.id == arg.faction_id && (behavior.idle_timer >= 2.00f || behavior.type == AI.Behavior.Type.None || movement.type == AI.Movement.Type.None))
+												if (faction.id == arg.faction_id && (behavior.idle_timer >= 2.00f || !behavior.ref_target_body.entity.IsValid() || behavior.type == AI.Behavior.Type.None || movement.type == AI.Movement.Type.None))
 												{
 													//if (Vector2.DistanceSquared(transform.position, arg.target_position) <= (128 * 128))
 													//{
@@ -525,35 +580,35 @@ namespace TC2.Siege
 											control.mouse.SetKeyPressed(Mouse.Key.Right, true);
 										}
 
-										if (planner.wave_size_rem > 0)
-										{
-											planner.next_dispatch = time + random.NextFloatRange(4.00f, 10.00f);
+										//if (planner.wave_size_rem > 0)
+										//{
+										//	planner.next_dispatch = time + random.NextFloatRange(4.00f, 10.00f);
 
-											var total_count = region.GetTotalTagCount("kobold", "dead");
-											if (total_count < g_siege.max_npc_count)
-											{
-												if (TryFindNearestSpawn(ref region, faction.id, target_position, out var ent_spawn, out var pos_spawn))
-												{
-													var group_size_tmp = 1 + random.NextIntRange(0, 2);
-													for (int i = 0; i < group_size_tmp && total_count + i < g_siege.max_npc_count; i++)
-													{
-														var ent_spawner = entity;
-														region.SpawnPrefab("kobold.male", pos_spawn + random.NextVector2(1.00f), faction_id: faction.id).ContinueWith((ent) =>
-														{
-															SetKoboldLoadout(ent);
-														});
+										//	var total_count = region.GetTotalTagCount("kobold", "dead");
+										//	if (total_count < g_siege.max_npc_count)
+										//	{
+										//		if (TryFindNearestSpawn(ref region, faction.id, target_position, out var ent_spawn, out var pos_spawn))
+										//		{
+										//			var group_size_tmp = 1 + random.NextIntRange(0, 2);
+										//			for (int i = 0; i < group_size_tmp && total_count + i < g_siege.max_npc_count; i++)
+										//			{
+										//				var ent_spawner = entity;
+										//				region.SpawnPrefab("kobold.male", pos_spawn + random.NextVector2(1.00f), faction_id: faction.id).ContinueWith((ent) =>
+										//				{
+										//					SetKoboldLoadout(ent);
+										//				});
 
-														planner.wave_size_rem = Math.Max(planner.wave_size_rem - 1, 0);
-													}
-												}
-												else
-												{
-													App.WriteLine("Failed to find an NPC spawn point!");
-												}
-											}
+										//				planner.wave_size_rem = Math.Max(planner.wave_size_rem - 1, 0);
+										//			}
+										//		}
+										//		else
+										//		{
+										//			App.WriteLine("Failed to find an NPC spawn point!");
+										//		}
+										//	}
 
-											App.WriteLine($"Spawning reinforcements... ({planner.wave_size_rem} left)");
-										}
+										//	App.WriteLine($"Spawning reinforcements... ({planner.wave_size_rem} left)");
+										//}
 									}
 									else
 									{

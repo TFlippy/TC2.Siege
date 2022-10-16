@@ -148,7 +148,22 @@ namespace TC2.Siege
 					if (mod_info == mod_siege) return true;
 					else if (identifier.StartsWith("gunsmith.", StringComparison.OrdinalIgnoreCase)) return true;
 					else if (identifier.StartsWith("munitions.", StringComparison.OrdinalIgnoreCase)) return true;
+					else if (identifier.StartsWith("forge.", StringComparison.OrdinalIgnoreCase)) return true;
+					else if (identifier.StartsWith("manufactory.", StringComparison.OrdinalIgnoreCase)) return true;
 					else return false;
+				});
+
+				IRecipe.Database.AddAssetPostProcessor((IRecipe.Definition definition, ref IRecipe.Data data) =>
+				{
+					if (definition.mod_info != mod_siege)
+					{
+						if (data.type == Crafting.Recipe.Type.Workshop)
+						{
+							data.flags.SetFlag(Crafting.Recipe.Flags.Hidden, true);
+							data.type = Crafting.Recipe.Type.Buy;
+							data.tags = Crafting.Recipe.Tags.Manufactory;
+						}
+					}
 				});
 
 				IOrigin.Database.AddAssetFilter((string path, string identifier, ModInfo mod_info) =>
@@ -179,7 +194,7 @@ namespace TC2.Siege
 
 							case Crafting.Requirement.Type.Resource:
 							{
-								ref var material = ref req.material.GetDefinition();
+								ref var material = ref req.material.GetData();
 								if (!material.IsNull())
 								{
 									price += material.market_price * req.amount;

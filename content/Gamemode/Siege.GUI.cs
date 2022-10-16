@@ -100,7 +100,7 @@ namespace TC2.Siege
 			public void Draw()
 			{
 				var window_pos = (GUI.CanvasSize * new Vector2(0.50f, 0.00f)) + new Vector2(100, 48);
-				using (var window = GUI.Window.Standalone("Siege2", position: window_pos, size: new Vector2(700, 400), pivot: new Vector2(0.50f, 0.00f)))
+				using (var window = GUI.Window.Standalone("Siege2", position: window_pos, size: new Vector2(100, 100), pivot: new Vector2(0.50f, 0.00f)))
 				{
 					this.StoreCurrentWindowTypeID();
 					if (window.show)
