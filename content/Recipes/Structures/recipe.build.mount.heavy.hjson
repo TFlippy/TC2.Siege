@@ -1,22 +1,22 @@
 {
-	name: "Blueprint Laboratory"
+	name: "Mount (Heavy)"
 	desc:
 		'''
-		A building where one can design item augment blueprints.
+		A sturdy stationary mount.
+		Various objects can be attached to this.
 		'''
 	
 	icon:
 	{
-		texture: "laboratory"
-		size: [56, 40]
+		texture: "mount.heavy"
+		size: [48, 48]
 	}
 	
 	type: build
 	flags: none
 	tags: construction
-	rank: -18.000
 	
-	dismantle_work: 8.000
+	dismantle_work: 15.000
 	dismantle_yield: 0.800
 	
 	placement:
@@ -24,7 +24,7 @@
 		type: simple
 		flags: allow_mirror_x
 		
-		size: [7.000, 5.000]
+		size: [5.000, 5.000]
 		offset: [0.000, -1.500]
 		
 		cooldown: 0.500
@@ -39,7 +39,7 @@
 	[
 		{
 			type: "money"
-			amount: 1849.990
+			amount: 3449.990
 		}
 	]
 	
@@ -47,7 +47,7 @@
 	[
 		{
 			type: prefab
-			prefab: "laboratory"
+			prefab: "mount.heavy"
 			amount: 1.000
 		}
 	]
