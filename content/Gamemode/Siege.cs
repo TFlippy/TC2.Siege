@@ -14,7 +14,7 @@ namespace TC2.Siege
 			/// Maths.Lerp(1.00f, 1.00f / player_count, reward_share_ratio);
 			/// </code>
 			/// </summary>
-			[Save.Ignore] public float reward_share_ratio = 0.70f;
+			[Save.Ignore] public float reward_share_ratio = 0.90f;
 
 			[Save.Ignore] public float reward_mult = 1.50f;
 
@@ -155,6 +155,8 @@ namespace TC2.Siege
 
 				IRecipe.Database.AddAssetPostProcessor((IRecipe.Definition definition, ref IRecipe.Data data) =>
 				{
+					//App.WriteLine($"{definition.Identifier}: {definition.mod_info?.Identifier}");
+
 					if (definition.mod_info != mod_siege)
 					{
 						if (data.type == Crafting.Recipe.Type.Workshop)

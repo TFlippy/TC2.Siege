@@ -41,7 +41,7 @@ namespace TC2.Siege
 		}
 
 		[ChatCommand.Region("difficulty", "", admin: true)]
-		public static void DifficultyCommand(ref ChatCommand.Context context, float? difficulty = null)
+		public static void DifficultyCommand(ref ChatCommand.Context context, float difficulty)
 		{
 			ref var region = ref context.GetRegion();
 			if (!region.IsNull())
@@ -49,17 +49,15 @@ namespace TC2.Siege
 				ref var g_siege_state = ref region.GetSingletonComponent<Siege.Gamemode.State>();
 				if (!g_siege_state.IsNull())
 				{
-					if (difficulty.TryGetValue(out var v_difficulty))
-					{
-						var difficulty_old = g_siege_state.difficulty;
-						g_siege_state.difficulty = v_difficulty;
+					var difficulty_old = g_siege_state.difficulty;
+					g_siege_state.difficulty = difficulty;
 
-						Server.SendChatMessage($"Set difficulty from {difficulty_old:0.00} to {g_siege_state.difficulty:0.00}.", channel: Chat.Channel.System, target_player_id: context.GetConnection().GetPlayerID());
-					}
-					else
-					{
-						Server.SendChatMessage($"Current difficulty: {g_siege_state.difficulty:0.00}.", channel: Chat.Channel.System, target_player_id: context.GetConnection().GetPlayerID());
-					}
+					Server.SendChatMessage($"Set difficulty from {difficulty_old:0.00} to {g_siege_state.difficulty:0.00}.", channel: Chat.Channel.System, target_player_id: context.GetConnection().GetPlayerID());
+
+					//else
+					//{
+					//	Server.SendChatMessage($"Current difficulty: {g_siege_state.difficulty:0.00}.", channel: Chat.Channel.System, target_player_id: context.GetConnection().GetPlayerID());
+					//}
 				}
 			}
 		}
@@ -102,8 +100,6 @@ namespace TC2.Siege
 
 		public static void ChangeMap(ref Region.Data region, Map.Handle map)
 		{
-			
-
 			//ref var region = ref world.GetAnyRegion();
 			if (!region.IsNull())
 			{

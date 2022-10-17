@@ -20,7 +20,7 @@
 			{
 				type: resource
 				material: "ammo_rocket"
-				quantity: 8.000
+				quantity: 4.000
 			}
 		]
 		flags: unpack
