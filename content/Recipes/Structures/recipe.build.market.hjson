@@ -1,20 +1,20 @@
 {
-	name: "Manufactory"
+	name: "Market"
 	desc:
 		'''
-		A workshop used for producing vehicles and advanced equipment.
+		A place to trade at.
 		'''
 	
 	icon:
 	{
-		texture: "manufactory"
-		size: [56, 40]
+		texture: "market"
+		size: [50, 64]
 	}
 	
 	type: build
 	flags: none
 	tags: construction
-	rank: -18.000
+	rank: -15.000
 	
 	dismantle_work: 10.000
 	dismantle_yield: 0.800
@@ -24,8 +24,8 @@
 		type: simple
 		flags: allow_mirror_x
 		
-		size: [7.000, 5.000]
-		offset: [0.000, -1.500]
+		size: [6.000, 4.000]
+		offset: [0.000, -1.000]
 		
 		cooldown: 0.500
 		min_claim: 1.000
@@ -39,7 +39,7 @@
 	[
 		{
 			type: "money"
-			amount: 4379.990
+			amount: 2779.990
 		}
 	]
 	
@@ -47,7 +47,7 @@
 	[
 		{
 			type: prefab
-			prefab: "manufactory"
+			prefab: "market"
 			amount: 1.000
 		}
 	]

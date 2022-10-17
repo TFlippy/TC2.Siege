@@ -1,0 +1,37 @@
+{
+	name: "Small Crate"
+	desc:
+		'''
+		Small portable storage - can be attached to toolbelt.
+		'''
+	
+	icon:
+	{
+		texture: "crate.small"
+	}
+	
+	min: 1
+	max: 1
+	step: 1
+	
+	flags: no_amount_multiplier
+	type: buy
+	tags: market
+	
+	requirements:
+	[
+		{
+			type: "money"
+			amount: 14.490
+		}
+	]
+	
+	products:
+	[
+		{
+			type: "prefab"
+			prefab: "crate.small"
+			amount: 1.000
+		}
+	]
+}
