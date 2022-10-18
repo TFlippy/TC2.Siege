@@ -197,7 +197,7 @@ namespace TC2.Siege
 					else
 					{
 						items_span.Add(Shipment.Item.Prefab("revolver", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
-						items_span.Add(Shipment.Item.Resource("ammo_lc", 50));
+						items_span.Add(Shipment.Item.Resource("ammo_hc", 50));
 						rewards_span.Add(Crafting.Product.Money(30));
 					}
 
