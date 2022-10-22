@@ -475,13 +475,6 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "armor.00"
-			faction: "defenders"
-			position: [230.7872, 43.33997]
-			rotation: -0.000536
-			scale: [-1.000, 1.000]
-		}
-		{
 			prefab: "lamp.00"
 			position: [333.500, 56.875]
 			rotation: 3.054326
@@ -1829,25 +1822,6 @@
 			position: [185.7933, 21.26106]
 			rotation: -0.08801
 			scale: [1.000, 1.000]
-		}
-		{
-			prefab: "crane.arm.articulated"
-			position: [144.0402, 37.48001]
-			rotation: -0
-			scale: [1.000, 1.000]
-		}
-		{
-			prefab: "winch"
-			position: [149.3113, 37.35032]
-			rotation: 0.000484
-			scale: [1.000, 1.000]
-		}
-		{
-			prefab: "helmet.00"
-			faction: "defenders"
-			position: [230.6611, 42.61504]
-			rotation: -0.002594
-			scale: [-1.000, 1.000]
 		}
 		{
 			prefab: "wreck.chain_fence.01"

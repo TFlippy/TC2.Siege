@@ -71,8 +71,17 @@ namespace TC2.Siege
 				ref var g_siege_state = ref region.GetSingletonComponent<Siege.Gamemode.State>();
 				if (!g_siege_state.IsNull())
 				{
-					g_siege_state.t_next_wave = g_siege_state.t_match_elapsed;
-					Server.SendChatMessage($"Forced next wave.", channel: Chat.Channel.System);
+					if (g_siege_state.status == Gamemode.Status.Preparing)
+					{
+						g_siege_state.status = Gamemode.Status.Running;
+					}
+					else
+					{
+						g_siege_state.t_next_wave = g_siege_state.t_match_elapsed;
+						Server.SendChatMessage($"Forced next wave.", channel: Chat.Channel.System);
+					}
+
+					region.SyncGlobal(ref g_siege_state);
 				}
 			}
 		}

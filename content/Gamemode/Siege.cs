@@ -14,7 +14,7 @@ namespace TC2.Siege
 			/// Maths.Lerp(1.00f, 1.00f / player_count, reward_share_ratio);
 			/// </code>
 			/// </summary>
-			[Save.Ignore] public float reward_share_ratio = 0.90f;
+			[Save.Ignore] public float reward_share_ratio = 0.50f;
 
 			[Save.Ignore] public float reward_mult = 1.50f;
 
@@ -39,6 +39,10 @@ namespace TC2.Siege
 			[Save.Ignore] public float difficulty_mult = 1.00f;
 
 			[Save.Ignore] public float difficulty_max = 100.00f;
+
+			[Save.Ignore] public int wave_size_base = 2;
+			[Save.Ignore] public int wave_size_max = 40;
+			[Save.Ignore] public float wave_size_mult = 1.75f;
 
 			[Save.Ignore] public float wave_interval = 60.00f;
 			[Save.Ignore] public float wave_interval_difficulty_mult = 1.00f;
@@ -352,7 +356,15 @@ namespace TC2.Siege
 
 								g_siege_state.difficulty = Maths.Clamp(g_siege_state.difficulty + difficulty_step, 1.00f, g_siege.difficulty_max);
 
-								g_siege_state.t_next_wave = time + Maths.Snap(g_siege.wave_interval + Maths.Clamp(g_siege_state.difficulty * 5.00f * g_siege.wave_interval_difficulty_mult, 0.00f, 300.00f), 15.00f);
+								var duration = g_siege.wave_interval;
+								if (g_siege_state.wave_current % 5 == 0)
+								{
+									duration *= 3.00f;
+								}
+
+
+								//g_siege_state.t_next_wave = time + Maths.Snap(g_siege.wave_interval + Maths.Clamp(g_siege_state.difficulty * 5.00f * g_siege.wave_interval_difficulty_mult, 0.00f, 300.00f), 15.00f);
+								g_siege_state.t_next_wave = time + Maths.Snap(duration, 15.00f);
 
 								sync |= true;
 

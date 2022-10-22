@@ -48,7 +48,7 @@ namespace TC2.Siege
 		}
 
 #if SERVER
-		public static void SetKoboldLoadout(Entity ent_kobold)
+		public static void SetKoboldLoadout(Entity ent_kobold, float weapon_mult = 1.00f, float armor_mult = 1.00f)
 		{
 			var random = XorRandom.New();
 			var loadout = new Loadout.Data();
@@ -97,13 +97,13 @@ namespace TC2.Siege
 						rewards_span.Add(Crafting.Product.Money(20));
 					}
 
-					//if (random.NextBool(0.75f))
+					if (random.NextBool(0.35f * armor_mult))
 					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(30));
 					}
 
-					if (random.NextBool(0.75f))
+					if (random.NextBool(0.25f * armor_mult))
 					{
 						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(30));
@@ -142,13 +142,13 @@ namespace TC2.Siege
 						rewards_span.Add(Crafting.Product.Money(30));
 					}
 
-					if (random.NextBool(0.15f))
+					if (random.NextBool(0.20f * armor_mult))
 					{
 						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(15));
 					}
 
-					if (random.NextBool(0.35f))
+					if (random.NextBool(0.35f * armor_mult))
 					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(20));
@@ -201,7 +201,7 @@ namespace TC2.Siege
 						rewards_span.Add(Crafting.Product.Money(30));
 					}
 
-					if (random.NextBool(0.20f))
+					if (random.NextBool(0.20f * armor_mult))
 					{
 						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(20));
@@ -236,8 +236,8 @@ namespace TC2.Siege
 
 					//if (random.NextBool(1.00f))
 					{
-						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
-						items_span.Add(Shipment.Item.Prefab(random.NextBool(0.50f) ? "helmet.00" : "helmet.01", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
+						if (random.NextBool(0.60f * armor_mult)) items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
+						items_span.Add(Shipment.Item.Prefab(random.NextBool(0.50f * armor_mult) ? "helmet.01" : "helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(50));
 					}
 
@@ -249,7 +249,7 @@ namespace TC2.Siege
 				case 10:
 				{
 					items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
-					items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
+					if (random.NextBool(0.80f * armor_mult)) items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 					items_span.Add(Shipment.Item.Prefab("shield.heavy", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 
 					rewards_span.Add(Crafting.Product.Money(100));
@@ -280,8 +280,8 @@ namespace TC2.Siege
 
 					//if (random.NextBool(0.50f))
 					{
-						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
-						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
+						if (random.NextBool(0.80f * armor_mult)) items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
+						if (random.NextBool(0.50f * armor_mult)) items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(50));
 					}
 
@@ -434,7 +434,7 @@ namespace TC2.Siege
 						planner.last_wave = g_siege_state.wave_current;
 
 						//planner.next_wave = time + planner.wave_interval + Maths.Clamp(difficulty * 10.00f, 0.00f, 120.00f);
-						planner.wave_size = (int)Maths.Clamp(3 + MathF.Floor(MathF.Pow(g_siege_state.difficulty, 0.80f)) * 2.00f, 0, 40);
+						planner.wave_size = (int)Maths.Clamp(g_siege.wave_size_base + (MathF.Floor(MathF.Pow(g_siege_state.difficulty, 0.80f)) * g_siege.wave_size_mult), 0, g_siege.wave_size_max);
 						planner.wave_size_rem = planner.wave_size;
 
 						planner.status = Planner.Status.Dispatching;
@@ -508,13 +508,18 @@ namespace TC2.Siege
 
 										if (TryFindNearestSpawn(ref region, faction.id, target_position, out var ent_spawn, out var pos_spawn))
 										{
+											var weapon_mult = 1.00f;
+											var armor_mult = 1.00f;
+
+											armor_mult = g_siege_state.difficulty * 0.10f;
+
 											var group_size_tmp = 1 + random.NextIntRange(0, 2);
 											for (int i = 0; i < group_size_tmp && total_count + i < g_siege.max_npc_count; i++)
 											{
 												var ent_spawner = entity;
 												region.SpawnPrefab("kobold.male", pos_spawn + new Vector2(random.NextFloatRange(-2, 2), 0.00f), faction_id: faction.id).ContinueWith((ent) =>
 												{
-													SetKoboldLoadout(ent);
+													SetKoboldLoadout(ent, weapon_mult: weapon_mult, armor_mult: armor_mult);
 												});
 
 												planner.wave_size_rem = Math.Max(planner.wave_size_rem - 1, 0);
