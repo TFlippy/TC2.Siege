@@ -15,10 +15,10 @@
 			{
 				type: prefab
 				prefab: "bp.pervitin.100mg.er"
-				quantity: 4.000
+				quantity: 1.000
 				flags: despawn
 			}
 		]
-		flags: storable
+		flags: unpack
 	}
 }

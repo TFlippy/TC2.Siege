@@ -427,7 +427,7 @@ namespace TC2.Siege
 				var time = g_siege_state.t_match_elapsed;
 				if (time >= planner.next_update)
 				{
-					planner.next_update = time + 1.00f;
+					planner.next_update = time + 0.10f;
 
 					if (g_siege_state.wave_current != planner.last_wave)
 					{
@@ -492,48 +492,6 @@ namespace TC2.Siege
 									planner.next_search = time + random.NextFloatRange(10.00f, 15.00f);
 								}
 
-								if (planner.wave_size_rem > 0 && time >= planner.next_spawn)
-								{
-									planner.next_spawn = time + random.NextFloatRange(2.00f, 4.00f);
-
-									var total_count = region.GetTotalTagCount("kobold", "dead");
-									if (total_count < g_siege.max_npc_count)
-									{
-										var target_position = transform.position; ;
-
-										if (planner.ref_target.IsAlive() && planner.ref_target.TryGetHandle(out var h_target_transform))
-										{
-											target_position = h_target_transform.data.position;
-										}
-
-										if (TryFindNearestSpawn(ref region, faction.id, target_position, out var ent_spawn, out var pos_spawn))
-										{
-											var weapon_mult = 1.00f;
-											var armor_mult = 1.00f;
-
-											armor_mult = g_siege_state.difficulty * 0.10f;
-
-											var group_size_tmp = 1 + random.NextIntRange(0, 2);
-											for (int i = 0; i < group_size_tmp && total_count + i < g_siege.max_npc_count; i++)
-											{
-												var ent_spawner = entity;
-												region.SpawnPrefab("kobold.male", pos_spawn + new Vector2(random.NextFloatRange(-2, 2), 0.00f), faction_id: faction.id).ContinueWith((ent) =>
-												{
-													SetKoboldLoadout(ent, weapon_mult: weapon_mult, armor_mult: armor_mult);
-												});
-
-												planner.wave_size_rem = Math.Max(planner.wave_size_rem - 1, 0);
-											}
-										}
-										else
-										{
-											App.WriteLine("Failed to find an NPC spawn point!");
-										}
-									}
-
-									App.WriteLine($"Spawning reinforcements... ({planner.wave_size_rem} left)");
-								}
-
 								if (time >= planner.next_dispatch)
 								{
 									planner.next_dispatch = time + random.NextFloatRange(5.00f, 10.00f);
@@ -584,41 +542,55 @@ namespace TC2.Siege
 											control.mouse.position = target_position;
 											control.mouse.SetKeyPressed(Mouse.Key.Right, true);
 										}
-
-										//if (planner.wave_size_rem > 0)
-										//{
-										//	planner.next_dispatch = time + random.NextFloatRange(4.00f, 10.00f);
-
-										//	var total_count = region.GetTotalTagCount("kobold", "dead");
-										//	if (total_count < g_siege.max_npc_count)
-										//	{
-										//		if (TryFindNearestSpawn(ref region, faction.id, target_position, out var ent_spawn, out var pos_spawn))
-										//		{
-										//			var group_size_tmp = 1 + random.NextIntRange(0, 2);
-										//			for (int i = 0; i < group_size_tmp && total_count + i < g_siege.max_npc_count; i++)
-										//			{
-										//				var ent_spawner = entity;
-										//				region.SpawnPrefab("kobold.male", pos_spawn + random.NextVector2(1.00f), faction_id: faction.id).ContinueWith((ent) =>
-										//				{
-										//					SetKoboldLoadout(ent);
-										//				});
-
-										//				planner.wave_size_rem = Math.Max(planner.wave_size_rem - 1, 0);
-										//			}
-										//		}
-										//		else
-										//		{
-										//			App.WriteLine("Failed to find an NPC spawn point!");
-										//		}
-										//	}
-
-										//	App.WriteLine($"Spawning reinforcements... ({planner.wave_size_rem} left)");
-										//}
 									}
 									else
 									{
 										planner.ref_target.Set(default);
 									}
+								}
+
+								if (planner.wave_size_rem > 0 && time >= planner.next_spawn)
+								{
+									planner.next_spawn = time + random.NextFloatRange(2.00f, 4.00f);
+
+									var total_count = region.GetTotalTagCount("kobold", "dead");
+									if (total_count < g_siege.max_npc_count)
+									{
+										var target_position = transform.position;
+
+										if (planner.ref_target.IsAlive() && planner.ref_target.TryGetHandle(out var h_target_transform))
+										{
+											target_position = h_target_transform.data.position;
+										}
+
+										if (TryFindNearestSpawn(ref region, faction.id, target_position, out var ent_spawn, out var pos_spawn))
+										{
+											var weapon_mult = 1.00f;
+											var armor_mult = 1.00f;
+
+											armor_mult = g_siege_state.difficulty * 0.10f;
+
+											var group_size_tmp = 1 + random.NextIntRange(0, 2);
+											for (int i = 0; i < group_size_tmp && total_count + i < g_siege.max_npc_count; i++)
+											{
+												var ent_spawner = entity;
+												region.SpawnPrefab("kobold.male", pos_spawn + new Vector2(random.NextFloatRange(-2, 2), 0.00f), faction_id: faction.id).ContinueWith((ent) =>
+												{
+													SetKoboldLoadout(ent, weapon_mult: weapon_mult, armor_mult: armor_mult);
+												});
+
+												planner.wave_size_rem = Math.Max(planner.wave_size_rem - 1, 0);
+											}
+
+											planner.next_dispatch = time + 0.50f;
+										}
+										else
+										{
+											App.WriteLine("Failed to find an NPC spawn point!");
+										}
+									}
+
+									App.WriteLine($"Spawning reinforcements... ({planner.wave_size_rem} left)");
 								}
 							}
 							else
