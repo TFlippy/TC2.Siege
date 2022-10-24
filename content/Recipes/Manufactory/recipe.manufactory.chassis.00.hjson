@@ -1,0 +1,37 @@
+{
+	name: "Vehicle Chassis (Heavy)"
+	desc:
+	'''
+	Wide vehicle chassis for haulers and trucks.
+	(x1 cabin slot, 3x tool slot, 4x wheel slot)
+	'''
+	
+	icon:
+	{
+		texture: "chassis.00"
+	}
+	
+	min: 1
+	max: 1
+	step: 1
+	
+	type: buy
+	tags: manufactory
+	
+	requirements:
+	[
+		{
+			type: "money"
+			amount: 2119.990
+		}
+	]
+	
+	products:
+	[
+		{
+			type: "prefab"
+			prefab: "chassis.00"
+			amount: 1.000
+		}
+	]
+}

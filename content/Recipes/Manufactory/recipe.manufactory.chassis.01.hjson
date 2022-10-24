@@ -1,0 +1,37 @@
+{
+	name: "Vehicle Chassis (Compact)"
+	desc:
+	'''
+	Small vehicle chassis for basic aircraft and portable weapons.
+	(x1 cabin slot, 2x tool slot, 4x wheel slot)
+	'''
+	
+	icon:
+	{
+		texture: "chassis.01"
+	}
+	
+	min: 1
+	max: 1
+	step: 1
+	
+	type: buy
+	tags: manufactory
+	
+	requirements:
+	[
+		{
+			type: "money"
+			amount: 1339.990
+		}
+	]
+	
+	products:
+	[
+		{
+			type: "prefab"
+			prefab: "chassis.01"
+			amount: 1.000
+		}
+	]
+}

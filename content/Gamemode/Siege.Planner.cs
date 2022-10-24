@@ -86,14 +86,9 @@ namespace TC2.Siege
 						items_span.Add(Shipment.Item.Prefab("drill", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(30));
 					}
-					else if (random.NextBool(0.50f))
-					{
-						items_span.Add(Shipment.Item.Prefab("chainsaw", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
-						rewards_span.Add(Crafting.Product.Money(20));
-					}
 					else
 					{
-						items_span.Add(Shipment.Item.Prefab("shield", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
+						items_span.Add(Shipment.Item.Prefab("chainsaw", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(20));
 					}
 
@@ -117,19 +112,19 @@ namespace TC2.Siege
 				case 2:
 				case 3:
 				{
-					if (random.NextBool(0.50f))
+					if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("blunderbuss", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_musket.shot", 50));
 						rewards_span.Add(Crafting.Product.Money(10));
 					}
-					else if (random.NextBool(0.50f))
+					else if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("scattergun", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_sg.slug", 32));
 						rewards_span.Add(Crafting.Product.Money(30));
 					}
-					else if (random.NextBool(0.50f))
+					else if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("pump_shotgun", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_sg.buck", 32));
@@ -164,31 +159,31 @@ namespace TC2.Siege
 				case 6:
 				case 7:
 				{
-					if (random.NextBool(0.50f))
+					if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("smg", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_lc", 200));
 						rewards_span.Add(Crafting.Product.Money(30));
 					}
-					else if (random.NextBool(0.50f))
+					else if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("carbine", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_hc", 50));
 						rewards_span.Add(Crafting.Product.Money(50));
 					}
-					else if (random.NextBool(0.50f))
+					else if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("rifle", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_hc", 50));
 						rewards_span.Add(Crafting.Product.Money(50));
 					}
-					else if (random.NextBool(0.50f))
+					else if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("machine_pistol", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_lc", 200));
 						rewards_span.Add(Crafting.Product.Money(50));
 					}
-					else if (random.NextBool(0.50f))
+					else if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("battle_rifle", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_hc", 80));
@@ -215,22 +210,28 @@ namespace TC2.Siege
 				case 8:
 				case 9:
 				{
-					if (random.NextBool(0.50f))
+					if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("auto_shotgun", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_sg.slug", 64));
 						rewards_span.Add(Crafting.Product.Money(60));
 					}
-					else if (random.NextBool(0.50f))
+					else if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("battle_rifle", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_hc.hv", 80));
 						rewards_span.Add(Crafting.Product.Money(50));
 					}
-					else
+					else if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("auto_shotgun", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_sg.grenade", 64));
+						rewards_span.Add(Crafting.Product.Money(100));
+					}
+					else
+					{
+						items_span.Add(Shipment.Item.Prefab("slugthrower", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
+						items_span.Add(Shipment.Item.Resource("ammo_musket", 100));
 						rewards_span.Add(Crafting.Product.Money(100));
 					}
 
@@ -259,13 +260,13 @@ namespace TC2.Siege
 				// Artillery
 				default:
 				{
-					if (random.NextBool(0.50f))
+					if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("bazooka", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_rocket", 16));
 						rewards_span.Add(Crafting.Product.Money(100));
 					}
-					else if (random.NextBool(0.50f))
+					else if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("scattergun", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_sg.grenade", 32));
@@ -323,10 +324,15 @@ namespace TC2.Siege
 
 		[ISystem.Event<Spawner.SpawnEvent>(ISystem.Mode.Single)]
 		public static void OnSpawn(ISystem.Info info, Entity entity, ref Spawner.SpawnEvent data,
-		[Source.Owned] ref Spawner.Data spawner, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Siege.Planner planner, [Source.Owned] ref Selection.Data selection)
+		[Source.Owned] ref Spawner.Data spawner, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state)
 		{
+			var weapon_mult = 1.00f;
+			var armor_mult = 1.00f;
+
+			armor_mult = g_siege_state.difficulty * 0.10f;
+
 			//App.WriteLine($"spawn event {data.ent_target}");
-			SetKoboldLoadout(data.ent_target);
+			SetKoboldLoadout(data.ent_target, weapon_mult: weapon_mult, armor_mult: armor_mult);
 		}
 
 		public static bool TryFindTarget(ref Region.Data region, Entity ent_planner, IFaction.Handle faction, Vector2 position_src, out Entity ent_target, out Vector2 position_target)
