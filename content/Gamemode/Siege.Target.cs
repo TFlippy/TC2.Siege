@@ -33,7 +33,7 @@ namespace TC2.Siege
 				//	}
 				//}
 
-				[ISystem.LateUpdate(ISystem.Mode.Single)]
+				[ISystem.LateUpdate(ISystem.Mode.Single, interval: 1.00f)]
 				public static void OnUpdateCapturable(ISystem.Info info, Entity entity,
 				[Source.Owned] ref Capturable.Data capturable, [Source.Owned] ref Faction.Data faction, [Source.Owned] ref Siege.Target.Data siege_target, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state)
 				{

@@ -29,7 +29,7 @@ namespace TC2.Siege
 			/// difficulty_step *= 1.00f + (player_count * difficulty_player_mult);
 			/// </code>
 			/// </summary>
-			[Save.Ignore] public float difficulty_player_mult = 0.10f;
+			[Save.Ignore] public float difficulty_player_mult = 0.20f;
 
 			[Save.Ignore] public float difficulty_wave_mult = 0.10f;
 

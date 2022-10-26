@@ -68,7 +68,7 @@ namespace TC2.Siege
 						using (GUI.Group.New(size: new Vector2(GUI.GetRemainingWidth(), GUI.GetRemainingHeight())))
 						{
 							GUI.TitleCentered($"Wave: {this.g_siege_state.wave_current}", size: 32, pivot: new(1.00f, 0.00f));
-							GUI.TitleCentered($"Threat: {this.g_siege_state.difficulty:0.0}", size: 20, pivot: new(1.00f, 1.00f));
+							GUI.TitleCentered($"Hazard: {this.g_siege_state.difficulty:0.0}", size: 20, pivot: new(1.00f, 1.00f));
 						}
 					}
 				}

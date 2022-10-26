@@ -11,6 +11,7 @@ namespace TC2.Siege
 			[IComponent.Data(Net.SendType.Unreliable)]
 			public partial struct Data: IComponent
 			{
+				[Net.Ignore]
 				public FixedArray4<Crafting.Product> rewards;
 			}
 
@@ -33,7 +34,7 @@ namespace TC2.Siege
 			}
 
 #if SERVER
-			[ISystem.LateUpdate(ISystem.Mode.Single)]
+			[ISystem.LateUpdate(ISystem.Mode.Single, interval: 0.50f)]
 			public static void OnUpdateRewards(ISystem.Info info, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state, [Source.Global] ref Siege.Bounty.Global g_bounty)
 			{
 				ref var region = ref info.GetRegion();
