@@ -52,7 +52,10 @@ namespace TC2.Siege
 					var difficulty_old = g_siege_state.difficulty;
 					g_siege_state.difficulty = difficulty;
 
-					Server.SendChatMessage($"Set difficulty from {difficulty_old:0.00} to {g_siege_state.difficulty:0.00}.", channel: Chat.Channel.System, target_player_id: context.GetConnection().GetPlayerID());
+					if (context.GetConnection().IsNotNull())
+					{
+						Server.SendChatMessage($"Set difficulty from {difficulty_old:0.00} to {g_siege_state.difficulty:0.00}.", channel: Chat.Channel.System, target_player_id: context.GetConnection().GetPlayerID());
+					}
 
 					//else
 					//{

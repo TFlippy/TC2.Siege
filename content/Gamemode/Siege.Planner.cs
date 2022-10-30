@@ -342,6 +342,12 @@ namespace TC2.Siege
 
 			//App.WriteLine($"spawn event {data.ent_target}");
 			SetKoboldLoadout(data.ent_target, weapon_mult: weapon_mult, armor_mult: armor_mult);
+
+			ref var commandable = ref data.ent_target.GetComponent<Commandable.Data>();
+			if (!commandable.IsNull())
+			{
+				commandable.flags |= Commandable.Data.Flags.No_Select;
+			}
 		}
 
 		public static bool TryFindTarget(ref Region.Data region, Entity ent_planner, IFaction.Handle faction, Vector2 position_src, out Entity ent_target, out Vector2 position_target)
@@ -521,7 +527,7 @@ namespace TC2.Siege
 										if (!arg.IsNull() && arg.selection_count < arg.selection.Length)
 										{
 											//App.WriteLine(behavior.idle_timer);
-											if (faction.id == arg.faction_id && (behavior.idle_timer >= 2.00f || !behavior.ref_target_body.entity.IsValid() || behavior.type == AI.Behavior.Type.None || movement.type == AI.Movement.Type.None))
+											if (faction.id == arg.faction_id && !commandable.flags.HasAny(Commandable.Data.Flags.No_Select) && (behavior.idle_timer >= 2.00f || !behavior.ref_target_body.entity.IsValid() || behavior.type == AI.Behavior.Type.None || movement.type == AI.Movement.Type.None))
 											{
 												//if (Vector2.DistanceSquared(transform.position, arg.target_position) <= (128 * 128))
 												//{
