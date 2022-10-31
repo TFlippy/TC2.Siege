@@ -89,6 +89,30 @@ namespace TC2.Siege
 			}
 		}
 
+		[ChatCommand.Region("setwave", "", admin: true)]
+		public static void SetWaveCommand(ref ChatCommand.Context context, int wave)
+		{
+			ref var region = ref context.GetRegion();
+			if (!region.IsNull())
+			{
+				ref var g_siege_state = ref region.GetSingletonComponent<Siege.Gamemode.State>();
+				if (!g_siege_state.IsNull())
+				{
+					if (g_siege_state.status == Gamemode.Status.Preparing)
+					{
+						g_siege_state.status = Gamemode.Status.Running;
+					}
+					
+					g_siege_state.wave_current = (ushort)(wave - 1);
+					g_siege_state.t_next_wave = g_siege_state.t_match_elapsed;
+					Server.SendChatMessage($"Set wave to {wave}.", channel: Chat.Channel.System);
+					
+					region.SyncGlobal(ref g_siege_state);
+				}
+			}
+		}
+
+
 		[ChatCommand.Region("pause", "", admin: true)]
 		public static void PauseCommand(ref ChatCommand.Context context, bool? value = null)
 		{

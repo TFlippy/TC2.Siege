@@ -10,8 +10,38 @@
 			priority: 0
 			duration: 60.000
 			
+			sound: "music.action.08.short"
+			sound_volume: 1.000
+			sound_pitch: 1.000
+			sound_delay: 3.000
+		}
+		{
+			type: recurrent
+			name: "Normal"
+		
+			period: 2
+			weight: 0.500	
+			priority: 1
+			duration: 60.000
 			
-
+			sound: "music.action.02.cue"
+			sound_volume: 0.800
+			sound_pitch: 1.000
+			sound_delay: 3.000
+		}
+		{
+			type: recurrent
+			name: "Normal"
+		
+			period: 3
+			weight: 0.500	
+			priority: 2
+			duration: 60.000
+			
+			sound: "music.action.05.short"
+			sound_volume: 0.800
+			sound_pitch: 1.000
+			sound_delay: 3.000
 		}
 		{
 			type: recurrent
@@ -22,7 +52,10 @@
 			priority: 10
 			duration: 300.000
 
-
+			sound: "music.industry.01.long"
+			sound_volume: 0.600
+			sound_pitch: 1.000
+			sound_delay: 1.000
 		}
 	]
 }

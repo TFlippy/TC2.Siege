@@ -56,6 +56,8 @@ namespace TC2.Siege
 
 				Active = 1 << 0,
 				Paused = 1 << 1,
+
+				Sound_Pending = 1 << 2
 			}
 
 			public enum Status: uint
@@ -91,6 +93,7 @@ namespace TC2.Siege
 				[Save.Ignore] public Siege.Gamemode.Status status;
 
 				[Save.Ignore] public float t_match_elapsed;
+				[Save.Ignore] public float t_last_wave;
 				[Save.Ignore] public float t_next_wave;
 				[Save.Ignore, Net.Ignore] public float t_next_restart;
 				[Save.Ignore, Net.Ignore] public float t_last_notification;
@@ -364,6 +367,7 @@ namespace TC2.Siege
 							if (time >= g_siege_state.t_next_wave)
 							{
 								g_siege_state.wave_current++;
+								g_siege_state.t_last_wave = time;
 
 								var difficulty_step = g_siege.difficulty_step;
 								difficulty_step *= 1.00f + (player_count * g_siege.difficulty_player_mult);
@@ -437,6 +441,13 @@ namespace TC2.Siege
 									ref var wave = ref scenario.waves[scenario_wave_index];
 									duration = wave.duration;
 
+									App.WriteLine($"Wave: [{wave.name}] {wave.sound}; {wave.sound_volume}; {wave.sound_pitch}");
+
+									if (wave.sound.id != 0)
+									{
+										g_siege_state.flags.SetFlag(Siege.Gamemode.Flags.Sound_Pending, true);
+										//Sound.PlayGUI(ref region, wave.sound, volume: wave.sound_volume, wave.sound_pitch);
+									}
 								}
 								else
 								{
@@ -454,6 +465,20 @@ namespace TC2.Siege
 								//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
 								//Notification.Push(ref region, $"Wave #{g_siege_state.wave_current}!", Color32BGRA.Red, lifetime: 30.00f, "ui.alert.11", volume: 0.60f, pitch: 0.80f);
 								Notification.Push(ref region, $"Wave #{g_siege_state.wave_current}!", Color32BGRA.Red, lifetime: 30.00f, "siren.00", volume: 0.20f, pitch: 1.00f, send_type: Net.SendType.Reliable);
+							}
+							else
+							{
+								ref var scenario = ref g_siege_state.scenario.GetData(out var scenario_asset);
+								if (!scenario.IsNull() && g_siege_state.scenario_wave_index_current.TryGetValue(out var scenario_wave_index))
+								{
+									ref var wave = ref scenario.waves[scenario_wave_index];
+
+									if (wave.sound.id != 0 && g_siege_state.flags.HasAny(Siege.Gamemode.Flags.Sound_Pending) && (time - g_siege_state.t_last_wave) >= wave.sound_delay)
+									{
+										g_siege_state.flags.SetFlag(Siege.Gamemode.Flags.Sound_Pending, false);
+										Sound.PlayGUI(ref region, wave.sound, volume: wave.sound_volume, wave.sound_pitch);
+									}
+								}
 							}
 						}
 					}

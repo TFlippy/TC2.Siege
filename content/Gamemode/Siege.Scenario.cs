@@ -30,7 +30,7 @@ namespace TC2.Siege
 		}
 
 		[Serializable]
-		public partial struct Wave: IPriority
+		public partial struct Wave
 		{
 			public enum Type: uint
 			{
@@ -49,11 +49,16 @@ namespace TC2.Siege
 			public int priority;
 			public float duration;
 
-			float IPriority.GetPriority() => this.priority;
-			//public int wave;
+			[Save.NewLine]
+			public Sound.Handle sound;
+			public float sound_volume = 0.40f;
+			public float sound_pitch = 1.00f;
+			public float sound_delay = 5.00f;
 
+			public Wave()
+			{
 
-
+			}
 		}
 	}
 }
