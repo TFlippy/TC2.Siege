@@ -1,0 +1,28 @@
+{
+	waves:
+	[
+		{
+			type: recurrent
+			name: "Normal"
+		
+			period: 1
+			weight: 0.500	
+			priority: 0
+			duration: 60.000
+			
+			
+
+		}
+		{
+			type: recurrent
+			name: "Intermission"
+
+			period: 5
+			weight: 10.000	
+			priority: 10
+			duration: 300.000
+
+
+		}
+	]
+}

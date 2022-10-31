@@ -3,7 +3,7 @@ using TC2.Base.Components;
 
 namespace TC2.Siege
 {
-	public interface IScenario: IAsset2<IScenario, IScenario.Data>
+	public partial interface IScenario: IAsset2<IScenario, IScenario.Data>
 	{
 		static void IAsset2<IScenario, IScenario.Data>.OnUpdate(IScenario.Definition definition, ref IScenario.Data data_new)
 		{
@@ -24,13 +24,13 @@ namespace TC2.Siege
 		}
 
 		[Serializable]
-		public struct Data
+		public partial struct Data
 		{
 			public IScenario.Wave[] waves;
 		}
 
 		[Serializable]
-		public struct Wave
+		public partial struct Wave: IPriority
 		{
 			public enum Type: uint
 			{
@@ -40,12 +40,20 @@ namespace TC2.Siege
 				Recurrent
 			}
 
-			public float frequency;
-			public float priority;
+			public Wave.Type type;
+			public string name;
 
-			public int wave;
-
+			[Save.NewLine]
+			public int period;
+			public float weight;
+			public int priority;
 			public float duration;
+
+			float IPriority.GetPriority() => this.priority;
+			//public int wave;
+
+
+
 		}
 	}
 }

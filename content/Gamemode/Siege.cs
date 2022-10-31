@@ -79,6 +79,9 @@ namespace TC2.Siege
 				[Save.Ignore] public byte target_count;
 				[Save.Ignore] public byte player_count;
 
+				[Save.Ignore] public IScenario.Handle scenario = "bouda.00";
+				[Save.Ignore] public int? scenario_wave_index_current;
+
 				/// <summary>
 				/// Current match difficulty.
 				/// </summary>
@@ -280,6 +283,20 @@ namespace TC2.Siege
 			}
 		}
 
+		private struct WaveInfo
+		{
+			public int index;
+			public int priority;
+			public float weight;
+
+			public WaveInfo(int index, int priority, float weight)
+			{
+				this.index = index;
+				this.priority = priority;
+				this.weight = weight;
+			}
+		}
+
 		[ISystem.VeryLateUpdate(ISystem.Mode.Single)]
 		public static void UpdateSiegeLate(ISystem.Info info, [Source.Global] ref Siege.Gamemode g_siege, [Source.Global] ref Siege.Gamemode.State g_siege_state)
 		{
@@ -355,13 +372,79 @@ namespace TC2.Siege
 								difficulty_step = Maths.SnapCeil(difficulty_step, 0.25f);
 
 								g_siege_state.difficulty = Maths.Clamp(g_siege_state.difficulty + difficulty_step, 1.00f, g_siege.difficulty_max);
+								g_siege_state.scenario_wave_index_current = null;
 
 								var duration = g_siege.wave_interval;
-								if (g_siege_state.wave_current % 5 == 0)
+						
+								ref var scenario = ref g_siege_state.scenario.GetData(out var scenario_asset);
+								if (!scenario.IsNull())
 								{
-									duration *= 3.00f;
+									//App.WriteLine($"{scenario_asset.identifier}");
+
+									var priority_max = 0;
+
+									Span<WaveInfo> waves_tmp = stackalloc WaveInfo[scenario.waves.Length];
+									var waves_tmp_count = 0;
+
+									for (int i = 0; i < scenario.waves.Length; i++)
+									{
+										ref var wave = ref scenario.waves[i];
+
+										if (wave.type == IScenario.Wave.Type.Single)
+										{
+											if (wave.period == g_siege_state.wave_current)
+											{
+												//waves_tmp[0] = new(i, wave.priority, wave.weight);
+												//waves_tmp_count = 1;
+											}
+										}
+										else if (wave.type == IScenario.Wave.Type.Recurrent)
+										{
+											if (g_siege_state.wave_current % wave.period == 0)
+											{
+												//waves_span.AddPrioritized(new WaveInfo(i, wave.priority, wave.weight), ref waves_span_count);
+
+												waves_tmp.Add(new WaveInfo(i, wave.priority, wave.weight), ref waves_tmp_count);
+												priority_max = Math.Max(priority_max, wave.priority);
+											}
+										}
+									}
+
+									if (waves_tmp_count > 0)
+									{
+										var waves_filtered = waves_tmp.Slice(0, waves_tmp_count).ToArray();
+										var wave_info_current = waves_filtered.Where(x => x.priority >= priority_max).FirstOrDefault();
+										g_siege_state.scenario_wave_index_current = wave_info_current.index;
+
+										App.WriteLine(wave_info_current.index);
+									}
+
+									//Span<WaveInfo> waves_filtered = stackalloc WaveInfo[waves_tmp_count];
+									//var waves_filtered_count = 0;
+
+									//for (int i = 0; i < waves_tmp_count; i++)
+									//{
+									//	ref var wave_info = ref waves_tmp[i];
+									//	if (wave_info.priority >= priority_max)
+									//	{
+									//		waves_filtered.Add(wave_info, ref waves_filtered_count);
+									//	}
+									//}
 								}
 
+								if (!scenario.IsNull() && g_siege_state.scenario_wave_index_current.TryGetValue(out var scenario_wave_index))
+								{
+									ref var wave = ref scenario.waves[scenario_wave_index];
+									duration = wave.duration;
+
+								}
+								else
+								{
+									if (g_siege_state.wave_current % 5 == 0)
+									{
+										duration *= 3.00f;
+									}
+								}
 
 								//g_siege_state.t_next_wave = time + Maths.Snap(g_siege.wave_interval + Maths.Clamp(g_siege_state.difficulty * 5.00f * g_siege.wave_interval_difficulty_mult, 0.00f, 300.00f), 15.00f);
 								g_siege_state.t_next_wave = time + Maths.Snap(duration, 15.00f);
