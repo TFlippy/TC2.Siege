@@ -50,10 +50,10 @@ namespace TC2.Siege
 			public float duration;
 
 			[Save.NewLine]
-			public Sound.Handle sound;
-			public float sound_volume = 0.40f;
-			public float sound_pitch = 1.00f;
-			public float sound_delay = 5.00f;
+			public Sound.Handle music;
+			public float music_volume = 0.40f;
+			public float music_pitch = 1.00f;
+			public float music_delay = 5.00f;
 
 			public Wave()
 			{

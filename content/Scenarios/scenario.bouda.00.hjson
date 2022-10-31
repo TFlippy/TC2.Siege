@@ -10,10 +10,10 @@
 			priority: 0
 			duration: 60.000
 			
-			sound: "music.action.08.short"
-			sound_volume: 1.000
-			sound_pitch: 1.000
-			sound_delay: 3.000
+			music: "music.action.08.short"
+			music_volume: 0.600
+			music_pitch: 1.000
+			music_delay: 3.000
 		}
 		{
 			type: recurrent
@@ -24,10 +24,10 @@
 			priority: 1
 			duration: 60.000
 			
-			sound: "music.action.02.cue"
-			sound_volume: 0.800
-			sound_pitch: 1.000
-			sound_delay: 3.000
+			music: "music.action.02.cue"
+			music_volume: 0.360
+			music_pitch: 1.000
+			music_delay: 3.000
 		}
 		{
 			type: recurrent
@@ -38,10 +38,10 @@
 			priority: 2
 			duration: 60.000
 			
-			sound: "music.action.05.short"
-			sound_volume: 0.800
-			sound_pitch: 1.000
-			sound_delay: 3.000
+			music: "music.action.05.short"
+			music_volume: 0.400
+			music_pitch: 1.000
+			music_delay: 3.000
 		}
 		{
 			type: recurrent
@@ -52,10 +52,38 @@
 			priority: 10
 			duration: 300.000
 
-			sound: "music.industry.01.long"
-			sound_volume: 0.600
-			sound_pitch: 1.000
-			sound_delay: 1.000
+			music: "music.danger.01.long"
+			music_volume: 0.250
+			music_pitch: 1.000
+			music_delay: 1.000
+		}
+		{
+			type: recurrent
+			name: "Intermission"
+
+			period: 15
+			weight: 10.000	
+			priority: 15
+			duration: 300.000
+
+			music: "music.danger.00.long"
+			music_volume: 0.200
+			music_pitch: 1.000
+			music_delay: 1.000
+		}
+		{
+			type: recurrent
+			name: "Intermission"
+
+			period: 25
+			weight: 10.000	
+			priority: 20
+			duration: 300.000
+
+			music: "music.action.03.long"
+			music_volume: 0.200
+			music_pitch: 1.000
+			music_delay: 1.000
 		}
 	]
 }

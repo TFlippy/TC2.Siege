@@ -55,9 +55,7 @@ namespace TC2.Siege
 				None = 0,
 
 				Active = 1 << 0,
-				Paused = 1 << 1,
-
-				Sound_Pending = 1 << 2
+				Paused = 1 << 1
 			}
 
 			public enum Status: uint
@@ -441,12 +439,12 @@ namespace TC2.Siege
 									ref var wave = ref scenario.waves[scenario_wave_index];
 									duration = wave.duration;
 
-									App.WriteLine($"Wave: [{wave.name}] {wave.sound}; {wave.sound_volume}; {wave.sound_pitch}");
+									App.WriteLine($"Wave: [{wave.name}] {wave.music}; {wave.music_volume}; {wave.music_pitch}");
 
-									if (wave.sound.id != 0)
+									if (wave.music.id != 0)
 									{
-										g_siege_state.flags.SetFlag(Siege.Gamemode.Flags.Sound_Pending, true);
-										//Sound.PlayGUI(ref region, wave.sound, volume: wave.sound_volume, wave.sound_pitch);
+										//g_siege_state.flags.SetFlag(Siege.Gamemode.Flags.Sound_Pending, true);
+										Sound.PlayMusic(ref region, wave.music, volume: wave.music_volume, pitch: wave.music_pitch, delay: wave.music_delay);
 									}
 								}
 								else
@@ -468,17 +466,17 @@ namespace TC2.Siege
 							}
 							else
 							{
-								ref var scenario = ref g_siege_state.scenario.GetData(out var scenario_asset);
-								if (!scenario.IsNull() && g_siege_state.scenario_wave_index_current.TryGetValue(out var scenario_wave_index))
-								{
-									ref var wave = ref scenario.waves[scenario_wave_index];
+								//ref var scenario = ref g_siege_state.scenario.GetData(out var scenario_asset);
+								//if (!scenario.IsNull() && g_siege_state.scenario_wave_index_current.TryGetValue(out var scenario_wave_index))
+								//{
+								//	ref var wave = ref scenario.waves[scenario_wave_index];
 
-									if (wave.sound.id != 0 && g_siege_state.flags.HasAny(Siege.Gamemode.Flags.Sound_Pending) && (time - g_siege_state.t_last_wave) >= wave.sound_delay)
-									{
-										g_siege_state.flags.SetFlag(Siege.Gamemode.Flags.Sound_Pending, false);
-										Sound.PlayGUI(ref region, wave.sound, volume: wave.sound_volume, wave.sound_pitch);
-									}
-								}
+								//	if (wave.sound.id != 0 && g_siege_state.flags.HasAny(Siege.Gamemode.Flags.Sound_Pending) && (time - g_siege_state.t_last_wave) >= wave.sound_delay)
+								//	{
+								//		g_siege_state.flags.SetFlag(Siege.Gamemode.Flags.Sound_Pending, false);
+								//		Sound.PlayGUI(ref region, wave.sound, volume: wave.sound_volume, wave.sound_pitch);
+								//	}
+								//}
 							}
 						}
 					}
