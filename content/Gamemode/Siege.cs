@@ -158,6 +158,7 @@ namespace TC2.Siege
 					else if (identifier.StartsWith("munitions.", StringComparison.OrdinalIgnoreCase)) return true;
 					else if (identifier.StartsWith("forge.", StringComparison.OrdinalIgnoreCase)) return true;
 					else if (identifier.StartsWith("manufactory.", StringComparison.OrdinalIgnoreCase)) return true;
+					else if (identifier.StartsWith("vending.", StringComparison.OrdinalIgnoreCase)) return true;
 					else return false;
 				});
 

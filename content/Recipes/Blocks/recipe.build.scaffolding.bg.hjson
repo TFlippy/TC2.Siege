@@ -2,8 +2,8 @@
 	name: "Scaffolding (Background)"
 	desc:
 		'''
-		Fairly durable metal scaffolding.
-		Has a high placement length.
+		Decently durable metal scaffolding.
+		Has a long placement range.
 		'''
 	
 	icon:

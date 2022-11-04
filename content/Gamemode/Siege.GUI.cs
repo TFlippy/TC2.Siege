@@ -75,7 +75,7 @@ namespace TC2.Siege
 			}
 		}
 
-		[ISystem.EarlyGUI(ISystem.Mode.Single)]
+		[ISystem.EarlyGUI(ISystem.Mode.Single), HasTag("local", true, Source.Modifier.Owned)]
 		public static void OnGUIDefender(Entity entity, [Source.Owned] in Player.Data player, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state, [Source.Global] in Siege.Bounty.Global g_bounty)
 		{
 			if (player.IsLocal() && player.faction_id == g_siege_state.faction_defenders)
@@ -115,7 +115,7 @@ namespace TC2.Siege
 			}
 		}
 
-		[ISystem.EarlyGUI(ISystem.Mode.Single)]
+		[ISystem.EarlyGUI(ISystem.Mode.Single), HasTag("local", true, Source.Modifier.Owned)]
 		public static void OnGUIAttacker(Entity entity, [Source.Owned] in Player.Data player, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state)
 		{
 			if (player.IsLocal() && player.faction_id == g_siege_state.faction_attackers)
