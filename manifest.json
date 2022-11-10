@@ -19,5 +19,7 @@
       "required": true
     }
   ],
-  "tags": []
+  "tags": [
+    "gamemode"
+  ]
 }
