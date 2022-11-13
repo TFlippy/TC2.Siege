@@ -40,10 +40,52 @@ namespace TC2.Siege
 			[Save.Ignore, Net.Ignore] public float next_search;
 			//[Save.Ignore, Net.Ignore] public float next_wave;
 
+			[Save.Ignore] public FixedArray32<IUnit.Handle> orderedUnits = new FixedArray32<IUnit.Handle>();
+			[Save.Ignore] public int money = 100;
+
 			public Planner()
 			{
 
 			}
+		}
+
+		public partial struct BuyUnitRPC: Net.IRPC<Siege.Planner>
+		{
+			public IUnit.Handle unit;
+			
+#if SERVER
+			public void Invoke(ref NetConnection connection, Entity entity, ref Siege.Planner planner)
+			{
+				for (int i = 0; i < planner.orderedUnits.Length; i++)
+				{
+					if (planner.orderedUnits[i].id == 0)
+					{
+						planner.orderedUnits[i] = this.unit;
+						planner.money -= this.unit.GetData().price;
+						break;
+					}
+				}
+				planner.Sync(entity);
+			}
+#endif
+		}
+
+		public partial struct RemoveUnitRPC: Net.IRPC<Siege.Planner>
+		{
+			public int index;
+
+#if SERVER
+			public void Invoke(ref NetConnection connection, Entity entity, ref Siege.Planner planner)
+			{
+				if (planner.orderedUnits[this.index].id != 0)
+				{
+					var unit = planner.orderedUnits[this.index].GetData();
+					planner.money += unit.price;
+					planner.orderedUnits[this.index] = 0;
+				}
+				planner.Sync(entity);
+			}
+#endif
 		}
 
 #if SERVER
@@ -331,13 +373,77 @@ namespace TC2.Siege
 			}
 		}
 
+		public static void SetKoboldLoadoutManual(Entity ent_kobold, IUnit.Handle unit)
+		{
+			var random = XorRandom.New();
+			var loadout = new Loadout.Data();
+			var bounty = new Siege.Bounty.Data();
+
+			ref var shipment = ref loadout.shipments[0];
+			shipment.flags.SetFlag(Shipment.Flags.Unpack, true);
+
+			var items_span = shipment.items.AsSpan();
+			var rewards_span = bounty.rewards.AsSpan();
+
+			var d_unit = unit.GetData();
+
+			foreach (var equipment in d_unit.equipment)
+			{
+				items_span.Add(Shipment.Item.Prefab(equipment, flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
+			}
+			foreach (var item in d_unit.items)
+			{
+				items_span.Add(Shipment.Item.Prefab(item, flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
+			}
+
+			foreach (var material in d_unit.material)
+			{
+				items_span.Add(Shipment.Item.Resource(material.Item1, material.Item2));
+			}
+
+
+			rewards_span.Add(Crafting.Product.Money(d_unit.reward));
+
+
+
+			ref var loadout_new = ref ent_kobold.GetOrAddComponent<Loadout.Data>(sync: false, ignore_mask: true);
+			if (!loadout_new.IsNull())
+			{
+				loadout_new = loadout;
+			}
+
+			ref var bounty_new = ref ent_kobold.GetOrAddComponent<Siege.Bounty.Data>(sync: false, ignore_mask: true);
+			if (!bounty_new.IsNull())
+			{
+				bounty_new = bounty;
+				//App.WriteLine($"add bounty {bounty_new.rewards[0].type} {bounty_new.rewards[0].amount}");
+			}
+
+			ref var ai = ref ent_kobold.GetComponent<AI.Data>();
+			if (!ai.IsNull())
+			{
+				ai.stance = AI.Stance.Aggressive;
+			}
+
+			foreach (var h_inventory in ent_kobold.GetInventories())
+			{
+				h_inventory.Flags |= Inventory.Flags.Unlimited | Inventory.Flags.No_Drop;
+			}
+
+			ref var marker = ref ent_kobold.GetOrAddComponent<Minimap.Marker.Data>(sync: true);
+			if (!marker.IsNull())
+			{
+				marker.sprite = new Sprite("ui_icons_minimap", 16, 16, 0, 0);
+			}
+		}
+
 		[ISystem.Event<Spawner.SpawnEvent>(ISystem.Mode.Single)]
 		public static void OnSpawn(ISystem.Info info, Entity entity, ref Spawner.SpawnEvent data,
 		[Source.Owned] ref Spawner.Data spawner, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state)
 		{
 			var weapon_mult = 1.00f;
 			var armor_mult = 1.00f;
-
+			
 			armor_mult = g_siege_state.difficulty * 0.04f;
 
 			//App.WriteLine($"spawn event {data.ent_target}");
@@ -582,6 +688,34 @@ namespace TC2.Siege
 
 									if (TryFindNearestSpawn(ref region, faction.id, target_position, out var ent_spawn, out var pos_spawn))
 									{
+
+										for (uint i = 0; i < region.GetConnectedPlayerCount(); i++)
+										{
+											var player = region.GetConnectedPlayerByIndex(i);
+											if (player.faction_id == g_siege_state.faction_attackers.id)
+											{
+												var group_size_tmp2 = 1 + random.NextIntRange(0, 2);
+												for (int i2 = 0; i2 < group_size_tmp2 && total_count + i2 < g_siege.max_npc_count; i2++)
+												{
+													for (int o = 0; o < planner.orderedUnits.Length; o++)
+													{
+														if (planner.orderedUnits[i].id != 0)
+														{
+															var unit = planner.orderedUnits[i].GetData();
+
+															region.SpawnPrefab(unit.creature, pos_spawn + new Vector2(random.NextFloatRange(-2, 2), 0.00f), faction_id: faction.id).ContinueWith((ent) =>
+															{
+																SetKoboldLoadoutManual(ent, unit);
+															});
+
+															break;
+														}
+													}
+												}
+												return;
+											}
+										}
+
 										var weapon_mult = 1.00f;
 										var armor_mult = 1.00f;
 

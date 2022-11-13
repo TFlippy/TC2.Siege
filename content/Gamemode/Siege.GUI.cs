@@ -5,6 +5,7 @@ namespace TC2.Siege
 {
 	public static partial class Siege
 	{
+
 #if CLIENT
 		public partial struct SiegeDefenderGUI: IGUICommand
 		{
@@ -92,59 +93,6 @@ namespace TC2.Siege
 #endif
 
 
-		[IComponent.Data(Net.SendType.Unreliable)]
-		public partial struct WaveDesigner: IComponent
-		{
-			public FixedArray32<IUnit.Handle> units = new FixedArray32<IUnit.Handle>();
-
-			public WaveDesigner()
-			{
-
-			}
-		}
-
-		public partial struct AddUnitRPC: Net.IRPC<Siege.WaveDesigner>
-		{
-			public IUnit.Handle unit;
-
-#if SERVER
-			public void Invoke(ref NetConnection connection, Entity entity, ref Siege.WaveDesigner wave)
-			{
-				for (int i = 0; i < wave.units.Length; i++)
-				{
-					if (wave.units[i].IsNull())
-					{
-						wave.units[i] = this.unit;
-					}
-				}
-				wave.Sync(entity);
-			}
-#endif
-		}
-
-		[IComponent.Data(Net.SendType.Unreliable)]
-		public partial struct ControllerData: IComponent
-		{
-			public int money;
-
-			public ControllerData(int money)
-			{
-				this.money = money;
-			}
-		}
-
-		public partial struct ChangeMoney: Net.IRPC<Siege.ControllerData>
-		{
-			public int change;
-
-#if SERVER
-			public void Invoke(ref NetConnection connection, Entity entity, ref Siege.ControllerData data)
-			{
-				data.money += this.change;
-				data.Sync(entity);
-			}
-#endif
-		}
 
 #if CLIENT
 		public partial struct SiegeAttackerGUI: IGUICommand
@@ -154,6 +102,8 @@ namespace TC2.Siege
 			public Entity entity;
 			public static List<uint> unit_indices = new List<uint>(64);
 			public static float scale = 2;
+			public Region.Data region;
+			public Player.Data player;
 
 			public void Draw()
 			{
@@ -162,8 +112,19 @@ namespace TC2.Siege
 				{
 					if (widget.show)
 					{
+						var time_left = MathF.Max(this.g_siege_state.t_next_wave - this.g_siege_state.t_match_elapsed, 0.00f);
+
 						GUI.Title("Purchase units");
-						using (GUI.Scrollbox.New("attacker_unitshop", GUI.GetAvailableSize()))
+						GUI.NewLine(8);
+						GUI.DrawMoney(GetMoney(ref region), new Vector2(64, 16));
+						GUI.SameLine(8);
+						GUI.TitleCentered($"Next wave {(time_left):0} s", size: 16, color: time_left > 10.00f ? GUI.font_color_title : GUI.font_color_yellow);
+						GUI.NewLine(26);
+						GUI.Title("Catalog");
+						GUI.SameLine(100);
+						GUI.Title("Queued");
+						GUI.NewLine();
+						using (GUI.Scrollbox.New("attacker_unitshop", GUI.GetAvailableSize() / 2))
 						{
 							using (var grid = GUI.Grid.New(size: GUI.GetRemainingSpace()))
 							{
@@ -194,20 +155,10 @@ namespace TC2.Siege
 										{
 											GUI.Draw9Slice(GUI.tex_slot_simple, new Vector4(4), button.bb);
 											GUI.DrawSpriteCentered(recipe.icon, button.bb, scale: scale);
-
-											if (button.pressed)
+											
+											if (button.pressed && GetMoney(ref region) >= recipe.price)
 											{
-												var rpc = new Siege.AddUnitRPC
-												{
-													unit = new IUnit.Handle(pair),
-												};
-												rpc.Send(this.entity);
-
-												var rpc1 = new Siege.ChangeMoney
-												{
-													change = -recipe.price,
-												};
-												rpc1.Send(this.entity);
+												PurchaseUnit(ref region, new IUnit.Handle(pair));
 											}
 										}
 										if (GUI.IsItemHovered())
@@ -226,13 +177,174 @@ namespace TC2.Siege
 								}
 							}
 						}
+						GUI.SameLine();
+						using (GUI.Scrollbox.New("attacker_wavelist", GUI.GetAvailableSize()))
+						{
+							FixedArray32<IUnit.Handle> units = GetUnits(ref region);
+							using (var grid = GUI.Grid.New(size: GUI.GetRemainingSpace()))
+							{
+								for (int i = 0; i < units.Length; i++)
+								{
+									if (units[i].id != 0)
+									{
+										IUnit.Data unit = units[i].GetData();
+										var frame_size = unit.icon.GetFrameSize(scale);
+										frame_size += new Vector2(8, 8);
+										frame_size = frame_size.ScaleToNearestMultiple(new Vector2(48, 48));
+										grid.Push(frame_size);
+
+										using (var button = GUI.CustomButton.New(unit.name + i, frame_size, sound: GUI.sound_select, sound_volume: 0.10f))
+										{
+											GUI.Draw9Slice(GUI.tex_slot_simple, new Vector4(4), button.bb);
+											GUI.DrawSpriteCentered(unit.icon, button.bb, scale: scale);
+
+											if (button.pressed)
+											{
+												RemoveUnit(ref region, i);
+											}
+
+										}
+										if (GUI.IsItemHovered())
+										{
+											using (GUI.Tooltip.New())
+											{
+												using (GUI.Wrap.Push(325))
+												{
+													GUI.Title("Remove: " + unit.name);
+													GUI.Text(unit.desc, color: GUI.font_color_default);
+													GUI.DrawMoney(unit.price, new Vector2(8, 8));
+												}
+											}
+										}
+									}
+								}
+							}
+						}
 					}
+				}
+			}
+		}
+		[Query]
+		public delegate void GetPlannnerQuery(ISystem.Info info, Entity entity, [Source.Owned] ref Siege.Planner planner);
+
+		private struct PurchaseUnitArgs
+		{
+			public IUnit.Handle unit_id;
+
+			public PurchaseUnitArgs(IAsset2<IUnit, IUnit.Data>.Handle unit_id)
+			{
+				this.unit_id = unit_id;
+			}
+		}
+
+		public static void PurchaseUnit(ref Region.Data region, IUnit.Handle unit)
+		{
+			var arg = new PurchaseUnitArgs(unit);
+			region.Query<GetPlannnerQuery>(Func).Execute(ref arg);
+			static void Func(ISystem.Info info, Entity ent_planner, [Source.Owned] ref Siege.Planner planner)
+			{
+				ref var arg = ref info.GetParameter<PurchaseUnitArgs>();
+				if (!arg.IsNull())
+				{
+					var rpc = new Siege.BuyUnitRPC
+					{
+						unit = arg.unit_id,
+					};
+					rpc.Send(ent_planner);
+				}
+			}
+		}
+
+		[Query]
+		public delegate void GetPlannnerUnitsQuery(ISystem.Info info, Entity entity, [Source.Owned] ref Siege.Planner planner);
+
+		private struct GetUnitArgs
+		{
+			public FixedArray32<IUnit.Handle> units = new FixedArray32<IAsset2<IUnit, IUnit.Data>.Handle>();
+
+			public GetUnitArgs()
+			{
+			}
+		}
+
+		public static FixedArray32<IUnit.Handle> GetUnits(ref Region.Data region)
+		{
+			var arg = new GetUnitArgs()
+			{
+				units = new FixedArray32<IUnit.Handle>()
+			};
+			region.Query<GetPlannnerUnitsQuery>(Func).Execute(ref arg);
+			static void Func(ISystem.Info info, Entity ent_planner, [Source.Owned] ref Siege.Planner planner)
+			{
+				ref var arg = ref info.GetParameter<GetUnitArgs>();
+				if (!arg.IsNull())
+				{
+					arg.units = planner.orderedUnits;
+				}
+			}
+			return arg.units;
+		}
+
+		[Query]
+		public delegate void GetPlannnerMoneyQuery(ISystem.Info info, Entity entity, [Source.Owned] ref Siege.Planner planner);
+
+		private struct GetMoneyArgs
+		{
+			public int money = 0;
+
+			public GetMoneyArgs()
+			{
+			}
+		}
+
+		public static int GetMoney(ref Region.Data region)
+		{
+			var arg = new GetMoneyArgs();
+			region.Query<GetPlannnerMoneyQuery>(Func).Execute(ref arg);
+			static void Func(ISystem.Info info, Entity ent_planner, [Source.Owned] ref Siege.Planner planner)
+			{
+				ref var arg = ref info.GetParameter<GetMoneyArgs>();
+				if (!arg.IsNull())
+				{
+					arg.money = planner.money;
+				}
+			}
+			return arg.money;
+		}
+
+		[Query]
+		public delegate void RemovePlannnerUnitQuery(ISystem.Info info, Entity entity, [Source.Owned] ref Siege.Planner planner);
+
+		private struct RemoveUnitArgs
+		{
+			public int index;
+
+			public RemoveUnitArgs(int index)
+			{
+				this.index = index;
+			}
+		}
+
+		public static void RemoveUnit(ref Region.Data region, int index)
+		{
+			var arg = new RemoveUnitArgs(index);
+			region.Query<RemovePlannnerUnitQuery>(Func).Execute(ref arg);
+			static void Func(ISystem.Info info, Entity ent_planner, [Source.Owned] ref Siege.Planner planner)
+			{
+				ref var arg = ref info.GetParameter<RemoveUnitArgs>();
+				if (!arg.IsNull())
+				{
+					var rpc = new RemoveUnitRPC
+					{
+						index = arg.index,
+					};
+					rpc.Send(ent_planner);
 				}
 			}
 		}
 
 		[ISystem.EarlyGUI(ISystem.Mode.Single), HasTag("local", true, Source.Modifier.Owned)]
-		public static void OnGUIAttacker(Entity entity, [Source.Owned] in Player.Data player, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state)
+		public static void OnGUIAttacker(Entity entity, ISystem.Info info, [Source.Owned] in Player.Data player, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state)
 		{
 			if (player.IsLocal() && player.faction_id == g_siege_state.faction_attackers)
 			{
@@ -241,6 +353,8 @@ namespace TC2.Siege
 					g_siege = g_siege,
 					g_siege_state = g_siege_state,
 					entity = entity,
+					player = player,
+					region = info.GetRegion(),
 				};
 				gui.Submit();
 			}
