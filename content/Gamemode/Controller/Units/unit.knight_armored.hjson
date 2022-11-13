@@ -1,0 +1,17 @@
+{
+	name: "Armored knight"
+	desc: "a kobold with a longsword and armor"
+	icon:
+	{
+		texture: "Knight_Armor"
+	}
+	price: 15
+	reward: 15
+	creature: kobold.male
+	items: ["longsword"]
+	equipment: ["helmet.00", "armor.00"]
+	resource: 
+	[
+
+	]
+}

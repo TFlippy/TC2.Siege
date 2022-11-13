@@ -101,14 +101,14 @@ namespace TC2.Siege
 			public Siege.Gamemode.State g_siege_state;
 			public Entity entity;
 			public static List<uint> unit_indices = new List<uint>(64);
-			public static float scale = 2;
+			public static float scale = 4;
 			public Region.Data region;
 			public Player.Data player;
 
 			public void Draw()
 			{
 
-				using (var widget = Sidebar.Widget.New("attacker_build", "Recruit", "ui_icon_build", new Vector2(300, 600), lockable: false))
+				using (var widget = Sidebar.Widget.New("attacker_build", "Recruit", "Rifleman_Armor", new Vector2(440, 600), lockable: false))
 				{
 					if (widget.show)
 					{
@@ -121,10 +121,10 @@ namespace TC2.Siege
 						GUI.TitleCentered($"Next wave {(time_left):0} s", size: 16, color: time_left > 10.00f ? GUI.font_color_title : GUI.font_color_yellow);
 						GUI.NewLine(26);
 						GUI.Title("Catalog");
-						GUI.SameLine(100);
+						GUI.SameLine(170);
 						GUI.Title("Queued");
 						GUI.NewLine();
-						using (GUI.Scrollbox.New("attacker_unitshop", GUI.GetAvailableSize() / 2))
+						using (GUI.Scrollbox.New("attacker_unitshop", new Vector2(GUI.GetAvailableWidth() / 2, GUI.GetAvailableHeight())))
 						{
 							using (var grid = GUI.Grid.New(size: GUI.GetRemainingSpace()))
 							{

@@ -3,13 +3,13 @@
 	desc: "a kobold with a rifle"
 	icon:
 	{
-		texture: "rifle"
+		texture: "Rifleman"
 	}
 	price: 20
 	reward: 20
 	creature: kobold.male
 	items: ["rifle"]
-	equipment: ["armor.00", "helmet.00"]
+	equipment: []
 	resource: 
 	[
 		{

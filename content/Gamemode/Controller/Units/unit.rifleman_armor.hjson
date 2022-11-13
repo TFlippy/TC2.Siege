@@ -1,0 +1,20 @@
+{
+	name: "Armored rifleman"
+	desc: "a kobold with a rifle and armor"
+	icon:
+	{
+		texture: "Rifleman_Armor"
+	}
+	price: 30
+	reward: 30
+	creature: kobold.male
+	items: ["rifle"]
+	equipment: ["helmet.00", "armor.00"]
+	resource: 
+	[
+		{
+			material: "ammo_hc"
+			quantity: 50
+		}
+	]
+}

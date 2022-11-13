@@ -1,0 +1,24 @@
+{
+	name: "Bazooker"
+	desc: "a kobold with a bazooka"
+	icon:
+	{
+		texture: "Bazooker"
+	}
+	price: 60
+	reward: 60
+	creature: kobold.male
+	items: ["bazooka"]
+	equipment: []
+	resource: 
+	[
+		{
+			material: "ammo_rocket.hv"
+			quantity: 4
+		}
+		{
+			material: "ammo_rocket.hv"
+			quantity: 4
+		}
+	]
+}

@@ -1,0 +1,17 @@
+{
+	name: "Armored tank"
+	desc: "a kobold with a shield and armor"
+	icon:
+	{
+		texture: "Tank_Armor"
+	}
+	price: 50
+	reward: 50
+	creature: kobold.male
+	items: ["shield.heavy"]
+	equipment: ["helmet.00", "armor.00"]
+	resource: 
+	[
+
+	]
+}

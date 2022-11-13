@@ -1,0 +1,25 @@
+{
+	name: "Battlerifleman"
+	desc: "a kobold with a battlerifle"
+	icon:
+	{
+		texture: "Battlerifleman"
+	}
+	price: 30
+	reward: 30
+	creature: kobold.male
+	items: ["battle_rifle"]
+	equipment: []
+	resource: 
+	[
+		{
+			material: "ammo_hc.hv"
+			quantity: 50
+		}
+		{
+			material: "ammo_hc.hv"
+			quantity: 50
+		}
+		
+	]
+}
