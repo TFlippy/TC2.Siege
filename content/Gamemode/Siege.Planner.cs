@@ -373,7 +373,7 @@ namespace TC2.Siege
 			}
 		}
 
-		public static void SetKoboldLoadoutManual(Entity ent_kobold, IUnit.Handle unit)
+		public static void SetKoboldLoadoutManual(Entity ent_kobold, ref IUnit.Handle unit)
 		{
 			var random = XorRandom.New();
 			var loadout = new Loadout.Data();
@@ -385,7 +385,7 @@ namespace TC2.Siege
 			var items_span = shipment.items.AsSpan();
 			var rewards_span = bounty.rewards.AsSpan();
 
-			var d_unit = unit.GetData();
+			ref var d_unit = ref unit.GetData();
 
 			foreach (var equipment in d_unit.equipment)
 			{
@@ -396,9 +396,11 @@ namespace TC2.Siege
 				items_span.Add(Shipment.Item.Prefab(item, flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 			}
 
-			foreach (var material in d_unit.material)
+			ref var resources = ref d_unit.resource;
+
+			foreach (var material in resources)
 			{
-				items_span.Add(Shipment.Item.Resource(material.Item1, material.Item2));
+				items_span.Add(Shipment.Item.Resource(material.material, material.quantity));
 			}
 
 
@@ -554,6 +556,8 @@ namespace TC2.Siege
 				var time = g_siege_state.t_match_elapsed;
 				if (g_siege_state.wave_current != planner.last_wave)
 				{
+					planner.money += (int)g_siege_state.difficulty * 50;
+					planner.Sync(entity);
 					planner.last_wave = g_siege_state.wave_current;
 
 					//planner.next_wave = time + planner.wave_interval + Maths.Clamp(difficulty * 10.00f, 0.00f, 120.00f);
@@ -599,6 +603,65 @@ namespace TC2.Siege
 
 					case Siege.Planner.Status.Dispatching:
 					{
+						//Controller spawn
+						if ((g_siege_state.t_next_wave - time) >= 30.00f)
+						{
+							if (time >= planner.next_search)
+							{
+								if (TryFindTarget(ref region, entity, faction.id, transform.position, out var ent_target, out var target_position))
+								{
+									planner.ref_target.Set(ent_target);
+								}
+								else
+								{
+
+								}
+
+								planner.next_search = time + random.NextFloatRange(10.00f, 15.00f);
+							}
+						}
+
+						var target_position1 = transform.position;
+						if (planner.ref_target.IsAlive() && planner.ref_target.TryGetHandle(out var h_target_transform1))
+						{
+							target_position1 = h_target_transform1.data.position;
+						}
+						if (TryFindNearestSpawn(ref region, faction.id, target_position1, out var ent_spawn1, out var pos_spawn1))
+						{
+							for (uint i = 0; i < region.GetConnectedPlayerCount(); i++)
+							{
+								var player = region.GetConnectedPlayerByIndex(i);
+								if (player.faction_id == g_siege_state.faction_attackers.id)
+								{
+									if (time >= planner.next_spawn)
+									{
+										planner.next_spawn = time + random.NextFloatRange(2.00f, 4.00f);
+										var group_size_tmp2 = 1 + random.NextIntRange(0, 2);
+										for (int i2 = 0; i2 < group_size_tmp2; i2++)
+										{
+											for (int o = 0; o < planner.orderedUnits.Length; o++)
+											{
+												if (planner.orderedUnits[o].id != 0)
+												{
+													var unit = planner.orderedUnits[o];
+
+													region.SpawnPrefab(unit.GetData().creature, pos_spawn1 + new Vector2(random.NextFloatRange(-2, 2), 0.00f), faction_id: faction.id).ContinueWith((ent) =>
+													{
+														SetKoboldLoadoutManual(ent, ref unit);
+													});
+
+													planner.orderedUnits[o] = 0;
+													planner.Sync(entity);
+													break;
+												}
+											}
+										}
+									}
+									return;
+								}
+							}
+						}
+						//Normal spawn
 						if ((g_siege_state.t_next_wave - time) >= 30.00f)
 						{
 							if (time >= planner.next_search)
@@ -688,34 +751,6 @@ namespace TC2.Siege
 
 									if (TryFindNearestSpawn(ref region, faction.id, target_position, out var ent_spawn, out var pos_spawn))
 									{
-
-										for (uint i = 0; i < region.GetConnectedPlayerCount(); i++)
-										{
-											var player = region.GetConnectedPlayerByIndex(i);
-											if (player.faction_id == g_siege_state.faction_attackers.id)
-											{
-												var group_size_tmp2 = 1 + random.NextIntRange(0, 2);
-												for (int i2 = 0; i2 < group_size_tmp2 && total_count + i2 < g_siege.max_npc_count; i2++)
-												{
-													for (int o = 0; o < planner.orderedUnits.Length; o++)
-													{
-														if (planner.orderedUnits[i].id != 0)
-														{
-															var unit = planner.orderedUnits[i].GetData();
-
-															region.SpawnPrefab(unit.creature, pos_spawn + new Vector2(random.NextFloatRange(-2, 2), 0.00f), faction_id: faction.id).ContinueWith((ent) =>
-															{
-																SetKoboldLoadoutManual(ent, unit);
-															});
-
-															break;
-														}
-													}
-												}
-												return;
-											}
-										}
-
 										var weapon_mult = 1.00f;
 										var armor_mult = 1.00f;
 

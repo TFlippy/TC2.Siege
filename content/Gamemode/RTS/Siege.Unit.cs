@@ -37,20 +37,15 @@ namespace TC2.Siege
 
 			public Prefab.Handle[] items;
 			public Prefab.Handle[] equipment;
-			public (string,int)[] material;
-
-			public Data(string name, string desc, Sprite icon, int price, int reward, Prefab.Handle creature, Prefab.Handle[] items, Prefab.Handle[] equipment, (string, int)[] material)
-			{
-				this.name = name;
-				this.desc = desc;
-				this.icon = icon;
-				this.price = price;
-				this.reward = reward;
-				this.creature = creature;
-				this.items = items;
-				this.equipment = equipment;
-				this.material = material;
-			}
+			[Save.NewLine]
+			public IUnit.ResourceStruct[] resource;
 		}
+		[Serializable]
+		public struct ResourceStruct
+		{
+			public string material;
+			public int quantity;
+		}
+
 	}
 }

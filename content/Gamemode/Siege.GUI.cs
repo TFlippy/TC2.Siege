@@ -144,7 +144,9 @@ namespace TC2.Siege
 									//GUI.Text($"{pair.rank}");
 
 									ref var recipe = ref IUnit.Database.GetData(pair);
-									if (recipe.IsNotNull())
+									var unit = new IUnit.Handle(pair);
+
+									if (new IUnit.Handle(pair).id != 0)
 									{
 										var frame_size = recipe.icon.GetFrameSize(scale);
 										frame_size += new Vector2(8, 8);
@@ -158,7 +160,7 @@ namespace TC2.Siege
 											
 											if (button.pressed && GetMoney(ref region) >= recipe.price)
 											{
-												PurchaseUnit(ref region, new IUnit.Handle(pair));
+												PurchaseUnit(ref region, unit);
 											}
 										}
 										if (GUI.IsItemHovered())
@@ -169,7 +171,31 @@ namespace TC2.Siege
 												{
 													GUI.Title(recipe.name);
 													GUI.Text(recipe.desc, color: GUI.font_color_default);
-													GUI.DrawMoney(recipe.price, new Vector2(8, 8));
+													GUI.NewLine(10);
+													GUI.DrawMoney(recipe.price, new Vector2(32, 8));
+													GUI.NewLine(10);
+													GUI.Text("Inventory");
+													foreach (var item in recipe.items)
+													{
+														var itemIcon = item.GetPrefab().GetIcon();
+														GUI.DrawSprite(itemIcon);
+														GUI.SameLine();
+													}
+													GUI.NewLine();
+													foreach (var item in recipe.equipment)
+													{
+														var itemIcon = item.GetPrefab().GetIcon();
+														GUI.DrawSprite(itemIcon);
+														GUI.SameLine();
+													}
+													GUI.NewLine();
+													foreach (var item in recipe.resource)
+													{
+														var itemIcon = IMaterial.Database.GetData(item.material).icon;
+														GUI.DrawSprite(itemIcon);
+														GUI.SameLine();
+													}
+
 												}
 											}
 										}

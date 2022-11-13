@@ -10,5 +10,11 @@
 	creature: kobold.male
 	items: ["rifle"]
 	equipment: ["armor.00", "helmet.00"]
-	material: [["ammo_hc.hv", 50]]
+	resource: 
+	[
+		{
+			material: "ammo_hc"
+			quantity: 50
+		}
+	]
 }
