@@ -80,6 +80,8 @@ namespace TC2.Siege
 		{
 			if (player.IsLocal() && player.faction_id == g_siege_state.faction_defenders)
 			{
+				Spawn.RespawnGUI.enabled = true;
+
 				var gui = new SiegeDefenderGUI()
 				{
 					g_siege = g_siege,
@@ -99,12 +101,14 @@ namespace TC2.Siege
 
 			public void Draw()
 			{
-				var window_pos = (GUI.CanvasSize * new Vector2(0.50f, 0.00f)) + new Vector2(100, 48);
-				using (var window = GUI.Window.Standalone("Siege2", position: window_pos, size: new Vector2(100, 100), pivot: new Vector2(0.50f, 0.00f)))
+				var window_pos = (GUI.CanvasSize * new Vector2(0.50f, 0.00f)) + new Vector2(0, 64);
+				using (var window = GUI.Window.Standalone("Siege2", position: window_pos, size: new Vector2(100, 100), pivot: new Vector2(0.50f, 0.00f), padding: new(6, 6)))
 				{
 					this.StoreCurrentWindowTypeID();
 					if (window.show)
 					{
+						GUI.DrawWindowBackground();
+
 						ref var region = ref Client.GetRegion();
 						ref var world = ref Client.GetWorld();
 						ref var game_info = ref Client.GetGameInfo();
@@ -120,6 +124,8 @@ namespace TC2.Siege
 		{
 			if (player.IsLocal() && player.faction_id == g_siege_state.faction_attackers)
 			{
+				Spawn.RespawnGUI.enabled = false;
+
 				var gui = new SiegeAttackerGUI()
 				{
 					g_siege = g_siege,
