@@ -1,0 +1,32 @@
+{
+	name: "Armored mamut rifleman"
+	desc: "a kobold with a rifle (chambered in autocannon calibre) and armor"
+	icon:
+	{
+		texture: "Rifleman_Armor_Mamut"
+	}
+	price: 60
+	reward: 60
+	creature: kobold.male
+	items: ["bp.mamut.b738"]
+	equipment: ["helmet.00", "armor.00"]
+	resource: 
+	[
+		{
+			material: "ammo_ac"
+			quantity: 10
+		}
+		{
+			material: "ammo_ac"
+			quantity: 10
+		}
+		{
+			material: "ammo_ac"
+			quantity: 10
+		}
+		{
+			material: "ammo_ac"
+			quantity: 10
+		}
+	]
+}

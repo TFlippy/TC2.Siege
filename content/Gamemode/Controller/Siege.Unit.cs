@@ -3,9 +3,10 @@ using TC2.Base.Components;
 
 namespace TC2.Siege
 {
+	[IAsset.Hjson(prefix: "unit.", capacity_world: 512, capacity_region: 256, capacity_local: 0)]
 	public partial interface IUnit: IAsset2<IUnit, IUnit.Data>
 	{
-		static void IAsset2<IUnit, IUnit.Data>.OnUpdate(IUnit.Definition definition, ref IUnit.Data data_new)
+		/*static void IAsset2<IUnit, IUnit.Data>.OnUpdate(IUnit.Definition definition, ref IUnit.Data data_new)
 		{
 
 		}
@@ -21,7 +22,7 @@ namespace TC2.Siege
 			capacity_world = 64;
 			capacity_region = 64;
 			capacity_local = 64;
-		}
+		}*/
 
 		[Serializable]
 		public partial struct Data

@@ -1,0 +1,20 @@
+{
+	name: "Gunman"
+	desc: "a kobold with an pistol"
+	icon:
+	{
+		texture: "Gunman"
+	}
+	price: 10
+	reward: 10
+	creature: kobold.male
+	items: ["pistol"]
+	equipment: []
+	resource: 
+	[
+		{
+			material: "ammo_lc"
+			quantity: 50
+		}
+	]
+}

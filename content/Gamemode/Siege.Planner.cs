@@ -1,7 +1,6 @@
 ﻿using Keg.Engine.Game;
 using Keg.Extensions;
 using TC2.Base.Components;
-
 namespace TC2.Siege
 {
 	public static partial class Siege
@@ -41,7 +40,7 @@ namespace TC2.Siege
 			//[Save.Ignore, Net.Ignore] public float next_wave;
 
 			[Save.Ignore] public FixedArray32<IUnit.Handle> orderedUnits = new FixedArray32<IUnit.Handle>();
-			[Save.Ignore] public int money = 100;
+			[Save.Ignore] public int money = 0;
 
 			public Planner()
 			{
@@ -556,7 +555,15 @@ namespace TC2.Siege
 				var time = g_siege_state.t_match_elapsed;
 				if (g_siege_state.wave_current != planner.last_wave)
 				{
-					planner.money += (int)g_siege_state.difficulty * 50;
+					for (uint i = 0; i < region.GetConnectedPlayerCount(); i++)
+					{
+						var player = region.GetConnectedPlayerByIndex(i);
+						if (player.faction_id == g_siege_state.faction_attackers.id)
+						{
+							planner.money += (int)g_siege_state.difficulty * 50;
+						}
+					}
+
 					planner.Sync(entity);
 					planner.last_wave = g_siege_state.wave_current;
 
@@ -787,6 +794,23 @@ namespace TC2.Siege
 					break;
 				}
 			}
+		}
+
+		[ISystem.Update(ISystem.Mode.Single, interval: 0.10f)]
+		public static void SetSpawner(ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform, [Source.Owned] ref Spawner.Data spawner,
+		[Source.Owned] ref Siege.Planner planner, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state, [Source.Owned, Optional] in Faction.Data faction)
+		{
+			ref var region = ref info.GetRegion();
+			for (uint i = 0; i < region.GetConnectedPlayerCount(); i++)
+			{
+				var player = region.GetConnectedPlayerByIndex(i);
+				if (player.faction_id == g_siege_state.faction_attackers.id)
+				{
+					spawner.max_count = 0;
+					return;
+				}
+			}
+			spawner.max_count = 4;
 		}
 #endif
 	}

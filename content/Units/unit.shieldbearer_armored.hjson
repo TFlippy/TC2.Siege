@@ -1,0 +1,17 @@
+{
+	name: "Armored Shieldbearer"
+	desc: "a kobold with a shield and armor"
+	icon:
+	{
+		texture: "Shieldbearer_Armored"
+	}
+	price: 30
+	reward: 30
+	creature: kobold.male
+	items: ["shield"]
+	equipment: ["helmet.00", "armor.00"]
+	resource: 
+	[
+
+	]
+}

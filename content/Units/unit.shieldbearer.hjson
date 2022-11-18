@@ -1,0 +1,17 @@
+{
+	name: "Shieldbearer"
+	desc: "a kobold with a shield"
+	icon:
+	{
+		texture: "Shieldbearer"
+	}
+	price: 30
+	reward: 30
+	creature: kobold.male
+	items: ["shield"]
+	equipment: []
+	resource: 
+	[
+
+	]
+}

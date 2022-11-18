@@ -1,0 +1,17 @@
+{
+	name: "Wrecker"
+	desc: "a kobold with a sledgehammer"
+	icon:
+	{
+		texture: "Wrecker"
+	}
+	price: 20
+	reward: 20
+	creature: kobold.male
+	items: ["Sledgehammer"]
+	equipment: []
+	resource: 
+	[
+
+	]
+}

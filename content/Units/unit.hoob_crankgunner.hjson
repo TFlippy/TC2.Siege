@@ -1,0 +1,28 @@
+{
+	name: "Hoob crankgunner"
+	desc: "a hoob with a crankgun"
+	icon:
+	{
+		texture: "Hoob_Crankgunner"
+	}
+	price: 200
+	reward: 200
+	creature: hoob
+	items: ["crankgun"]
+	equipment: []
+	resource: 
+	[
+		{
+			material: "ammo_hc"
+			quantity: 250
+		}
+		{
+			material: "ammo_hc"
+			quantity: 250
+		}
+		{
+			material: "ammo_hc"
+			quantity: 250
+		}
+	]
+}

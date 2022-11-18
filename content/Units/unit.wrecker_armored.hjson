@@ -1,0 +1,17 @@
+{
+	name: "Armored wrecker"
+	desc: "a kobold with a sledgehammer and armor"
+	icon:
+	{
+		texture: "Wrecker_Armored"
+	}
+	price: 25
+	reward: 25
+	creature: kobold.male
+	items: ["Sledgehammer"]
+	equipment: ["helmet.00", "armor.00"]
+	resource: 
+	[
+
+	]
+}

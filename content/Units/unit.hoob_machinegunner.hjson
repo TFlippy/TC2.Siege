@@ -1,0 +1,24 @@
+{
+	name: "Hoob machinegunner"
+	desc: "a hoob with a machinegun"
+	icon:
+	{
+		texture: "Hoob_Machinegunner"
+	}
+	price: 250
+	reward: 250
+	creature: hoob
+	items: ["machine_gun"]
+	equipment: []
+	resource: 
+	[
+		{
+			material: "ammo_mg"
+			quantity: 250
+		}
+		{
+			material: "ammo_mg"
+			quantity: 250
+		}
+	]
+}
