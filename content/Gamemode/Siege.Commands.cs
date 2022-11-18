@@ -7,20 +7,28 @@ namespace TC2.Siege
 	{
 #if SERVER
 		[ChatCommand.Region("kobold", "", creative: true)]
-		public static void KoboldCommand(ref ChatCommand.Context context)
+		public static void KoboldCommand(ref ChatCommand.Context context, byte? faction_id = null)
 		{
 			ref var region = ref context.GetRegion();
 			ref var player = ref context.GetPlayer();
 
-			region.SpawnPrefab("kobold.male", player.control.mouse.position, faction_id: player.faction_id).ContinueWith((ent) =>
+			region.SpawnPrefab("kobold.male", player.control.mouse.position, faction_id: faction_id ?? player.faction_id).ContinueWith((ent) =>
 			{
 				SetKoboldLoadout(ent);
+			});
+		}
 
-				ref var ai = ref ent.GetComponent<AI.Data>();
-				if (!ai.IsNull())
-				{
-					ai.stance = AI.Stance.Aggressive;
-				}
+		[ChatCommand.Region("hoob", "", creative: true)]
+		public static void HoobCommand(ref ChatCommand.Context context, byte? faction_id = null)
+		{
+			ref var region = ref context.GetRegion();
+			ref var player = ref context.GetPlayer();
+
+			App.WriteLine(faction_id);
+
+			region.SpawnPrefab("hoob", player.control.mouse.position, faction_id: faction_id ?? player.faction_id).ContinueWith((ent) =>
+			{
+				SetHoobLoadout(ent);
 			});
 		}
 

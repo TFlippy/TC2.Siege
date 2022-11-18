@@ -81,6 +81,8 @@ namespace TC2.Siege
 		{
 			if (player.IsLocal() && player.faction_id == g_siege_state.faction_defenders)
 			{
+				Spawn.RespawnGUI.enabled = true;
+
 				var gui = new SiegeDefenderGUI()
 				{
 					g_siege = g_siege,
@@ -374,6 +376,8 @@ namespace TC2.Siege
 		{
 			if (player.IsLocal() && player.faction_id == g_siege_state.faction_attackers)
 			{
+				Spawn.RespawnGUI.enabled = false;
+
 				var gui = new SiegeAttackerGUI()
 				{
 					g_siege = g_siege,

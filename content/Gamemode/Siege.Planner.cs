@@ -101,7 +101,9 @@ namespace TC2.Siege
 			var rewards_span = bounty.rewards.AsSpan();
 
 			// TODO: add proper .hjson loot tables
-			switch (random.NextIntRange(0, 11))
+			var num = random.NextIntRange(0, 11);
+			//num = 100;
+			switch (num)
 			{
 				// Melee
 				case 0:
@@ -783,7 +785,7 @@ namespace TC2.Siege
 									}
 								}
 
-								App.WriteLine($"Spawning reinforcements... ({planner.wave_size_rem} left)");
+								//App.WriteLine($"Spawning reinforcements... ({planner.wave_size_rem} left)");
 							}
 						}
 						else
