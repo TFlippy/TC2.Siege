@@ -374,6 +374,129 @@ namespace TC2.Siege
 			}
 		}
 
+		public static void SetHoobLoadout(Entity ent_hoob, float weapon_mult = 1.00f, float armor_mult = 1.00f)
+		{
+			var random = XorRandom.New();
+			var loadout = new Loadout.Data();
+			var bounty = new Siege.Bounty.Data();
+
+			ref var shipment = ref loadout.shipments[0];
+			shipment.flags.SetFlag(Shipment.Flags.Unpack, true);
+
+			var items_span = shipment.items.AsSpan();
+			var rewards_span = bounty.rewards.AsSpan();
+
+			// TODO: add proper .hjson loot tables
+
+			var num = random.NextIntRange(0, 3);
+			//num = 10;
+
+			switch (num)
+			{
+				// Heavy
+				case 0:
+				case 1:
+				case 2:
+				{
+					if (random.NextBool(0.40f))
+					{
+						items_span.Add(Shipment.Item.Prefab("machine_gun", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
+						items_span.Add(Shipment.Item.Resource("ammo_mg", 100));
+						rewards_span.Add(Crafting.Product.Money(1000));
+					}
+					else if (random.NextBool(0.40f))
+					{
+						items_span.Add(Shipment.Item.Prefab("crankgun", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
+						items_span.Add(Shipment.Item.Resource("ammo_hc.hv", 100));
+						rewards_span.Add(Crafting.Product.Money(600));
+					}
+					else if (random.NextBool(0.30f))
+					{
+						items_span.Add(Shipment.Item.Prefab("bp.hyperbobus", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
+						items_span.Add(Shipment.Item.Resource("ammo_ac", 40));
+						rewards_span.Add(Crafting.Product.Money(1500));
+					}
+					else if (random.NextBool(0.40f))
+					{
+						items_span.Add(Shipment.Item.Prefab("cannon.short", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
+						items_span.Add(Shipment.Item.Resource("ammo_shell.shrapnel", 10));
+						rewards_span.Add(Crafting.Product.Money(1500));
+					}
+					else if (random.NextBool(0.30f))
+					{
+						items_span.Add(Shipment.Item.Prefab("autocannon", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
+						items_span.Add(Shipment.Item.Resource("ammo_ac", 40));
+						rewards_span.Add(Crafting.Product.Money(800));
+					}
+					else
+					{
+						items_span.Add(Shipment.Item.Prefab("slugthrower", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
+						items_span.Add(Shipment.Item.Resource("ammo_musket", 100));
+						rewards_span.Add(Crafting.Product.Money(400));
+					}
+
+					rewards_span.Add(Crafting.Product.Money(2500));
+				}
+				break;
+
+				// Artillery
+				default:
+				{
+					if (random.NextBool(0.50f))
+					{
+						items_span.Add(Shipment.Item.Prefab("cannon.short", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
+						items_span.Add(Shipment.Item.Resource("ammo_shell", 10));
+						rewards_span.Add(Crafting.Product.Money(1500));
+					}
+					else
+					{
+						items_span.Add(Shipment.Item.Prefab("bp.smrtec.a24", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
+						items_span.Add(Shipment.Item.Resource("ammo_sg.grenade", 40));
+						rewards_span.Add(Crafting.Product.Money(1000));
+					}
+					//else
+					//{
+					//	items_span.Add(Shipment.Item.Prefab("autocannon", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
+					//	items_span.Add(Shipment.Item.Resource("ammo_ac.he", 40));
+					//	rewards_span.Add(Crafting.Product.Money(1000));
+					//}
+
+					rewards_span.Add(Crafting.Product.Money(1500));
+				}
+				break;
+			}
+
+			ref var loadout_new = ref ent_hoob.GetOrAddComponent<Loadout.Data>(sync: false, ignore_mask: true);
+			if (!loadout_new.IsNull())
+			{
+				loadout_new = loadout;
+			}
+
+			ref var bounty_new = ref ent_hoob.GetOrAddComponent<Siege.Bounty.Data>(sync: false, ignore_mask: true);
+			if (!bounty_new.IsNull())
+			{
+				bounty_new = bounty;
+				//App.WriteLine($"add bounty {bounty_new.rewards[0].type} {bounty_new.rewards[0].amount}");
+			}
+
+			ref var ai = ref ent_hoob.GetComponent<AI.Data>();
+			if (!ai.IsNull())
+			{
+				ai.stance = AI.Stance.Aggressive;
+			}
+
+			foreach (var h_inventory in ent_hoob.GetInventories())
+			{
+				h_inventory.Flags |= Inventory.Flags.Unlimited | Inventory.Flags.No_Drop;
+			}
+
+			ref var marker = ref ent_hoob.GetOrAddComponent<Minimap.Marker.Data>(sync: true);
+			if (!marker.IsNull())
+			{
+				marker.sprite = new Sprite("ui_icons_minimap", 16, 16, 0, 0);
+			}
+		}
+
 		public static void SetKoboldLoadoutManual(Entity ent_kobold, ref IUnit.Handle unit)
 		{
 			var random = XorRandom.New();
