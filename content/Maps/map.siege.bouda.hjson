@@ -67,7 +67,7 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "soundscape.forest.day.00"
+			prefab: "biome.forest.00"
 			position: [62.33477, 46.07945]
 			rotation: 0.000
 			scale: [1.000, 1.000]
@@ -79,7 +79,7 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "soundscape.forest.day.00"
+			prefab: "biome.forest.00"
 			position: [267.875, 44.750]
 			rotation: 0.000
 			scale: [1.000, 1.000]
@@ -347,7 +347,7 @@
 			scale: [-1.000, 1.000]
 		}
 		{
-			prefab: "soundscape.forest.day.00"
+			prefab: "biome.forest.00"
 			position: [595.750, 24.24403]
 			rotation: 0.000
 			scale: [1.000, 1.000]
@@ -556,6 +556,7 @@
 		}
 		{
 			prefab: "gate.metal"
+			faction: "defenders"
 			position: [195.875, 32.000]
 			rotation: 0.000
 			scale: [1.000, 1.000]
@@ -904,25 +905,25 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "soundscape.forest.day.00"
+			prefab: "biome.forest.00"
 			position: [327.6931, 39.9569]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "soundscape.forest.day.00"
+			prefab: "biome.forest.00"
 			position: [394.9035, 45.79683]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "soundscape.forest.day.00"
+			prefab: "biome.forest.00"
 			position: [96.07497, 40.97632]
 			rotation: 0.000
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "soundscape.forest.day.00"
+			prefab: "biome.forest.00"
 			position: [134.7571, 35.82529]
 			rotation: 0.000
 			scale: [1.000, 1.000]
@@ -1043,6 +1044,7 @@
 		}
 		{
 			prefab: "gate"
+			faction: "defenders"
 			position: [509.500, 38.625]
 			rotation: 0.000
 			scale: [1.000, 1.000]
@@ -1432,7 +1434,7 @@
 			scale: [0.872223, 0.886111]
 		}
 		{
-			prefab: "soundscape.city.day.01"
+			prefab: "biome.city.01"
 			position: [17.06944, 44.12412]
 			rotation: 0.000
 			scale: [1.000, 1.000]
@@ -1706,7 +1708,7 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "soundscape.city.day.01"
+			prefab: "biome.city.01"
 			position: [149.5307, 29.60349]
 			rotation: 0.000
 			scale: [1.000, 1.000]

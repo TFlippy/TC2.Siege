@@ -49,6 +49,8 @@ namespace TC2.Siege
 #if SERVER
 		public static void SetKoboldLoadout(Entity ent_kobold, float weapon_mult = 1.00f, float armor_mult = 1.00f)
 		{
+			//App.WriteLine($"weapon mult: {weapon_mult}; armor mult: {armor_mult}");
+
 			var random = XorRandom.New();
 			var loadout = new Loadout.Data();
 			var bounty = new Siege.Bounty.Data();
@@ -93,13 +95,13 @@ namespace TC2.Siege
 						rewards_span.Add(Crafting.Product.Money(20));
 					}
 
-					if (random.NextBool(0.35f * armor_mult))
+					if (random.NextBool(0.25f * armor_mult))
 					{
 						items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(30));
 					}
 
-					if (random.NextBool(0.25f * armor_mult))
+					if (random.NextBool(0.20f * armor_mult))
 					{
 						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(30));
@@ -197,7 +199,7 @@ namespace TC2.Siege
 						rewards_span.Add(Crafting.Product.Money(30));
 					}
 
-					if (random.NextBool(0.20f * armor_mult))
+					if (random.NextBool(0.15f * armor_mult))
 					{
 						items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(20));
@@ -217,13 +219,13 @@ namespace TC2.Siege
 						items_span.Add(Shipment.Item.Resource("ammo_sg.slug", 64));
 						rewards_span.Add(Crafting.Product.Money(60));
 					}
-					else if (random.NextBool(0.30f))
+					else if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("battle_rifle", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_hc.hv", 80));
 						rewards_span.Add(Crafting.Product.Money(50));
 					}
-					else if (random.NextBool(0.30f))
+					else if (random.NextBool(0.40f))
 					{
 						items_span.Add(Shipment.Item.Prefab("auto_shotgun", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_sg.grenade", 64));
@@ -238,8 +240,8 @@ namespace TC2.Siege
 
 					//if (random.NextBool(1.00f))
 					{
-						if (random.NextBool(0.60f * armor_mult)) items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
-						items_span.Add(Shipment.Item.Prefab(random.NextBool(0.50f * armor_mult) ? "helmet.01" : "helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
+						if (random.NextBool(0.40f * armor_mult)) items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
+						items_span.Add(Shipment.Item.Prefab(random.NextBool(0.40f * armor_mult) ? "helmet.01" : "helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(50));
 					}
 
@@ -292,8 +294,8 @@ namespace TC2.Siege
 
 					//if (random.NextBool(0.50f))
 					{
-						if (random.NextBool(0.80f * armor_mult)) items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
-						if (random.NextBool(0.50f * armor_mult)) items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
+						if (random.NextBool(0.30f * armor_mult)) items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
+						if (random.NextBool(0.30f * armor_mult)) items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(50));
 					}
 
