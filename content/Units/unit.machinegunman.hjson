@@ -1,0 +1,24 @@
+{
+	name: "Machinegunman"
+	desc: "a kobold with an machine pistol"
+	icon:
+	{
+		texture: "Machinegunman"
+	}
+	price: 20
+	reward: 20
+	creature: kobold.male
+	items: ["machine_pistol"]
+	equipment: []
+	resource: 
+	[
+		{
+			material: "ammo_lc"
+			quantity: 50
+		}
+		{
+			material: "ammo_lc"
+			quantity: 50
+		}
+	]
+}

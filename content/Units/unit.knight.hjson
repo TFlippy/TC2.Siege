@@ -1,0 +1,17 @@
+{
+	name: "knight"
+	desc: "a kobold with a longsword"
+	icon:
+	{
+		texture: "Knight"
+	}
+	price: 10
+	reward: 10
+	creature: kobold.male
+	items: ["longsword"]
+	equipment: []
+	resource: 
+	[
+
+	]
+}

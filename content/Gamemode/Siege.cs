@@ -95,7 +95,6 @@ namespace TC2.Siege
 				[Save.Ignore] public float t_next_wave;
 				[Save.Ignore, Net.Ignore] public float t_next_restart;
 				[Save.Ignore, Net.Ignore] public float t_last_notification;
-
 				public State()
 				{
 

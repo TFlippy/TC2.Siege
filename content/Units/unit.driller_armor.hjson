@@ -1,0 +1,17 @@
+{
+	name: "Armored driller"
+	desc: "a kobold with a drill and armor"
+	icon:
+	{
+		texture: "Driller_Armor"
+	}
+	price: 50
+	reward: 50
+	creature: kobold.male
+	items: ["drill"]
+	equipment: ["helmet.00", "armor.00"]
+	resource: 
+	[
+
+	]
+}

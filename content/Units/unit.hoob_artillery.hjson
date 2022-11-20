@@ -1,0 +1,24 @@
+{
+	name: "Hoob artillery"
+	desc: "a hoob with a cannon"
+	icon:
+	{
+		texture: "Hoob_Artillery"
+	}
+	price: 500
+	reward: 500
+	creature: hoob
+	items: ["cannon.short"]
+	equipment: []
+	resource: 
+	[
+		{
+			material: "ammo_shell"
+			quantity: 5
+		}
+		{
+			material: "ammo_shell"
+			quantity: 5
+		}
+	]
+}

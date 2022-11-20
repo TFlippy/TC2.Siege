@@ -1,0 +1,17 @@
+{
+	name: "driller"
+	desc: "a kobold with a drill"
+	icon:
+	{
+		texture: "Driller"
+	}
+	price: 40
+	reward: 40
+	creature: kobold.male
+	items: ["drill"]
+	equipment: []
+	resource: 
+	[
+
+	]
+}

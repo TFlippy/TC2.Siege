@@ -1,0 +1,28 @@
+{
+	name: "Armored submachinegunner"
+	desc: "a kobold with an smg and armor"
+	icon:
+	{
+		texture: "Submachinegunner_Armored"
+	}
+	price: 30
+	reward: 30
+	creature: kobold.male
+	items: ["smg"]
+	equipment: ["helmet.00", "armor.00"]
+	resource: 
+	[
+		{
+			material: "ammo_lc"
+			quantity: 50
+		}
+		{
+			material: "ammo_lc"
+			quantity: 50
+		}
+		{
+			material: "ammo_lc"
+			quantity: 50
+		}
+	]
+}

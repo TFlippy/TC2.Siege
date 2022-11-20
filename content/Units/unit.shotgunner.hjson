@@ -1,0 +1,24 @@
+{
+	name: "Shotgunner"
+	desc: "a kobold with a shotgun"
+	icon:
+	{
+		texture: "Shotgunner"
+	}
+	price: 20
+	reward: 20
+	creature: kobold.male
+	items: ["pump_shotgun"]
+	equipment: []
+	resource: 
+	[
+		{
+			material: "ammo_sg.buck"
+			quantity: 24
+		}
+		{
+			material: "ammo_sg.buck"
+			quantity: 24
+		}
+	]
+}

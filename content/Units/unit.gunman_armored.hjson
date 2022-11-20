@@ -1,0 +1,20 @@
+{
+	name: "Armored gunman"
+	desc: "a kobold with an pistol and armor"
+	icon:
+	{
+		texture: "Gunman_Armored"
+	}
+	price: 15
+	reward: 15
+	creature: kobold.male
+	items: ["pistol"]
+	equipment: ["helmet.00", "armor.00"]
+	resource: 
+	[
+		{
+			material: "ammo_lc"
+			quantity: 50
+		}
+	]
+}

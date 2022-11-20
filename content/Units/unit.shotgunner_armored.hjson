@@ -1,0 +1,24 @@
+{
+	name: "Armored shotgunner"
+	desc: "a kobold with a shotgun and armor"
+	icon:
+	{
+		texture: "Shotgunner_Armor"
+	}
+	price: 30
+	reward: 30
+	creature: kobold.male
+	items: ["pump_shotgun"]
+	equipment: ["helmet.00", "armor.00"]
+	resource: 
+	[
+		{
+			material: "ammo_sg.buck"
+			quantity: 24
+		}
+		{
+			material: "ammo_sg.buck"
+			quantity: 24
+		}
+	]
+}

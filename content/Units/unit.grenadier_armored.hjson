@@ -1,0 +1,24 @@
+{
+	name: "Armored grenadier"
+	desc: "a kobold with a grenade launcher and armor"
+	icon:
+	{
+		texture: "Grenadier_Armor"
+	}
+	price: 60
+	reward: 60
+	creature: kobold.male
+	items: ["pump_shotgun"]
+	equipment: ["helmet.00", "armor.00"]
+	resource: 
+	[
+		{
+			material: "ammo_sg.grenade"
+			quantity: 24
+		}
+		{
+			material: "ammo_sg.grenade"
+			quantity: 24
+		}
+	]
+}

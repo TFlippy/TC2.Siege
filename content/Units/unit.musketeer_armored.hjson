@@ -1,0 +1,20 @@
+{
+	name: "Armored musketeer"
+	desc: "a kobold with a musket and armor"
+	icon:
+	{
+		texture: "Musketeer_Armored"
+	}
+	price: 20
+	reward: 20
+	creature: kobold.male
+	items: ["musket"]
+	equipment: ["helmet.00", "armor.00"]
+	resource: 
+	[
+		{
+			material: "ammo_musket.shot"
+			quantity: 24
+		}
+	]
+}

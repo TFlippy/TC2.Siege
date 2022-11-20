@@ -1,0 +1,24 @@
+{
+	name: "Hoob autogunner"
+	desc: "a hoob with an autocannon"
+	icon:
+	{
+		texture: "Hoob_Autogunner"
+	}
+	price: 350
+	reward: 350
+	creature: hoob
+	items: ["autocannon"]
+	equipment: []
+	resource: 
+	[
+		{
+			material: "ammo_ac"
+			quantity: 50
+		}
+		{
+			material: "ammo_ac"
+			quantity: 50
+		}
+	]
+}
