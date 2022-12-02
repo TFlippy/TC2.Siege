@@ -176,7 +176,7 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "pallet.ingot.iron.wreck.00"
+			prefab: "pallet.ingot.steel.wreck.00"
 			position: [43.62501, 53.04251]
 			rotation: -0.000001
 			scale: [1.000, 1.000]
@@ -721,7 +721,7 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "pallet.ingot.iron.wreck.00"
+			prefab: "pallet.ingot.steel.wreck.00"
 			position: [160.000, 36.54208]
 			rotation: 0.000
 			scale: [1.000, 1.000]
@@ -1315,7 +1315,7 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "pallet.ingot.iron.wreck.00"
+			prefab: "pallet.ingot.steel.wreck.00"
 			position: [346.6806, 61.13816]
 			rotation: -0.023718
 			scale: [-1.000, 1.000]
