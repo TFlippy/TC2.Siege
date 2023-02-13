@@ -48,6 +48,7 @@ namespace TC2.Siege
 			[Save.Ignore] public float wave_interval_difficulty_mult = 1.00f;
 
 			[Save.Ignore] public uint max_npc_count = 32;
+			[Save.Ignore] public uint max_characters_per_player = 10;
 
 			[Flags]
 			public enum Flags: uint
@@ -208,7 +209,15 @@ namespace TC2.Siege
 								ref var material = ref req.material.GetData();
 								if (!material.IsNull())
 								{
-									price += material.market_price * req.amount;
+									ref var commodity = ref material.commodity.GetRef();
+									if (commodity.IsNotNull())
+									{
+										price += commodity.market_price * req.amount;
+									}
+									else
+									{
+										price += 10.00f * req.amount;
+									}
 									complexity += 0.15f;
 								}
 							}
@@ -244,14 +253,14 @@ namespace TC2.Siege
 				{
 					player.SetFaction("defenders");
 
-					if (!player.GetControlledCharacter().IsValid())
-					{
-						var ent_character_soldier = Character.Create(ref region, "Soldier", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Military, origin: "imperial.soldier", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 5, beard_frame: 1);
-						var ent_character_sapper = Character.Create(ref region, "Sapper", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Engineering | Character.Flags.Military, origin: "imperial.sapper", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 2, beard_frame: 7);
-						var ent_character_medic = Character.Create(ref region, "Medic", prefab: "human.female", flags: Character.Flags.Human | Character.Flags.Medical | Character.Flags.Military, origin: "imperial.medic", gender: Organic.Gender.Female, player_id: player.id, hair_frame: 10);
+					//if (!player.GetControlledCharacter().IsValid())
+					//{
+					//	var ent_character_soldier = Character.Create(ref region, "Soldier", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Military, origin: "imperial.soldier", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 5, beard_frame: 1);
+					//	var ent_character_sapper = Character.Create(ref region, "Sapper", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Engineering | Character.Flags.Military, origin: "imperial.sapper", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 2, beard_frame: 7);
+					//	var ent_character_medic = Character.Create(ref region, "Medic", prefab: "human.female", flags: Character.Flags.Human | Character.Flags.Medical | Character.Flags.Military, origin: "imperial.medic", gender: Organic.Gender.Female, player_id: player.id, hair_frame: 10);
 
-						player.SetControlledCharacter(ent_character_soldier);
-					}
+					//	player.SetControlledCharacter(ent_character_soldier);
+					//}
 				}
 #endif
 
@@ -324,7 +333,7 @@ namespace TC2.Siege
 				{
 					case Gamemode.Status.Undefined:
 					{
-						if (!Constants.World.disable_gameplay)
+						if (!Constants.World.edit_mode)
 						{
 							g_siege_state.status = Gamemode.Status.Preparing;
 						}

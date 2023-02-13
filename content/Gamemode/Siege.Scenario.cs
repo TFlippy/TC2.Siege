@@ -3,7 +3,7 @@ using TC2.Base.Components;
 
 namespace TC2.Siege
 {
-	[IAsset.Hjson(prefix: "scenario.", capacity_world: 64, capacity_region: 0, capacity_local: 0)]
+	[Asset.Hjson(prefix: "scenario.", capacity_world: 64, capacity_region: 0, capacity_local: 0)]
 	public partial interface IScenario: IAsset2<IScenario, IScenario.Data>
 	{
 		//static void IAsset2<IScenario, IScenario.Data>.OnUpdate(IScenario.Definition definition, ref IScenario.Data data_new)
