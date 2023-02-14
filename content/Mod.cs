@@ -12,11 +12,6 @@ namespace TC2.Siege
 		{
 			
 		}
-
-		protected override void OnConfigure(ModContext context)
-		{
-
-		}
 	}
 }
 

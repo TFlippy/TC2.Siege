@@ -37,6 +37,8 @@ namespace TC2.Siege
 
 				for (int i = 0; i < count; i++)
 				{
+					//var h_origin = default(IOrigin.Handle);
+
 					ref var h_character = ref platoon.characters[i];
 					h_character = Dormitory.CreateCharacter(ref region, ref random, origins.GetRandom(ref random));
 
@@ -44,6 +46,26 @@ namespace TC2.Siege
 					if (definition != null)
 					{
 						definition.Flags.SetFlag(Asset.Flags.No_Save, true);
+
+						ref var character_data = ref definition.GetData();
+						if (character_data.IsNotNull())
+						{
+							ref var origin_data = ref character_data.origin.GetData();
+							if (origin_data.IsNotNull())
+							{
+								//character_data.shipments = new Shipment.Item[16];
+								var items_span = character_data.items.AsSpan();
+
+								ref var kit_data = ref origin_data.kit_default.GetData();
+								if (kit_data.IsNotNull())
+								{
+									foreach (ref var item in kit_data.shipment.items)
+									{
+										items_span.Add(item);
+									}
+								}
+							}
+						}
 					}
 
 					App.WriteLine($"Platoon [{i}]: {h_character}", App.Color.Magenta);

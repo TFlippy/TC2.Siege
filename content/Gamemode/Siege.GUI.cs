@@ -165,36 +165,43 @@ namespace TC2.Siege
 														var transform_copy = default(Transform.Data);
 														var nameable_copy = default(Nameable.Data);
 														var color = selected ? Color32BGRA.White : new Color32BGRA(0xff9a7f7f);
+														var faction_id_tmp = this.faction_id;
+
+														var ok = false;
 
 														row.Run((ISystem.Info info, Entity entity, in Spawn.Data spawn, in Nameable.Data nameable, in Transform.Data transform, in Faction.Data faction) =>
 														{
 															transform_copy = transform;
 															nameable_copy = nameable;
 
-															if (faction.id.TryGetData(out var ref_faction))
+															if (faction.id.TryGetData(out var ref_faction) && faction.id == faction_id_tmp && spawn.flags.HasAny(Spawn.Flags.Faction))
 															{
 																color = ref_faction.value.color_a;
 																//sprite.frame.X = 1;
+																ok = true;
 															}
 														});
 
-														using (var node = map.DrawNode(new Sprite(tex_icons_minimap, 16, 16, 3, 0), transform_copy.GetInterpolatedPosition() + new Vector2(0, -3), color: color, color_hovered: Color32BGRA.White))
+														if (ok)
 														{
-															//GUI.DrawTextCentered(nameable_copy.name, node.rect.GetPosition() + new Vector2(16, 0), piv layer: GUI.Layer.Window, font: GUI.Font.Superstar, size: 16);
-
-															if (node.is_hovered)
+															using (var node = map.DrawNode(new Sprite(tex_icons_minimap, 16, 16, 3, 0), transform_copy.GetInterpolatedPosition() + new Vector2(0, -3), color: selected ? Color32BGRA.White : color, color_hovered: Color32BGRA.White))
 															{
-																GUI.SetCursor(App.CursorType.Hand, 100);
+																//GUI.DrawTextCentered(nameable_copy.name, node.rect.GetPosition() + new Vector2(16, 0), piv layer: GUI.Layer.Window, font: GUI.Font.Superstar, size: 16);
 
-																if (GUI.GetMouse().GetKeyDown(Mouse.Key.Left))
+																if (node.is_hovered)
 																{
-																	//App.WriteLine("press");
-																	ent_selected_spawn_new = row.Entity;
-																}
+																	GUI.SetCursor(App.CursorType.Hand, 100);
 
-																using (GUI.Tooltip.New())
-																{
-																	GUI.Title(nameable_copy.name, font: GUI.Font.Superstar, size: 16);
+																	if (GUI.GetMouse().GetKeyDown(Mouse.Key.Left))
+																	{
+																		//App.WriteLine("press");
+																		ent_selected_spawn_new = row.Entity;
+																	}
+
+																	using (GUI.Tooltip.New())
+																	{
+																		GUI.Title(nameable_copy.name, font: GUI.Font.Superstar, size: 16);
+																	}
 																}
 															}
 														}
@@ -207,9 +214,9 @@ namespace TC2.Siege
 
 								GUI.SeparatorThick();
 
-								this.DrawSpawns(ref region, size: new(GUI.GetRemainingWidth(), (24 * 4.50f) + 8));
+								//this.DrawSpawns(ref region, size: new(GUI.GetRemainingWidth(), (24 * 4.50f) + 8));
 
-								GUI.SeparatorThick();
+								//GUI.SeparatorThick();
 
 								//var h_character = default(ICharacter.Handle);
 
@@ -246,9 +253,114 @@ namespace TC2.Siege
 
 								GUI.SameLine();
 
-								using (GUI.Group.New(size: GUI.GetRemainingSpace(), padding: new(8, 8)))
+								using (var group_character = GUI.Group.New(size: GUI.GetRemainingSpace()))
 								{
+									ref var character_data = ref h_selected_character.GetData();
 
+									using (var group_title = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 24), padding: new(8, 8)))
+									{
+										if (character_data.IsNotNull())
+										{
+											GUI.TitleCentered(character_data.name, size: 24, pivot: new(0.00f, 0.00f));
+										}
+										else
+										{
+											GUI.TitleCentered("<no character selected>", size: 24, pivot: new(0.00f, 0.00f));
+										}
+									}
+
+									GUI.SeparatorThick();
+
+									using (var group_kits = GUI.Group.New(size: GUI.GetRemainingSpace(y: -48), padding: new(8, 8)))
+									{
+										using (var dropdown = GUI.Dropdown.Begin("armor", "Armor", size: new(200, 40)))
+										{
+											if (dropdown.show)
+											{
+												foreach (var asset in IKit.Database.GetAssets())
+												{
+													if (asset.id == 0) continue;
+
+													ref var kit_data = ref asset.GetData();
+
+													if (kit_data.category != Kit.Category.Armor) continue;
+
+													using (GUI.ID.Push(asset.id))
+													{
+														using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32)))
+														{
+															GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.00f));
+														
+															if (GUI.Selectable3("select", group_row.GetOuterRect(), false))
+															{
+																dropdown.Close();
+															}
+														}
+													}
+												}
+											}
+										}
+
+										//foreach (var asset in IKit.Database.GetAssets())
+										//{
+										//	if (asset.id == 0) continue;
+
+										//	ref var kit_data = ref asset.GetData();
+
+										//	using (GUI.ID.Push(asset.id))
+										//	{
+										//		using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32)))
+										//		{
+										//			GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.50f));
+										//		}
+										//	}
+										//}
+									}
+
+									if (Spawn.RespawnGUI.ent_selected_spawn.IsAlive())
+									{
+										ref var faction = ref Spawn.RespawnGUI.ent_selected_spawn.GetComponent<Faction.Data>();
+										if (faction.IsNull() || faction.id == player.faction_id)
+										{
+											ref var spawn = ref Spawn.RespawnGUI.ent_selected_spawn.GetComponent<Spawn.Data>();
+											if (!spawn.IsNull())
+											{
+												if (GUI.DrawButton((this.respawn.cooldown > 0.00f ? $"Respawn ({MathF.Floor(this.respawn.cooldown):0}s)" : "Respawn"), new Vector2(168, 48), enabled: this.respawn.cooldown <= float.Epsilon && h_selected_character.id != 0, font_size: 24, color: GUI.font_color_green_b))
+												{
+													var rpc = new RespawnExt.SpawnRPC
+													{
+														ent_spawn = Spawn.RespawnGUI.ent_selected_spawn
+													};
+													rpc.Send(player.ent_player);
+												}
+												if (GUI.IsItemHovered())
+												{
+													using (GUI.Tooltip.New())
+													{
+														GUI.Text("Respawn as this character at the selected spawn point.");
+													}
+												}
+											}
+											else
+											{
+
+											}
+										}
+										else
+										{
+											Spawn.RespawnGUI.ent_selected_spawn = default;
+										}
+									}
+								}
+
+								if (ent_selected_spawn_new.HasValue && ent_selected_spawn_new != Spawn.RespawnGUI.ent_selected_spawn)
+								{
+									var rpc = new RespawnExt.SetSpawnRPC()
+									{
+										ent_spawn = ent_selected_spawn_new.Value
+									};
+									rpc.Send(player.ent_player);
+									ent_selected_spawn_new = default;
 								}
 
 								//using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 80)))
@@ -309,56 +421,158 @@ namespace TC2.Siege
 								//		Experience.DrawTableSmall(ref origin_data.experience);
 								//	}
 								//}
-
-								//if (Spawn.RespawnGUI.ent_selected_spawn.IsAlive())
-								//{
-								//	ref var faction = ref Spawn.RespawnGUI.ent_selected_spawn.GetComponent<Faction.Data>();
-								//	if (faction.IsNull() || faction.id == player.faction_id)
-								//	{
-								//		ref var spawn = ref Spawn.RespawnGUI.ent_selected_spawn.GetComponent<Spawn.Data>();
-								//		if (!spawn.IsNull())
-								//		{
-								//			if (GUI.DrawButton((this.respawn.cooldown > 0.00f ? $"Respawn ({MathF.Floor(this.respawn.cooldown):0}s)" : "Respawn"), new Vector2(168, 48), enabled: this.respawn.cooldown <= float.Epsilon && h_selected_character.id != 0, font_size: 24, color: GUI.font_color_green_b))
-								//			{
-								//				var rpc = new RespawnExt.SpawnRPC
-								//				{
-								//					ent_spawn = Spawn.RespawnGUI.ent_selected_spawn
-								//				};
-								//				rpc.Send(player.ent_player);
-								//			}
-								//			if (GUI.IsItemHovered())
-								//			{
-								//				using (GUI.Tooltip.New())
-								//				{
-								//					GUI.Text("Respawn as this character at the selected spawn point.");
-								//				}
-								//			}
-								//		}
-								//		else
-								//		{
-
-								//		}
-								//	}
-								//	else
-								//	{
-								//		Spawn.RespawnGUI.ent_selected_spawn = default;
-								//	}
-								//}
-
-								if (ent_selected_spawn_new.HasValue && ent_selected_spawn_new != Spawn.RespawnGUI.ent_selected_spawn)
-								{
-									var rpc = new RespawnExt.SetSpawnRPC()
-									{
-										ent_spawn = ent_selected_spawn_new.Value
-									};
-									rpc.Send(player.ent_player);
-									ent_selected_spawn_new = default;
-								}
 							}
 						}
 					}
 				}
 			}
+
+			//internal static void DrawKits(IOrigin.Handle origin, Character.Flags character_flags, Vector2 size, bool read_only = false, HashSet<IKit.Handle> selected_items = null)
+			//{
+			//	//GUI.NewLine();
+			//	//GUI.Title("Kits", size: 32);
+			//	//GUI.Separator();
+
+			//	using (var scrollable = GUI.Scrollbox.New("Kits", size: size, padding: new(4, 4), force_scrollbar: true))
+			//	{
+			//		using (var table = GUI.Table.New("Kits.Table", 2))
+			//		{
+			//			if (table.show)
+			//			{
+			//				table.SetupColumnFixed(192);
+			//				table.SetupColumnFlex(1);
+			//				//table.SetupColumnFixed(100);
+
+			//				//var selected_items = character_id_to_selected_items.GetOrAdd(character.id);
+
+			//				//for (var kit_index = 1; kit_index < kits.Length; kit_index++)
+
+			//				//using (var row = table.NextRow(24, header: true))
+			//				//{
+			//				//	using (row.Column(0, padding: new(4, 4)))
+			//				//	{
+			//				//		GUI.Title("Name");
+			//				//	}
+
+			//				//	using (row.Column(1, padding: new(8, 0)))
+			//				//	{
+			//				//		GUI.Title("Items");
+			//				//	}
+
+			//				//	using (row.Column(2, padding: new(8, 0)))
+			//				//	{
+			//				//		GUI.Title("Tickets", size: 20);
+			//				//	}
+			//				//}
+
+			//				foreach (var kit_asset in IKit.Database.GetAssets())
+			//				{
+			//					if (kit_asset.id == 0) continue;
+
+			//					ref var kit = ref kit_asset.data;
+			//					//ref var kit = ref kits[kit_index];
+			//					if (!kit.flags.HasAny(Kit.Flags.Hidden)) // && character_flags.HasAll(kit.character_flags) && (kit.origin == 0 || origin == kit.origin))
+			//					{
+			//						var is_selected = !read_only && (kit.flags.HasAny(Kit.Flags.Required) || (selected_items?.Contains(kit_asset.GetHandle()) ?? false));
+
+			//						using (GUI.ID.Push(kit_asset.id))
+			//						{
+			//							using (var row = table.NextRow(40))
+			//							{
+			//								if (!read_only && is_selected)
+			//								{
+			//									current_cost += kit.cost;
+			//								}
+
+			//								using (row.Column(0, padding: new(4, 4)))
+			//								{
+			//									GUI.Title(kit.name);
+			//									//GUI.Text($"Cost: {kit.cost:0.00}");
+
+			//									if (kit.cost == 0.00f)
+			//									{
+			//										GUI.Text($"Free", color: GUI.font_color_default);
+			//									}
+			//									else if (kit.cost > 0.00f)
+			//									{
+			//										GUI.Text($"{kit.cost:0.00} tickets", color: GUI.font_color_default);
+			//									}
+			//									else
+			//									{
+			//										GUI.Text($"+{-kit.cost:0.00} tickets", color: GUI.font_color_default);
+			//									}
+			//								}
+
+			//								using (row.Column(1, padding: new(8, 0)))
+			//								{
+			//									//using (GUI.Group.New(GUI.GetAvailableSize()))
+			//									{
+			//										ref var shipment = ref kit.shipment;
+			//										for (int i = 0; i < shipment.items.Length; i++)
+			//										{
+			//											ref var item = ref shipment.items[i];
+			//											if (item.type != Shipment.Item.Type.Undefined)
+			//											{
+			//												switch (item.type)
+			//												{
+			//													case Shipment.Item.Type.Resource:
+			//													{
+			//														var resource = new Resource.Data(item.material, item.quantity);
+			//														GUI.DrawResourceSmall(ref resource, size: new Vector2(32));
+			//														GUI.SameLine();
+			//													}
+			//													break;
+
+			//													case Shipment.Item.Type.Prefab:
+			//													{
+			//														GUI.DrawPrefabSmall(item.prefab, (int)item.quantity);
+			//														GUI.SameLine();
+			//													}
+			//													break;
+			//												}
+			//											}
+			//										}
+			//									}
+			//								}
+
+			//								//using (row.Column(2, padding: new(8, 0)))
+			//								//{
+			//								//	//if (kit.cost == 0.00f)
+			//								//	//{
+			//								//	//	GUI.TextShadedCentered($"Free", pivot: new(0.50f, 0.50f), color: GUI.font_color_default);
+			//								//	//}
+			//								//	//else if (kit.cost > 0.00f)
+			//								//	//{
+			//								//	//	GUI.TextShadedCentered($"{kit.cost:0.00} tickets", pivot: new(1.00f, 0.50f), color: GUI.font_color_default);
+			//								//	//}
+			//								//	//else
+			//								//	//{
+			//								//	//	GUI.TextShadedCentered($"{kit.cost:0.00} tickets", pivot: new(1.00f, 0.50f), color: GUI.font_color_default);
+			//								//	//}
+			//								//}
+
+			//								if (!read_only)
+			//								{
+			//									GUI.SameLine();
+
+			//									//if (GUI.Selectable($"##kit_{kit_index}", is_selected, size: new Vector2(0, lh)))
+			//									if (GUI.Selectable2(is_selected, size: new Vector2(0, 40), enabled: (is_selected || selected_items.Count < max_item_count), is_readonly: read_only))
+			//									{
+			//										if (!read_only && selected_items != null && !kit.flags.HasAny(Kit.Flags.Required))
+			//										{
+			//											if (is_selected) selected_items.Remove(kit_asset.GetHandle());
+			//											else selected_items.Add(kit_asset.GetHandle());
+			//										}
+			//									}
+			//								}
+			//							}
+			//						}
+			//					}
+			//				}
+			//			}
+			//		}
+			//	}
+			//}
 
 			private void DrawSpawns(ref Region.Data region, Vector2 size)
 			{
