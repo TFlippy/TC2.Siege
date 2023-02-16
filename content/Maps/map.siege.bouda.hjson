@@ -3,8 +3,23 @@
 	$name: "Bouda"
 	$desc:
 		'''
-		TODO: Desc
+		Small border checkpoint in the vicinity of Lopat-Prospekto.
 		'''
+	
+	$infrastructure: electricity, telegraph, water, railway, highway, airport, docks, police, healthcare, education, military, zoo, laboratory, university
+	$industry: financial, administrative, manufacturing, low_tech, high_tech, metallurgy, chemical, automotive, power, military, entertainment, arcane, biology, construction, tourism, logistics, food, hospitality, textile, fishing
+	$crime: theft, murder, embezzlement, drugs, prostitution, vandalism, bribery, corruption, fraud, forgery, extortion, espionage
+	$geography: hills, excavated, hills, meadows, lakes, forested, rough, coastal, warm, urban
+	$urbanization: 0.880
+	$industrialization: 0.850
+	$education: 0.760
+	$wealth: 0.730
+	$wilderness: 0.150
+	$devastation: 0.190
+	$savagery: 0.100
+	$anarchy: 0.070
+	$elevation: 35.000
+	$population: 210000
 	
 	$features: []
 	

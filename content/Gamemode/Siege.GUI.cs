@@ -96,7 +96,8 @@ namespace TC2.Siege
 
 					Spawn.RespawnGUI.window_size.Y = Maths.Clamp(Spawn.RespawnGUI.window_size.Y, 0, max_height);
 
-					Spawn.RespawnGUI.ent_selected_spawn = this.respawn.ent_selected_spawn;
+					ref var ent_selected_spawn = ref Spawn.RespawnGUI.ent_selected_spawn;
+					ent_selected_spawn = this.respawn.ent_selected_spawn;
 
 					using (var window = GUI.Window.Standalone("Respawn", position: new Vector2(GUI.CanvasSize.X * 0.50f, 0) + Spawn.RespawnGUI.window_offset, pivot: Spawn.RespawnGUI.window_pivot, size: Spawn.RespawnGUI.window_size))
 					{
@@ -109,7 +110,7 @@ namespace TC2.Siege
 
 							using (GUI.Group.New(size: new Vector2(GUI.GetRemainingWidth(), GUI.GetRemainingHeight()), padding: new(8, 8)))
 							{
-								if (!Spawn.RespawnGUI.ent_selected_spawn.IsAlive())
+								if (!ent_selected_spawn.IsAlive())
 								{
 									region.Query<Region.GetSpawnsQuery>(Func).Execute(ref this);
 									static void Func(ISystem.Info info, Entity entity, in Spawn.Data spawn, in Nameable.Data nameable, in Transform.Data transform, in Faction.Data faction)
@@ -158,9 +159,11 @@ namespace TC2.Siege
 
 												using (var map = GUI.Map.New(ref region, minimap, size: map_frame_size, map_scale: 1.00f, draw_markers: false))
 												{
-													foreach (ref var row in region.IterateQuery<Region.GetSpawnsQuery>())
+													//ISystem.Info info, Entity entity, [Source.Owned] in Minimap.Marker.Data marker, [Source.Owned] in Transform.Data transform, [Source.Owned, Optional] in Faction.Data faction, [Source.Owned, Optional] in Nameable.Data nameable
+
+													foreach (ref var row in region.IterateQuery<Minimap.GetMarkersQuery>())
 													{
-														var selected = row.Entity == Spawn.RespawnGUI.ent_selected_spawn;
+														var selected = row.Entity == ent_selected_spawn;
 
 														var transform_copy = default(Transform.Data);
 														var nameable_copy = default(Nameable.Data);
@@ -169,12 +172,12 @@ namespace TC2.Siege
 
 														var ok = false;
 
-														row.Run((ISystem.Info info, Entity entity, in Spawn.Data spawn, in Nameable.Data nameable, in Transform.Data transform, in Faction.Data faction) =>
+														row.Run((ISystem.Info info, Entity entity, [Source.Owned] in Minimap.Marker.Data marker, [Source.Owned] in Transform.Data transform, [Source.Owned, Optional] in Faction.Data faction, [Source.Owned, Optional] in Nameable.Data nameable) =>
 														{
 															transform_copy = transform;
 															nameable_copy = nameable;
 
-															if (faction.id.TryGetData(out var ref_faction) && faction.id == faction_id_tmp && spawn.flags.HasAny(Spawn.Flags.Faction))
+															if (faction.id.TryGetData(out var ref_faction) && faction.id == faction_id_tmp && marker.flags.HasAny(Minimap.Marker.Flags.Faction))
 															{
 																color = ref_faction.value.color_a;
 																//sprite.frame.X = 1;
@@ -220,140 +223,193 @@ namespace TC2.Siege
 
 								//var h_character = default(ICharacter.Handle);
 
-								using (GUI.Group.New(size: GUI.GetRemainingSpace() with { X = 400 }, padding: new(0, 0)))
+								if (ent_selected_spawn.IsAlive())
 								{
-									using (var scrollable = GUI.Scrollbox.New("Platoon", size: GUI.GetRemainingSpace(), padding: new(4, 4), force_scrollbar: true))
+									ref var dormitory = ref ent_selected_spawn.GetComponent<Dormitory.Data>();
+
+									using (GUI.Group.New(size: GUI.GetRemainingSpace() with { X = 400 }, padding: new(0, 0)))
 									{
-										ref var platoon = ref player.ent_player.GetComponent<Siege.Platoon.Data>();
-										if (platoon.IsNotNull())
+										using (var scrollable = GUI.Scrollbox.New("characters", size: GUI.GetRemainingSpace(), padding: new(4, 4), force_scrollbar: true))
 										{
-											foreach (ref var h_character in platoon.characters)
+											if (dormitory.IsNotNull())
 											{
-												ref var character_data = ref h_character.GetData();
-												if (character_data.IsNotNull())
+												var characters = dormitory.characters.AsSpan();
+
+												var characters_count_max = Math.Min(characters.Length, dormitory.characters_capacity);
+												for (var i = 0; i < characters_count_max; i++)
 												{
-													using (GUI.ID.Push(h_character.id))
+													//DrawCharacter(characters[i].GetHandle());
+
+													using (GUI.ID.Push(i - 100))
 													{
 														using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 40)))
 														{
+															var h_character = characters[i];
 															Dormitory.DormitoryGUI.DrawCharacterSmall(h_character);
 
-															var selected = h_selected_character == h_character;
-															if (GUI.Selectable3("select", group_row.GetOuterRect(), selected: selected))
+															var selected = h_selected_character.id != 0 && h_character == h_selected_character; // selected_index;
+															if (GUI.Selectable3("selectable", group_row.GetOuterRect(), selected))
 															{
-																h_selected_character = selected ? default : h_character;
+																if (selected) h_selected_character = 0;
+																else h_selected_character = h_character;
 															}
 														}
 													}
 												}
 											}
+
+											//ref var platoon = ref player.ent_player.GetComponent<Siege.Platoon.Data>();
+											//if (platoon.IsNotNull())
+											//{
+											//	foreach (ref var h_character in platoon.characters)
+											//	{
+											//		ref var character_data = ref h_character.GetData();
+											//		if (character_data.IsNotNull())
+											//		{
+											//			using (GUI.ID.Push(h_character.id))
+											//			{
+											//				using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 40)))
+											//				{
+											//					Dormitory.DormitoryGUI.DrawCharacterSmall(h_character);
+
+											//					var selected = h_selected_character == h_character;
+											//					if (GUI.Selectable3("select", group_row.GetOuterRect(), selected: selected))
+											//					{
+											//						h_selected_character = selected ? default : h_character;
+											//					}
+											//				}
+											//			}
+											//		}
+											//	}
+											//}
 										}
 									}
-								}
 
-								GUI.SameLine();
+									GUI.SameLine();
 
-								using (var group_character = GUI.Group.New(size: GUI.GetRemainingSpace()))
-								{
-									ref var character_data = ref h_selected_character.GetData();
-
-									using (var group_title = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 24), padding: new(8, 8)))
+									using (var group_character = GUI.Group.New(size: GUI.GetRemainingSpace()))
 									{
-										if (character_data.IsNotNull())
-										{
-											GUI.TitleCentered(character_data.name, size: 24, pivot: new(0.00f, 0.00f));
-										}
-										else
-										{
-											GUI.TitleCentered("<no character selected>", size: 24, pivot: new(0.00f, 0.00f));
-										}
-									}
+										ref var character_data = ref h_selected_character.GetData();
 
-									GUI.SeparatorThick();
-
-									using (var group_kits = GUI.Group.New(size: GUI.GetRemainingSpace(y: -48), padding: new(8, 8)))
-									{
-										using (var dropdown = GUI.Dropdown.Begin("armor", "Armor", size: new(200, 40)))
+										using (var group_title = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 24), padding: new(8, 8)))
 										{
-											if (dropdown.show)
+											if (character_data.IsNotNull())
 											{
-												foreach (var asset in IKit.Database.GetAssets())
-												{
-													if (asset.id == 0) continue;
-
-													ref var kit_data = ref asset.GetData();
-
-													if (kit_data.category != Kit.Category.Armor) continue;
-
-													using (GUI.ID.Push(asset.id))
-													{
-														using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32)))
-														{
-															GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.00f));
-														
-															if (GUI.Selectable3("select", group_row.GetOuterRect(), false))
-															{
-																dropdown.Close();
-															}
-														}
-													}
-												}
-											}
-										}
-
-										//foreach (var asset in IKit.Database.GetAssets())
-										//{
-										//	if (asset.id == 0) continue;
-
-										//	ref var kit_data = ref asset.GetData();
-
-										//	using (GUI.ID.Push(asset.id))
-										//	{
-										//		using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32)))
-										//		{
-										//			GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.50f));
-										//		}
-										//	}
-										//}
-									}
-
-									if (Spawn.RespawnGUI.ent_selected_spawn.IsAlive())
-									{
-										ref var faction = ref Spawn.RespawnGUI.ent_selected_spawn.GetComponent<Faction.Data>();
-										if (faction.IsNull() || faction.id == player.faction_id)
-										{
-											ref var spawn = ref Spawn.RespawnGUI.ent_selected_spawn.GetComponent<Spawn.Data>();
-											if (!spawn.IsNull())
-											{
-												if (GUI.DrawButton((this.respawn.cooldown > 0.00f ? $"Respawn ({MathF.Floor(this.respawn.cooldown):0}s)" : "Respawn"), new Vector2(168, 48), enabled: this.respawn.cooldown <= float.Epsilon && h_selected_character.id != 0, font_size: 24, color: GUI.font_color_green_b))
-												{
-													var rpc = new RespawnExt.SpawnRPC
-													{
-														ent_spawn = Spawn.RespawnGUI.ent_selected_spawn
-													};
-													rpc.Send(player.ent_player);
-												}
-												if (GUI.IsItemHovered())
-												{
-													using (GUI.Tooltip.New())
-													{
-														GUI.Text("Respawn as this character at the selected spawn point.");
-													}
-												}
+												GUI.TitleCentered(character_data.name, size: 24, pivot: new(0.00f, 0.00f));
 											}
 											else
 											{
-
+												GUI.TitleCentered("<no character selected>", size: 24, pivot: new(0.00f, 0.00f));
 											}
 										}
-										else
+
+										GUI.SeparatorThick();
+
+										using (var group_kits = GUI.Group.New(size: GUI.GetRemainingSpace(y: -48), padding: new(8, 8)))
 										{
-											Spawn.RespawnGUI.ent_selected_spawn = default;
+											using (var dropdown = GUI.Dropdown.Begin("armor", "Armor", size: new(200, 40)))
+											{
+												if (dropdown.show)
+												{
+													foreach (var asset in IKit.Database.GetAssets())
+													{
+														if (asset.id == 0) continue;
+
+														ref var kit_data = ref asset.GetData();
+
+														if (kit_data.category != Kit.Category.Armor) continue;
+
+														using (GUI.ID.Push(asset.id))
+														{
+															using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32)))
+															{
+																GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.00f));
+
+																if (GUI.Selectable3("select", group_row.GetOuterRect(), false))
+																{
+																	dropdown.Close();
+																}
+															}
+														}
+													}
+												}
+											}
+
+											//foreach (var asset in IKit.Database.GetAssets())
+											//{
+											//	if (asset.id == 0) continue;
+
+											//	ref var kit_data = ref asset.GetData();
+
+											//	using (GUI.ID.Push(asset.id))
+											//	{
+											//		using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32)))
+											//		{
+											//			GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.50f));
+											//		}
+											//	}
+											//}
+										}
+
+										if (ent_selected_spawn.IsAlive())
+										{
+											ref var faction = ref ent_selected_spawn.GetComponent<Faction.Data>();
+											if (faction.IsNull() || faction.id == player.faction_id)
+											{
+												if (GUI.DrawButton("Respawn", size: new Vector2(GUI.GetRemainingWidth() - 100, 40), enabled: dormitory.IsNotNull()))
+												{
+													var rpc = new Dormitory.DEV_SpawnRPC()
+													{
+														h_character = h_selected_character
+													};
+													rpc.Send(ent_selected_spawn);
+												}
+
+												GUI.SameLine();
+
+												if (GUI.DrawButton("DEV: Add", size: new Vector2(GUI.GetRemainingWidth(), 40), enabled: dormitory.IsNotNull()))
+												{
+													var rpc = new Dormitory.DEV_RerollRPC()
+													{
+														add = true
+													};
+													rpc.Send(ent_selected_spawn);
+												}
+
+												//ref var spawn = ref ent_selected_spawn.GetComponent<Spawn.Data>();
+												//if (!spawn.IsNull())
+												//{
+												//	//if (GUI.DrawButton((this.respawn.cooldown > 0.00f ? $"Respawn ({MathF.Floor(this.respawn.cooldown):0}s)" : "Respawn"), new Vector2(168, 48), enabled: this.respawn.cooldown <= float.Epsilon && h_selected_character.id != 0, font_size: 24, color: GUI.font_color_green_b))
+												//	if (GUI.DrawButton((this.respawn.cooldown > 0.00f ? $"Respawn ({MathF.Floor(this.respawn.cooldown):0}s)" : "Respawn"), new Vector2(168, 48), enabled: this.respawn.cooldown <= float.Epsilon, font_size: 24, color: GUI.font_color_green_b))
+												//	{
+												//		var rpc = new RespawnExt.SpawnRPC
+												//		{
+												//			ent_spawn = ent_selected_spawn
+												//		};
+												//		rpc.Send(player.ent_player);
+												//	}
+												//	if (GUI.IsItemHovered())
+												//	{
+												//		using (GUI.Tooltip.New())
+												//		{
+												//			GUI.Text("Respawn as this character at the selected spawn point.");
+												//		}
+												//	}
+												//}
+												//else
+												//{
+
+												//}
+											}
+											else
+											{
+												ent_selected_spawn = default;
+											}
 										}
 									}
 								}
 
-								if (ent_selected_spawn_new.HasValue && ent_selected_spawn_new != Spawn.RespawnGUI.ent_selected_spawn)
+								if (ent_selected_spawn_new.HasValue && ent_selected_spawn_new != ent_selected_spawn)
 								{
 									var rpc = new RespawnExt.SetSpawnRPC()
 									{
