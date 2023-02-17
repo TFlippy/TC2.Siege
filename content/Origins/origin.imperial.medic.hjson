@@ -10,7 +10,7 @@
 	genders: male, female
 	gender_ratio: 0.850
 	species: "human"
-	kit_default: "null"
+	kit_default: "medic.armor"
 	character_flags: educated, military, medical, professional, armed, chemist, soldier, middle_class
 	
 	conditions:

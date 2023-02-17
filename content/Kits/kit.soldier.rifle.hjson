@@ -3,27 +3,36 @@
 	desc: ""
 	
 	flags: none
-	character_flags: none
-	origin: "imperial.soldier"
-	cost: 1.000
+	category: undefined
+	faction: "null"
+	species: "null"
+	
+	character_flags:
+	{
+		require: military, soldier
+		include: military, soldier
+		weight: 1.000
+	}
 	
 	shipment:
 	{
-		name: "Rifle"
 		items:
 		[
 			{
 				type: prefab
 				prefab: "rifle"
 				quantity: 1.000
+				mass_per_unit: 0.000
 				flags: pickup, despawn
 			}
 			{
 				type: resource
 				material: "ammo_hc.hv"
-				quantity: 45.000
+				quantity: 25.000
+				mass_per_unit: 0.000
+				flags: none
 			}
 		]
-		flags: unpack
+		flags: dirty, unpack
 	}
 }

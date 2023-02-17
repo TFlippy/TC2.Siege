@@ -1,4 +1,5 @@
 ﻿using Keg.Extensions;
+using System.Diagnostics;
 using TC2.Base.Components;
 
 namespace TC2.Siege
@@ -101,7 +102,7 @@ namespace TC2.Siege
 
 					using (var window = GUI.Window.Standalone("Respawn", position: new Vector2(GUI.CanvasSize.X * 0.50f, 0) + Spawn.RespawnGUI.window_offset, pivot: Spawn.RespawnGUI.window_pivot, size: Spawn.RespawnGUI.window_size))
 					{
-						Spawn.RespawnGUI.window_size = new Vector2(800, 700);
+						Spawn.RespawnGUI.window_size = new Vector2(800, 600);
 
 						this.StoreCurrentWindowTypeID();
 						if (window.show)
@@ -166,7 +167,7 @@ namespace TC2.Siege
 														var selected = row.Entity == ent_selected_spawn;
 
 														var transform_copy = default(Transform.Data);
-														var nameable_copy = default(Nameable.Data);
+														//var nameable_copy = default(Nameable.Data);
 														var color = selected ? Color32BGRA.White : new Color32BGRA(0xff9a7f7f);
 														var faction_id_tmp = this.faction_id;
 
@@ -175,7 +176,7 @@ namespace TC2.Siege
 														row.Run((ISystem.Info info, Entity entity, [Source.Owned] in Minimap.Marker.Data marker, [Source.Owned] in Transform.Data transform, [Source.Owned, Optional] in Faction.Data faction, [Source.Owned, Optional] in Nameable.Data nameable) =>
 														{
 															transform_copy = transform;
-															nameable_copy = nameable;
+															//nameable_copy = nameable;
 
 															if (faction.id.TryGetData(out var ref_faction) && faction.id == faction_id_tmp && marker.flags.HasAny(Minimap.Marker.Flags.Faction))
 															{
@@ -187,11 +188,11 @@ namespace TC2.Siege
 
 														if (ok)
 														{
-															using (var node = map.DrawNode(new Sprite(tex_icons_minimap, 16, 16, 3, 0), transform_copy.GetInterpolatedPosition() + new Vector2(0, -3), color: selected ? Color32BGRA.White : color, color_hovered: Color32BGRA.White))
+															using (var node = map.DrawNode(new Sprite(tex_icons_minimap, 16, 16, 3, 0), transform_copy.GetInterpolatedPosition() + new Vector2(0, -3), color: selected ? Color32BGRA.White : color, color_hovered: selected ? Color32BGRA.White : Color32BGRA.Lerp(color, Color32BGRA.White, 0.50f)))
 															{
 																//GUI.DrawTextCentered(nameable_copy.name, node.rect.GetPosition() + new Vector2(16, 0), piv layer: GUI.Layer.Window, font: GUI.Font.Superstar, size: 16);
 
-																if (node.is_hovered)
+																if (node.is_hovered && !selected)
 																{
 																	GUI.SetCursor(App.CursorType.Hand, 100);
 
@@ -203,7 +204,8 @@ namespace TC2.Siege
 
 																	using (GUI.Tooltip.New())
 																	{
-																		GUI.Title(nameable_copy.name, font: GUI.Font.Superstar, size: 16);
+																		//GUI.Title(nameable_copy.name, font: GUI.Font.Superstar, size: 16);
+																		GUI.Title(row.Entity.GetFullName(), font: GUI.Font.Superstar, size: 16);
 																	}
 																}
 															}
@@ -226,6 +228,10 @@ namespace TC2.Siege
 								if (ent_selected_spawn.IsAlive())
 								{
 									ref var dormitory = ref ent_selected_spawn.GetComponent<Dormitory.Data>();
+
+									var selected_items = Spawn.RespawnGUI.character_id_to_selected_items.GetOrAdd(h_selected_character);
+
+									//var context = GUI.ItemContext.Begin();
 
 									using (GUI.Group.New(size: GUI.GetRemainingSpace() with { X = 400 }, padding: new(0, 0)))
 									{
@@ -305,35 +311,172 @@ namespace TC2.Siege
 
 										GUI.SeparatorThick();
 
+										using (var group_title = GUI.Group.New(size: GUI.GetRemainingSpace(y: -300), padding: new(8, 8)))
+										{
+
+										}
+
+										GUI.SeparatorThick();
+
 										using (var group_kits = GUI.Group.New(size: GUI.GetRemainingSpace(y: -48), padding: new(8, 8)))
 										{
-											using (var dropdown = GUI.Dropdown.Begin("armor", "Armor", size: new(200, 40)))
+											GUI.DrawBackground(GUI.tex_panel, group_kits.GetOuterRect(), new(8, 8, 8, 8));
+
+											ref var armory = ref ent_selected_spawn.GetComponent<Armory.Data>();
+											if (armory.IsNotNull())
 											{
-												if (dropdown.show)
+												//if (armory.inv_storage.TryGetHandle(out var h_inventory))
+												//{
+												//	using (GUI.Group.New(size: h_inventory.GetPreferedFrameSize()))
+												//	{
+												//		GUI.DrawInventory(h_inventory, is_readonly: true);
+												//	}
+												//}
+
+												//GUI.SameLine();
+
+												ref var shipment = ref ent_selected_spawn.GetComponent<Shipment.Data>();
+												//if (shipment.IsNotNull())
+												//{
+												//	var sameline = false; 
+												//	foreach (ref var item in shipment.items)
+												//	{
+												//		if (!item.IsValid()) continue;
+
+												//		if (sameline) GUI.SameLine();
+												//		sameline = true;
+
+												//		GUI.DrawItem(ref item, is_readonly: true);
+												//	}
+
+												//	//GUI.DrawShipment(ref context, ent_selected_spawn, ref shipment, slot_size: new(48, 48));
+												//}
+
+												//var ts = Timestamp.Now();
+												var sw = new Stopwatch();
+
+												using (var scrollable = GUI.Scrollbox.New("kits", size: GUI.GetRemainingSpace(), padding: new(4, 4), force_scrollbar: true))
 												{
-													foreach (var asset in IKit.Database.GetAssets())
+													if (character_data.IsNotNull() && shipment.IsNotNull() && armory.inv_storage.TryGetHandle(out var h_inventory))
 													{
-														if (asset.id == 0) continue;
+														var shipment_armory_span = shipment.items.AsSpan();
 
-														ref var kit_data = ref asset.GetData();
-
-														if (kit_data.category != Kit.Category.Armor) continue;
-
-														using (GUI.ID.Push(asset.id))
+														foreach (var asset in IKit.Database.GetAssets())
 														{
-															using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32)))
-															{
-																GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.00f));
+															if (asset.id == 0) continue;
+															ref var kit_data = ref asset.GetData();
+															var h_kit = asset.GetHandle();
 
-																if (GUI.Selectable3("select", group_row.GetOuterRect(), false))
+															if (kit_data.character_flags.Evaluate(character_data.flags) < 0.50f) continue;
+
+															var kit_items_span = kit_data.shipment.items.AsSpan();
+															var valid = true;
+
+															sw.Start();
+															foreach (ref var item in kit_items_span)
+															{
+																if (!item.IsValid()) continue;
+
+																var has_item = shipment_armory_span.Contains(item);
+																if (!has_item && item.type == Shipment.Item.Type.Resource)
 																{
-																	dropdown.Close();
+																	has_item = h_inventory.GetQuantity(item.material) >= item.quantity;
+																}
+
+																if (!has_item)
+																{
+																	valid = false;
+																	break;
+																}
+															}
+															sw.Stop();
+
+															if (valid)
+															{
+																using (GUI.ID.Push(asset.id))
+																{
+																	using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 48), padding: new(4, 4)))
+																	{
+																		GUI.DrawBackground(GUI.tex_panel, group_row.GetOuterRect(), new(8, 8, 8, 8));
+
+																		using (var group_title = GUI.Group.New(size: new(128, GUI.GetRemainingHeight())))
+																		{
+																			GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.00f));
+																		}
+
+																		GUI.SameLine();
+
+																		//GUI.DrawItems(shipment.items.AsSpan(), is_readonly: true);
+																		//GUI.DrawItems(shipment.items.AsSpan(), is_readonly: true);
+
+																		var sameline = false;
+																		foreach (ref var item in kit_items_span)
+																		{
+																			if (!item.IsValid()) continue;
+
+																			if (sameline) GUI.SameLine();
+																			sameline = true;
+
+																			sw.Start();
+																			var has_item = shipment_armory_span.Contains(item);
+																			if (!has_item && item.type == Shipment.Item.Type.Resource)
+																			{
+																				has_item = h_inventory.GetQuantity(item.material) >= item.quantity;
+																			}
+																			sw.Stop();
+
+																			if (has_item)
+																			{
+
+																			}
+
+																			GUI.DrawItem(ref item, is_readonly: true, text_color: has_item ? GUI.font_color_default : GUI.col_button_error.WithAlphaMult(0.50f), icon_color: has_item ? Color32BGRA.White : GUI.col_button_error.WithAlphaMult(0.50f));
+																		}
+
+																		var selected = selected_items.Contains(h_kit);
+																		if (GUI.Selectable3("selectable", group_row.GetOuterRect(), selected))
+																		{
+																			if (selected) selected_items.Remove(h_kit);
+																			else selected_items.Add(h_kit);
+																		}
+																	}
 																}
 															}
 														}
 													}
 												}
+
+												var ts_elapsed = sw.Elapsed.TotalMilliseconds; //.GetMilliseconds();
+												GUI.Text($"{ts_elapsed:0.0000} ms");
 											}
+
+											//using (var dropdown = GUI.Dropdown.Begin("armor", "Armor", size: new(200, 40)))
+											//{
+											//	if (dropdown.show)
+											//	{
+											//		foreach (var asset in IKit.Database.GetAssets())
+											//		{
+											//			if (asset.id == 0) continue;
+
+											//			ref var kit_data = ref asset.GetData();
+
+											//			if (kit_data.category != Kit.Category.Armor) continue;
+
+											//			using (GUI.ID.Push(asset.id))
+											//			{
+											//				using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32)))
+											//				{
+											//					GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.00f));
+
+											//					if (GUI.Selectable3("select", group_row.GetOuterRect(), false))
+											//					{
+											//						dropdown.Close();
+											//					}
+											//				}
+											//			}
+											//		}
+											//	}
+											//}
 
 											//foreach (var asset in IKit.Database.GetAssets())
 											//{
