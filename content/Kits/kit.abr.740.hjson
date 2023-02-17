@@ -1,0 +1,41 @@
+{
+	name: "ABR 740"
+	desc: ""
+	
+	flags: none
+	category: undefined
+	faction: "null"
+	species: "null"
+	
+	character_flags:
+	{
+		require: military
+		include: military
+		exclude: medical, technician
+		weight: 1.000
+	}
+	
+	shipment:
+	{
+		items:
+		[
+			{
+				type: prefab
+				prefab: "bp.abr.740"
+				quantity: 1.000
+				mass_per_unit: 0.000
+				flags: pickup, despawn
+			}
+			{
+				type: resource
+				material: "ammo_hc.hv"
+				quantity: 150.000
+				mass_per_unit: 0.000
+				flags: none
+			}
+			null
+			null
+		]
+		flags: dirty, unpack
+	}
+}

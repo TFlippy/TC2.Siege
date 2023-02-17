@@ -11,7 +11,7 @@
 	gender_ratio: 0.000
 	species: "human"
 	kit_default: "sapper.armor"
-	character_flags: military, professional, armed, hunter, soldier, middle_class
+	character_flags: construction, military, professional, armed, technician, engineer, soldier, middle_class
 	
 	conditions:
 	{

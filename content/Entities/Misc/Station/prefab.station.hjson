@@ -89,10 +89,10 @@ claimer:
 	falloff: 1.000
 }
 
-spawn:
-{
-	flags: faction
-}
+// spawn:
+// {
+// 	flags: faction
+// }
 
 // laboratory:
 // {
@@ -108,7 +108,7 @@ minimap.marker:
 		frame: [1, 0]
 	}
 
-	flags: faction, spawner
+	flags: faction
 }
 
 lamp:
@@ -127,26 +127,26 @@ lamp:
 	}
 }
 
-dormitory:
-{
-	species: "human"
-	flags: no_hiring
-	characters_capacity: 8
-}
+// dormitory:
+// {
+// 	species: "human"
+// 	flags: no_hiring
+// 	characters_capacity: 8
+// }
 
-armory:
-{
-	@inventory4:
-	{
-		name: "Ammo"
-		stack_size_multiplier: 4.000
-		filter_flags: ammo
-		type: ammo
-		flags: ignore_mass
-	}
-}
+// armory:
+// {
+// 	@inventory4:
+// 	{
+// 		name: "Ammo"
+// 		stack_size_multiplier: 4.000
+// 		filter_flags: ammo
+// 		type: ammo
+// 		flags: ignore_mass
+// 	}
+// }
 
-shipment:
-{
-	flags: keep_items, no_gui, allow_deposit, allow_withdraw
-}
+// shipment:
+// {
+// 	flags: keep_items, no_gui, allow_deposit, allow_withdraw
+// }

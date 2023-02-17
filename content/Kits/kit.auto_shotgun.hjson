@@ -3,27 +3,38 @@
 	desc: ""
 	
 	flags: none
-	character_flags: none
-	origin: "imperial.soldier"
-	cost: 6.500
+	category: undefined
+	faction: "null"
+	species: "null"
+	
+	character_flags:
+	{
+		require: military, technician
+		include: military, technician
+		weight: 1.000
+	}
 	
 	shipment:
 	{
-		name: "Auto-Shotgun"
 		items:
 		[
 			{
 				type: prefab
 				prefab: "auto_shotgun"
 				quantity: 1.000
+				mass_per_unit: 0.000
 				flags: pickup, despawn
 			}
 			{
 				type: resource
 				material: "ammo_sg.buck"
 				quantity: 32.000
+				mass_per_unit: 0.000
+				flags: none
 			}
+			null
+			null
 		]
-		flags: unpack
+		flags: dirty, unpack
 	}
 }

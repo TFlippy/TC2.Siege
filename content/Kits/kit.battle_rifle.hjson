@@ -1,5 +1,5 @@
 {
-	name: "Revolver"
+	name: "Battle Rifle"
 	desc: ""
 	
 	flags: none
@@ -9,8 +9,9 @@
 	
 	character_flags:
 	{
-		require: military, soldier
-		include: military, soldier
+		require: military
+		include: military
+		exclude: medical
 		weight: 1.000
 	}
 	
@@ -20,15 +21,15 @@
 		[
 			{
 				type: prefab
-				prefab: "revolver"
+				prefab: "battle_rifle"
 				quantity: 1.000
 				mass_per_unit: 0.000
-				flags: despawn
+				flags: pickup, despawn
 			}
 			{
 				type: resource
-				material: "ammo_hc.match"
-				quantity: 30.000
+				material: "ammo_hc.hv"
+				quantity: 90.000
 				mass_per_unit: 0.000
 				flags: none
 			}

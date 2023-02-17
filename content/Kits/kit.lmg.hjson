@@ -1,0 +1,38 @@
+{
+	name: "LMG"
+	desc: ""
+	
+	flags: none
+	category: undefined
+	faction: "null"
+	species: "null"
+	
+	character_flags:
+	{
+		require: military, soldier
+		include: military, soldier
+		weight: 1.000
+	}
+	
+	shipment:
+	{
+		items:
+		[
+			{
+				type: prefab
+				prefab: "lmg"
+				quantity: 1.000
+				mass_per_unit: 0.000
+				flags: pickup, despawn
+			}
+			{
+				type: resource
+				material: "ammo_mg"
+				quantity: 200.000
+				mass_per_unit: 0.000
+				flags: none
+			}
+		]
+		flags: dirty, unpack
+	}
+}

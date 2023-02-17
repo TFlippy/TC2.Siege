@@ -178,7 +178,7 @@ namespace TC2.Siege
 															transform_copy = transform;
 															//nameable_copy = nameable;
 
-															if (faction.id.TryGetData(out var ref_faction) && faction.id == faction_id_tmp && marker.flags.HasAny(Minimap.Marker.Flags.Faction))
+															if (faction.id.TryGetData(out var ref_faction) && faction.id == faction_id_tmp && marker.flags.HasAll(Minimap.Marker.Flags.Faction | Minimap.Marker.Flags.Spawner))
 															{
 																color = ref_faction.value.color_a;
 																//sprite.frame.X = 1;
@@ -311,7 +311,7 @@ namespace TC2.Siege
 
 										GUI.SeparatorThick();
 
-										using (var group_title = GUI.Group.New(size: GUI.GetRemainingSpace(y: -300), padding: new(8, 8)))
+										using (var group_title = GUI.Group.New(size: GUI.GetRemainingSpace(y: -350), padding: new(8, 8)))
 										{
 
 										}
@@ -348,8 +348,8 @@ namespace TC2.Siege
 														{
 															if (!item.IsValid()) continue;
 
-															if (sameline) GUI.SameLine();
-															sameline = true;
+															//if (sameline) GUI.SameLine();
+															//sameline = true;
 
 															GUI.DrawItem(ref item, is_readonly: true);
 														}
@@ -368,6 +368,9 @@ namespace TC2.Siege
 													if (character_data.IsNotNull() && shipment.IsNotNull() && h_inventory.IsValid())
 													{
 														var shipment_armory_span = shipment.items.AsSpan();
+
+														var kits_unavailable_count = 0;
+														Span<IKit.Handle> kits_unavailable = stackalloc IKit.Handle[32];
 
 														foreach (var asset in IKit.Database.GetAssets())
 														{
@@ -399,56 +402,24 @@ namespace TC2.Siege
 															}
 															sw.Stop();
 
-															if (true || valid)
+															if (valid)
 															{
-																using (GUI.ID.Push(asset.id))
-																{
-																	using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 48), padding: new(4, 4)))
-																	{
-																		GUI.DrawBackground(GUI.tex_panel, group_row.GetOuterRect(), new(8, 8, 8, 8));
+																DrawKit(ref h_kit, ref kit_data, ref h_inventory, ref shipment_armory_span, true, selected_items);
+															}
+															else
+															{
+																kits_unavailable.Add(h_kit, ref kits_unavailable_count);
+															}
+														}
 
-																		using (var group_title = GUI.Group.New(size: new(128, GUI.GetRemainingHeight())))
-																		{
-																			GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.00f), color: GUI.font_color_title.WithAlphaMult(valid ? 1.00f : 0.50f));
-																		}
+														for (var i = 0; i < kits_unavailable_count; i++)
+														{
+															var h_kit = kits_unavailable[i];
+															ref var kit_data = ref h_kit.GetData();
 
-																		GUI.SameLine();
-
-																		//GUI.DrawItems(shipment.items.AsSpan(), is_readonly: true);
-																		//GUI.DrawItems(shipment.items.AsSpan(), is_readonly: true);
-
-																		var sameline = false;
-																		foreach (ref var item in kit_items_span)
-																		{
-																			if (!item.IsValid()) continue;
-
-																			if (sameline) GUI.SameLine();
-																			sameline = true;
-
-																			sw.Start();
-																			var has_item = shipment_armory_span.Contains(item);
-																			if (!has_item && item.type == Shipment.Item.Type.Resource)
-																			{
-																				has_item = h_inventory.GetQuantity(item.material) >= item.quantity;
-																			}
-																			sw.Stop();
-
-																			if (has_item)
-																			{
-
-																			}
-
-																			GUI.DrawItem(ref item, is_readonly: true, text_color: has_item ? GUI.font_color_default : GUI.col_button_error.WithAlphaMult(0.50f), icon_color: has_item ? Color32BGRA.White : GUI.col_button_error.WithAlphaMult(0.50f));
-																		}
-
-																		var selected = selected_items.Contains(h_kit);
-																		if (GUI.Selectable3("selectable", group_row.GetOuterRect(), selected, is_readonly: !valid))
-																		{
-																			if (selected) selected_items.Remove(h_kit);
-																			else selected_items.Add(h_kit);
-																		}
-																	}
-																}
+															if (kit_data.IsNotNull())
+															{
+																DrawKit(ref h_kit, ref kit_data, ref h_inventory, ref shipment_armory_span, false, selected_items);
 															}
 														}
 													}
@@ -520,6 +491,8 @@ namespace TC2.Siege
 													}
 
 													rpc.Send(ent_selected_spawn);
+
+													h_selected_character = default;
 												}
 
 												GUI.SameLine();
@@ -635,6 +608,56 @@ namespace TC2.Siege
 								//	}
 								//}
 							}
+						}
+					}
+				}
+			}
+
+			private static void DrawKit(ref IKit.Handle h_kit, ref IKit.Data kit_data, ref Inventory.Handle h_inventory, ref Span<Shipment.Item> shipment_armory_span, bool valid, HashSet<IAsset2<IKit, IKit.Data>.Handle> selected_items)
+			{
+				using (GUI.ID.Push(h_kit.id))
+				{
+					using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 40), padding: new(0, 0)))
+					{
+						GUI.DrawBackground(GUI.tex_panel, group_row.GetOuterRect(), new(8, 8, 8, 8));
+
+						using (var group_title = GUI.Group.New(size: new(128, GUI.GetRemainingHeight()), padding: new(4, 0)))
+						{
+							GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.50f), color: GUI.font_color_title.WithAlphaMult(valid ? 1.00f : 0.50f));
+						}
+
+						GUI.SameLine();
+
+						//GUI.DrawItems(shipment.items.AsSpan(), is_readonly: true);
+						//GUI.DrawItems(shipment.items.AsSpan(), is_readonly: true);
+
+						var sameline = false;
+						foreach (ref var item in kit_data.shipment.items)
+						{
+							if (!item.IsValid()) continue;
+
+							if (sameline) GUI.SameLine();
+							sameline = true;
+
+							var has_item = shipment_armory_span.Contains(item);
+							if (!has_item && item.type == Shipment.Item.Type.Resource)
+							{
+								has_item = h_inventory.GetQuantity(item.material) >= item.quantity;
+							}
+
+							if (has_item)
+							{
+
+							}
+
+							GUI.DrawItem(ref item, is_readonly: true, text_color: has_item ? GUI.font_color_default : GUI.col_button_error.WithAlphaMult(0.50f), icon_color: has_item ? Color32BGRA.White : GUI.col_button_error.WithAlphaMult(0.50f));
+						}
+
+						var selected = selected_items.Contains(h_kit);
+						if (GUI.Selectable3("selectable", group_row.GetOuterRect(), selected, is_readonly: !valid))
+						{
+							if (selected) selected_items.Remove(h_kit);
+							else selected_items.Add(h_kit);
 						}
 					}
 				}
