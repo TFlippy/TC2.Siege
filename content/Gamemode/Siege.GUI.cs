@@ -325,39 +325,47 @@ namespace TC2.Siege
 											ref var armory = ref ent_selected_spawn.GetComponent<Armory.Data>();
 											if (armory.IsNotNull())
 											{
-												//if (armory.inv_storage.TryGetHandle(out var h_inventory))
-												//{
-												//	using (GUI.Group.New(size: h_inventory.GetPreferedFrameSize()))
-												//	{
-												//		GUI.DrawInventory(h_inventory, is_readonly: true);
-												//	}
-												//}
-
-												//GUI.SameLine();
-
+												armory.inv_storage.TryGetHandle(out var h_inventory);
 												ref var shipment = ref ent_selected_spawn.GetComponent<Shipment.Data>();
-												//if (shipment.IsNotNull())
-												//{
-												//	var sameline = false; 
-												//	foreach (ref var item in shipment.items)
-												//	{
-												//		if (!item.IsValid()) continue;
 
-												//		if (sameline) GUI.SameLine();
-												//		sameline = true;
+												using (var group_storage = GUI.Group.New(size: new(96 + 16, GUI.GetRemainingHeight()), padding: new(8, 8)))
+												{
+													GUI.DrawBackground(GUI.tex_frame, group_storage.GetOuterRect(), new(8, 8, 8, 8));
 
-												//		GUI.DrawItem(ref item, is_readonly: true);
-												//	}
 
-												//	//GUI.DrawShipment(ref context, ent_selected_spawn, ref shipment, slot_size: new(48, 48));
-												//}
+													if (h_inventory.IsValid())
+													{
+														using (GUI.Group.New(size: h_inventory.GetPreferedFrameSize()))
+														{
+															GUI.DrawInventory(h_inventory, is_readonly: true);
+														}
+													}
+
+													if (shipment.IsNotNull())
+													{
+														var sameline = false;
+														foreach (ref var item in shipment.items)
+														{
+															if (!item.IsValid()) continue;
+
+															if (sameline) GUI.SameLine();
+															sameline = true;
+
+															GUI.DrawItem(ref item, is_readonly: true);
+														}
+
+														//GUI.DrawShipment(ref context, ent_selected_spawn, ref shipment, slot_size: new(48, 48));
+													}
+												}
+
+												GUI.SameLine();
 
 												//var ts = Timestamp.Now();
 												var sw = new Stopwatch();
 
 												using (var scrollable = GUI.Scrollbox.New("kits", size: GUI.GetRemainingSpace(), padding: new(4, 4), force_scrollbar: true))
 												{
-													if (character_data.IsNotNull() && shipment.IsNotNull() && armory.inv_storage.TryGetHandle(out var h_inventory))
+													if (character_data.IsNotNull() && shipment.IsNotNull() && h_inventory.IsValid())
 													{
 														var shipment_armory_span = shipment.items.AsSpan();
 
@@ -391,7 +399,7 @@ namespace TC2.Siege
 															}
 															sw.Stop();
 
-															if (valid)
+															if (true || valid)
 															{
 																using (GUI.ID.Push(asset.id))
 																{
@@ -401,7 +409,7 @@ namespace TC2.Siege
 
 																		using (var group_title = GUI.Group.New(size: new(128, GUI.GetRemainingHeight())))
 																		{
-																			GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.00f));
+																			GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.00f), color: GUI.font_color_title.WithAlphaMult(valid ? 1.00f : 0.50f));
 																		}
 
 																		GUI.SameLine();
@@ -434,7 +442,7 @@ namespace TC2.Siege
 																		}
 
 																		var selected = selected_items.Contains(h_kit);
-																		if (GUI.Selectable3("selectable", group_row.GetOuterRect(), selected))
+																		if (GUI.Selectable3("selectable", group_row.GetOuterRect(), selected, is_readonly: !valid))
 																		{
 																			if (selected) selected_items.Remove(h_kit);
 																			else selected_items.Add(h_kit);
@@ -447,7 +455,7 @@ namespace TC2.Siege
 												}
 
 												var ts_elapsed = sw.Elapsed.TotalMilliseconds; //.GetMilliseconds();
-												GUI.Text($"{ts_elapsed:0.0000} ms");
+												//GUI.Text($"{ts_elapsed:0.0000} ms");
 											}
 
 											//using (var dropdown = GUI.Dropdown.Begin("armor", "Armor", size: new(200, 40)))
@@ -505,6 +513,12 @@ namespace TC2.Siege
 													{
 														h_character = h_selected_character
 													};
+
+													foreach (var h_kit in selected_items)
+													{
+														rpc.kits.TryAdd(in h_kit);
+													}
+
 													rpc.Send(ent_selected_spawn);
 												}
 
