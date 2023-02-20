@@ -1811,13 +1811,6 @@
 			scale: [1.000, 1.000]
 		}
 		{
-			prefab: "container.personnel"
-			faction: "defenders"
-			position: [160.5001, 36.35344]
-			rotation: 0.000752
-			scale: [1.000, 1.000]
-		}
-		{
 			prefab: "billboard.05"
 			position: [144.375, 28.250]
 			rotation: 0.000

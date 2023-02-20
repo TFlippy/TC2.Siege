@@ -49,7 +49,7 @@ namespace TC2.Siege
 #if SERVER
 		public static void SetKoboldLoadout(Entity ent_kobold, float weapon_mult = 1.00f, float armor_mult = 1.00f)
 		{
-			//App.WriteLine($"weapon mult: {weapon_mult}; armor mult: {armor_mult}");
+			App.WriteLine($"weapon mult: {weapon_mult}; armor mult: {armor_mult}");
 
 			var random = XorRandom.New();
 			var loadout = new Loadout.Data();
@@ -60,6 +60,8 @@ namespace TC2.Siege
 
 			var items_span = shipment.items.AsSpan();
 			var rewards_span = bounty.rewards.AsSpan();
+
+			ref var gunner = ref ent_kobold.GetComponent<Gunner.Data>();
 
 			// TODO: add proper .hjson loot tables
 			var num = random.NextIntRange(0, 11);
@@ -84,7 +86,7 @@ namespace TC2.Siege
 						items_span.Add(Shipment.Item.Prefab("sledgehammer", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(10));
 					}
-					else if (random.NextBool(0.50f))
+					else if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("drill", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						rewards_span.Add(Crafting.Product.Money(30));
@@ -236,6 +238,11 @@ namespace TC2.Siege
 						items_span.Add(Shipment.Item.Prefab("slugthrower", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_musket", 100));
 						rewards_span.Add(Crafting.Product.Money(100));
+
+						if (gunner.IsNotNull())
+						{
+							gunner.attack_burst_time += 3.00f;
+						}
 					}
 
 					//if (random.NextBool(1.00f))
@@ -252,6 +259,12 @@ namespace TC2.Siege
 				// Turtle
 				case 10:
 				{
+					// Don't spawn turtles early-on
+					if (!random.NextBool(0.70f * armor_mult))
+					{
+						goto case 0;
+					}
+
 					items_span.Add(Shipment.Item.Prefab("armor.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 					if (random.NextBool(0.80f * armor_mult)) items_span.Add(Shipment.Item.Prefab("helmet.00", flags: Shipment.Item.Flags.Equip | Shipment.Item.Flags.Despawn));
 
@@ -335,7 +348,7 @@ namespace TC2.Siege
 			}
 		}
 
-		public static void SetHoobLoadout(Entity ent_hoob, float weapon_mult = 1.00f, float armor_mult = 1.00f)
+		public static void SetGiantLoadout(Entity ent_hoob, float weapon_mult = 1.00f, float armor_mult = 1.00f)
 		{
 			var random = XorRandom.New();
 			var loadout = new Loadout.Data();
@@ -370,7 +383,7 @@ namespace TC2.Siege
 						items_span.Add(Shipment.Item.Prefab("crankgun", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
 						items_span.Add(Shipment.Item.Resource("ammo_hc.hv", 100));
 						rewards_span.Add(Crafting.Product.Money(600));
-					}				
+					}
 					else if (random.NextBool(0.30f))
 					{
 						items_span.Add(Shipment.Item.Prefab("bp.hyperbobus", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
@@ -380,7 +393,16 @@ namespace TC2.Siege
 					else if (random.NextBool(0.40f))
 					{
 						items_span.Add(Shipment.Item.Prefab("cannon.short", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
-						items_span.Add(Shipment.Item.Resource("ammo_shell.shrapnel", 10));
+		
+						if (random.NextBool(0.50f))
+						{
+							items_span.Add(Shipment.Item.Resource("ammo_shell.shrapnel", 10));
+						}
+						else
+						{
+							items_span.Add(Shipment.Item.Resource("ammo_shell.kinetic", 20));
+						}
+
 						rewards_span.Add(Crafting.Product.Money(1500));
 					}
 					else if (random.NextBool(0.30f))
@@ -406,7 +428,16 @@ namespace TC2.Siege
 					if (random.NextBool(0.50f))
 					{
 						items_span.Add(Shipment.Item.Prefab("cannon.short", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
-						items_span.Add(Shipment.Item.Resource("ammo_shell", 10));
+
+						if (random.NextBool(0.70f))
+						{
+							items_span.Add(Shipment.Item.Resource("ammo_shell", 10));
+						}
+						else
+						{
+							items_span.Add(Shipment.Item.Resource("ammo_shell.he", 10));
+						}
+							
 						rewards_span.Add(Crafting.Product.Money(1500));
 					}
 					else
@@ -474,6 +505,8 @@ namespace TC2.Siege
 			if (!commandable.IsNull())
 			{
 				commandable.flags |= Commandable.Data.Flags.No_Select;
+
+				//App.WriteLine(commandable.flags);
 			}
 		}
 
@@ -695,9 +728,10 @@ namespace TC2.Siege
 
 							if (planner.wave_size_rem > 0 && time >= planner.next_spawn)
 							{
-								planner.next_spawn = time + random.NextFloatRange(2.00f, 4.00f);
+								planner.next_spawn = time + random.NextFloatRange(4.00f, 8.00f);
 
-								var total_count = region.GetTotalTagCount("kobold", "dead");
+								//var total_count = region.GetTotalTagCount("kobold", "dead");
+								var total_count = region.GetTotalTagCount("kobold");
 								if (total_count < g_siege.max_npc_count)
 								{
 									var target_position = transform.position;
@@ -712,13 +746,13 @@ namespace TC2.Siege
 										var weapon_mult = 1.00f;
 										var armor_mult = 1.00f;
 
-										armor_mult = g_siege_state.difficulty * 0.04f;
+										armor_mult = g_siege_state.difficulty * 0.02f;
 
 										var group_size_tmp = 1 + random.NextIntRange(0, 2);
 										for (int i = 0; i < group_size_tmp && total_count + i < g_siege.max_npc_count; i++)
 										{
 											var ent_spawner = entity;
-											region.SpawnPrefab("kobold.male", pos_spawn + new Vector2(random.NextFloatRange(-2, 2), 0.00f), faction_id: faction.id).ContinueWith((ent) =>
+											region.SpawnPrefab("kobold.male", pos_spawn + new Vector2(random.NextFloatRange(-5, 5), 0.00f), faction_id: faction.id).ContinueWith((ent) =>
 											{
 												SetKoboldLoadout(ent, weapon_mult: weapon_mult, armor_mult: armor_mult);
 											});

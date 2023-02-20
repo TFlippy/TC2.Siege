@@ -1,0 +1,95 @@
+{
+	$tag: "siege"
+	$name: "Prysec"
+	$desc:
+		'''
+		Small border checkpoint in the vicinity of Lopat-Prospekto.
+		'''
+	
+	$infrastructure: electricity, telegraph, water, railway, highway, airport, docks, police, healthcare, education, military, university, laboratory, zoo
+	$industry: financial, administrative, manufacturing, low_tech, high_tech, metallurgy, chemical, automotive, power, military, entertainment, arcane, biology, construction, tourism, logistics, food, textile, fishing, hospitality
+	$crime: theft, murder, embezzlement, drugs, prostitution, vandalism, bribery, corruption, fraud, forgery, extortion, espionage
+	$geography: hills, meadows, lakes, excavated, forested, rough, coastal, warm, urban
+	$urbanization: 0.880
+	$industrialization: 0.850
+	$education: 0.760
+	$wealth: 0.730
+	$wilderness: 0.150
+	$devastation: 0.190
+	$savagery: 0.100
+	$anarchy: 0.070
+	$elevation: 35.000
+	$population: 210000
+	
+	$features: []
+	
+	entities:
+	[
+		{
+			prefab: "background.plains"
+			position: [363.500, 67.250]
+			rotation: 0.000
+			scale: [3.500, 3.500]
+			z: 4.000
+			color: "0xffffffff"
+		}
+		{
+			prefab: "background.forest"
+			position: [414.125, 49.750]
+			rotation: 0.000
+			scale: [8.000, 8.000]
+			z: 16.000
+			color: "0xffffffff"
+		}
+		{
+			prefab: "background.mountains"
+			position: [399.500, 21.125]
+			rotation: 0.000
+			scale: [12.000, 12.000]
+			z: 24.000
+			color: "0xffffffff"
+		}
+		{
+			prefab: "background.ridge"
+			position: [493.625, 2.875]
+			rotation: 0.000
+			scale: [16.000, 16.000]
+			z: 32.000
+			color: "0xffffffff"
+		}
+		{
+			prefab: "background.nostalgia"
+			position: [465.250, -26.375]
+			rotation: 0.000
+			scale: [24.000, 24.000]
+			z: 64.000
+			color: "0xffffffff"
+		}
+		{
+			prefab: "biome.forest.00"
+			position: [592.375, 28.500]
+			rotation: 0.000
+			scale: [1.000, 1.000]
+		}
+		{
+			prefab: "station"
+			faction: "defenders"
+			position: [574.000, 40.250]
+			rotation: 0.000
+			scale: [1.000, 1.000]
+		}
+		{
+			prefab: "biome.wasteland.00"
+			position: [6.375, 38.69304]
+			rotation: 0.000
+			scale: [1.000, 1.000]
+		}
+		{
+			prefab: "tractor.01.apc"
+			faction: "defenders"
+			position: [602.2361, 33.36391]
+			rotation: -0.000012
+			scale: [-1.000, 1.000]
+		}
+	]
+}

@@ -227,15 +227,35 @@ namespace TC2.Siege
 
 								if (ent_selected_spawn.IsAlive())
 								{
-									ref var dormitory = ref ent_selected_spawn.GetComponent<Dormitory.Data>();
+									var context = GUI.ItemContext.Begin(is_readonly: true);
 
-									var selected_items = Spawn.RespawnGUI.character_id_to_selected_items.GetOrAdd(h_selected_character);
+									ref var dormitory = ref ent_selected_spawn.GetComponent<Dormitory.Data>();
+									ref var armory = ref ent_selected_spawn.GetComponent<Armory.Data>();
+									ref var shipment = ref ent_selected_spawn.GetComponent<Shipment.Data>();
+									var h_inventory = default(Inventory.Handle);
+
+									var h_selected_character_tmp = h_selected_character;
+
+									if (dormitory.IsNotNull())
+									{
+										if (h_selected_character_tmp.id != 0 && !dormitory.characters.Contains(h_selected_character_tmp))
+										{
+											h_selected_character_tmp = default;
+										}
+									}
+
+									if (armory.IsNotNull())
+									{
+										armory.inv_storage.TryGetHandle(out h_inventory);
+									}
+
+									var selected_items = Spawn.RespawnGUI.character_id_to_selected_items.GetOrAdd(h_selected_character_tmp);
 
 									//var context = GUI.ItemContext.Begin();
 
 									using (GUI.Group.New(size: GUI.GetRemainingSpace() with { X = 400 }, padding: new(0, 0)))
 									{
-										using (var scrollable = GUI.Scrollbox.New("characters", size: GUI.GetRemainingSpace(), padding: new(4, 4), force_scrollbar: true))
+										using (var scrollable = GUI.Scrollbox.New("characters", size: GUI.GetRemainingSpace(y: -96 - 8 - 8), padding: new(4, 4), force_scrollbar: true))
 										{
 											if (dormitory.IsNotNull())
 											{
@@ -251,13 +271,22 @@ namespace TC2.Siege
 														using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 40)))
 														{
 															var h_character = characters[i];
+
+															if (h_character.id != 0 && h_selected_character_tmp.id == 0)
+															{
+																h_selected_character_tmp = h_character;
+																h_selected_character = h_character;
+															}
+
 															Dormitory.DormitoryGUI.DrawCharacterSmall(h_character);
 
-															var selected = h_selected_character.id != 0 && h_character == h_selected_character; // selected_index;
+															var selected = h_selected_character_tmp.id != 0 && h_character == h_selected_character_tmp; // selected_index;
 															if (GUI.Selectable3("selectable", group_row.GetOuterRect(), selected))
 															{
-																if (selected) h_selected_character = 0;
-																else h_selected_character = h_character;
+																h_selected_character = h_character;
+
+																//if (selected) h_selected_character = 0;
+																//else h_selected_character = h_character;
 															}
 														}
 													}
@@ -289,13 +318,50 @@ namespace TC2.Siege
 											//	}
 											//}
 										}
+
+										using (var group_storage = GUI.Group.New(size: GUI.GetRemainingSpace(), padding: new(8, 8)))
+										{
+											GUI.DrawBackground(GUI.tex_frame, group_storage.GetOuterRect(), new(8, 8, 8, 8));
+
+											if (h_inventory.IsValid())
+											{
+												using (GUI.Group.New(size: h_inventory.GetPreferedFrameSize()))
+												{
+													GUI.DrawInventory(h_inventory, is_readonly: true);
+												}
+											}
+
+											GUI.SameLine();
+
+											if (shipment.IsNotNull())
+											{
+												using (GUI.Group.New(size: GUI.GetRemainingSpace()))
+												{
+													GUI.DrawShipment(ref context, ent_selected_spawn, ref shipment, slot_size: new(96, 48));
+
+													//var sameline = false;
+													//foreach (ref var item in shipment.items)
+													//{
+													//	if (!item.IsValid()) continue;
+
+													//	//if (sameline) GUI.SameLine();
+													//	//sameline = true;
+
+													//	GUI.DrawItem(ref item, is_readonly: true);
+													//}
+												}
+
+												//GUI.DrawShipment(ref context, ent_selected_spawn, ref shipment, slot_size: new(48, 48));
+											}
+										}
+
 									}
 
 									GUI.SameLine();
 
 									using (var group_character = GUI.Group.New(size: GUI.GetRemainingSpace()))
 									{
-										ref var character_data = ref h_selected_character.GetData();
+										ref var character_data = ref h_selected_character_tmp.GetData();
 
 										using (var group_title = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 24), padding: new(8, 8)))
 										{
@@ -322,112 +388,107 @@ namespace TC2.Siege
 										{
 											GUI.DrawBackground(GUI.tex_panel, group_kits.GetOuterRect(), new(8, 8, 8, 8));
 
-											ref var armory = ref ent_selected_spawn.GetComponent<Armory.Data>();
-											if (armory.IsNotNull())
+
+											//using (var group_storage = GUI.Group.New(size: new(96 + 16, GUI.GetRemainingHeight()), padding: new(8, 8)))
+											//{
+											//	GUI.DrawBackground(GUI.tex_frame, group_storage.GetOuterRect(), new(8, 8, 8, 8));
+
+
+											//	if (h_inventory.IsValid())
+											//	{
+											//		using (GUI.Group.New(size: h_inventory.GetPreferedFrameSize()))
+											//		{
+											//			GUI.DrawInventory(h_inventory, is_readonly: true);
+											//		}
+											//	}
+
+											//	if (shipment.IsNotNull())
+											//	{
+											//		var sameline = false;
+											//		foreach (ref var item in shipment.items)
+											//		{
+											//			if (!item.IsValid()) continue;
+
+											//			//if (sameline) GUI.SameLine();
+											//			//sameline = true;
+
+											//			GUI.DrawItem(ref item, is_readonly: true);
+											//		}
+
+											//		//GUI.DrawShipment(ref context, ent_selected_spawn, ref shipment, slot_size: new(48, 48));
+											//	}
+											//}
+
+											//GUI.SameLine();
+
+											//var ts = Timestamp.Now();
+											var sw = new Stopwatch();
+
+											using (var scrollable = GUI.Scrollbox.New("kits", size: GUI.GetRemainingSpace(), padding: new(4, 4), force_scrollbar: true))
 											{
-												armory.inv_storage.TryGetHandle(out var h_inventory);
-												ref var shipment = ref ent_selected_spawn.GetComponent<Shipment.Data>();
-
-												using (var group_storage = GUI.Group.New(size: new(96 + 16, GUI.GetRemainingHeight()), padding: new(8, 8)))
+												if (character_data.IsNotNull() && armory.IsNotNull() && shipment.IsNotNull() && h_inventory.IsValid())
 												{
-													GUI.DrawBackground(GUI.tex_frame, group_storage.GetOuterRect(), new(8, 8, 8, 8));
+													var shipment_armory_span = shipment.items.AsSpan();
 
+													var kits_unavailable_count = 0;
+													Span<IKit.Handle> kits_unavailable = stackalloc IKit.Handle[32];
 
-													if (h_inventory.IsValid())
+													foreach (var asset in IKit.Database.GetAssets())
 													{
-														using (GUI.Group.New(size: h_inventory.GetPreferedFrameSize()))
-														{
-															GUI.DrawInventory(h_inventory, is_readonly: true);
-														}
-													}
+														if (asset.id == 0) continue;
+														ref var kit_data = ref asset.GetData();
+														var h_kit = asset.GetHandle();
 
-													if (shipment.IsNotNull())
-													{
-														var sameline = false;
-														foreach (ref var item in shipment.items)
+														if (kit_data.character_flags.Evaluate(character_data.flags) < 0.50f) continue;
+
+														var kit_items_span = kit_data.shipment.items.AsSpan();
+														var valid = true;
+
+														sw.Start();
+														foreach (ref var item in kit_items_span)
 														{
 															if (!item.IsValid()) continue;
 
-															//if (sameline) GUI.SameLine();
-															//sameline = true;
+															var has_item = shipment_armory_span.Contains(item);
+															if (!has_item && item.type == Shipment.Item.Type.Resource)
+															{
+																has_item = h_inventory.GetQuantity(item.material) >= item.quantity;
+															}
 
-															GUI.DrawItem(ref item, is_readonly: true);
+															if (!has_item)
+															{
+																valid = false;
+																break;
+															}
 														}
+														sw.Stop();
 
-														//GUI.DrawShipment(ref context, ent_selected_spawn, ref shipment, slot_size: new(48, 48));
+														if (valid)
+														{
+															DrawKit(ref h_kit, ref kit_data, ref h_inventory, ref shipment_armory_span, true, selected_items);
+														}
+														else
+														{
+															kits_unavailable.Add(h_kit, ref kits_unavailable_count);
+														}
 													}
-												}
 
-												GUI.SameLine();
-
-												//var ts = Timestamp.Now();
-												var sw = new Stopwatch();
-
-												using (var scrollable = GUI.Scrollbox.New("kits", size: GUI.GetRemainingSpace(), padding: new(4, 4), force_scrollbar: true))
-												{
-													if (character_data.IsNotNull() && shipment.IsNotNull() && h_inventory.IsValid())
+													for (var i = 0; i < kits_unavailable_count; i++)
 													{
-														var shipment_armory_span = shipment.items.AsSpan();
+														var h_kit = kits_unavailable[i];
+														ref var kit_data = ref h_kit.GetData();
 
-														var kits_unavailable_count = 0;
-														Span<IKit.Handle> kits_unavailable = stackalloc IKit.Handle[32];
-
-														foreach (var asset in IKit.Database.GetAssets())
+														if (kit_data.IsNotNull())
 														{
-															if (asset.id == 0) continue;
-															ref var kit_data = ref asset.GetData();
-															var h_kit = asset.GetHandle();
-
-															if (kit_data.character_flags.Evaluate(character_data.flags) < 0.50f) continue;
-
-															var kit_items_span = kit_data.shipment.items.AsSpan();
-															var valid = true;
-
-															sw.Start();
-															foreach (ref var item in kit_items_span)
-															{
-																if (!item.IsValid()) continue;
-
-																var has_item = shipment_armory_span.Contains(item);
-																if (!has_item && item.type == Shipment.Item.Type.Resource)
-																{
-																	has_item = h_inventory.GetQuantity(item.material) >= item.quantity;
-																}
-
-																if (!has_item)
-																{
-																	valid = false;
-																	break;
-																}
-															}
-															sw.Stop();
-
-															if (valid)
-															{
-																DrawKit(ref h_kit, ref kit_data, ref h_inventory, ref shipment_armory_span, true, selected_items);
-															}
-															else
-															{
-																kits_unavailable.Add(h_kit, ref kits_unavailable_count);
-															}
-														}
-
-														for (var i = 0; i < kits_unavailable_count; i++)
-														{
-															var h_kit = kits_unavailable[i];
-															ref var kit_data = ref h_kit.GetData();
-
-															if (kit_data.IsNotNull())
-															{
-																DrawKit(ref h_kit, ref kit_data, ref h_inventory, ref shipment_armory_span, false, selected_items);
-															}
+															DrawKit(ref h_kit, ref kit_data, ref h_inventory, ref shipment_armory_span, false, selected_items);
 														}
 													}
 												}
-
-												var ts_elapsed = sw.Elapsed.TotalMilliseconds; //.GetMilliseconds();
-												//GUI.Text($"{ts_elapsed:0.0000} ms");
 											}
+
+											var ts_elapsed = sw.Elapsed.TotalMilliseconds; //.GetMilliseconds();
+																						   //GUI.Text($"{ts_elapsed:0.0000} ms");
+
 
 											//using (var dropdown = GUI.Dropdown.Begin("armor", "Armor", size: new(200, 40)))
 											//{
@@ -478,11 +539,22 @@ namespace TC2.Siege
 											ref var faction = ref ent_selected_spawn.GetComponent<Faction.Data>();
 											if (faction.IsNull() || faction.id == player.faction_id)
 											{
-												if (GUI.DrawButton("Respawn", size: new Vector2(GUI.GetRemainingWidth() - 100, 40), enabled: dormitory.IsNotNull()))
+												if (GUI.DrawButton("DEV: Generate", size: new Vector2(128, 48), enabled: dormitory.IsNotNull()))
+												{
+													var rpc = new Dormitory.DEV_RerollRPC()
+													{
+														add = true
+													};
+													rpc.Send(ent_selected_spawn);
+												}
+
+												GUI.SameLine();
+
+												if (GUI.DrawButton("Respawn", size: new Vector2(GUI.GetRemainingWidth(), 48), color: GUI.col_button_ok, enabled: h_selected_character_tmp.id != 0 && dormitory.IsNotNull()))
 												{
 													var rpc = new Dormitory.DEV_SpawnRPC()
 													{
-														h_character = h_selected_character
+														h_character = h_selected_character_tmp
 													};
 
 													foreach (var h_kit in selected_items)
@@ -495,16 +567,9 @@ namespace TC2.Siege
 													h_selected_character = default;
 												}
 
-												GUI.SameLine();
+	
 
-												if (GUI.DrawButton("DEV: Add", size: new Vector2(GUI.GetRemainingWidth(), 40), enabled: dormitory.IsNotNull()))
-												{
-													var rpc = new Dormitory.DEV_RerollRPC()
-													{
-														add = true
-													};
-													rpc.Send(ent_selected_spawn);
-												}
+												
 
 												//ref var spawn = ref ent_selected_spawn.GetComponent<Spawn.Data>();
 												//if (!spawn.IsNull())

@@ -18,17 +18,95 @@ namespace TC2.Siege
 			});
 		}
 
-		[ChatCommand.Region("hoob", "", creative: true)]
-		public static void HoobCommand(ref ChatCommand.Context context, byte? faction_id = null)
+		[ChatCommand.Region("giant", "", creative: true)]
+		public static void GiantCommand(ref ChatCommand.Context context, byte? faction_id = null)
 		{
 			ref var region = ref context.GetRegion();
 			ref var player = ref context.GetPlayer();
 
 			App.WriteLine(faction_id);
 
-			region.SpawnPrefab("hoob", player.control.mouse.position, faction_id: faction_id ?? player.faction_id).ContinueWith((ent) =>
+			region.SpawnPrefab("giant.male", player.control.mouse.position, faction_id: faction_id ?? player.faction_id).ContinueWith((ent) =>
 			{
-				SetHoobLoadout(ent);
+				SetGiantLoadout(ent);
+			});
+		}
+
+		[ChatCommand.Region("tank", "", creative: true)]
+		public static void TankCommand(ref ChatCommand.Context context, string prefab_name, byte? faction_id = null)
+		{
+			ref var region = ref context.GetRegion();
+			ref var player = ref context.GetPlayer();
+
+			//prefab.tractor.tank
+
+			var pos_tmp = player.control.mouse.position;
+			var h_faction_tmp = (IFaction.Handle)(faction_id ?? player.faction_id);
+
+			//region.SpawnPrefab("tank.00.combined", pos_tmp, faction_id: h_faction_tmp).ContinueWith((ent_vehicle) =>
+			region.SpawnPrefab(prefab_name, pos_tmp, faction_id: h_faction_tmp).ContinueWith((ent_vehicle) =>
+			{
+				ref var region = ref ent_vehicle.GetRegion();
+				
+				region.SpawnPrefab("kobold.male", pos_tmp, faction_id: h_faction_tmp).ContinueWith((ent_kobold) =>
+				{
+					ref var region = ref ent_vehicle.GetRegion();
+
+					//SetKoboldLoadout(ent_kobold);
+
+					ref var ai = ref ent_kobold.GetComponent<AI.Data>();
+					if (!ai.IsNull())
+					{
+						ai.stance = AI.Stance.Aggressive;
+					}
+
+					ref var vehicle = ref ent_vehicle.GetComponent<Vehicle.Data>();
+					if (vehicle.IsNotNull())
+					{
+						App.WriteLine(vehicle.ent_seat_test);
+
+						Vehicle.AddPassenger(vehicle.ent_seat_test, ent_kobold);
+					}
+				});
+			});
+		}
+
+		[ChatCommand.Region("tractor", "", creative: true)]
+		public static void TractorCommand(ref ChatCommand.Context context, byte? faction_id = null)
+		{
+			ref var region = ref context.GetRegion();
+			ref var player = ref context.GetPlayer();
+
+			//prefab.tractor.tank
+
+			var pos_tmp = player.control.mouse.position;
+			var h_faction_tmp = (IFaction.Handle)(faction_id ?? player.faction_id);
+
+			//region.SpawnPrefab("tank.00.combined", pos_tmp, faction_id: h_faction_tmp).ContinueWith((ent_vehicle) =>
+			region.SpawnPrefab("tractor.00.tank", pos_tmp, faction_id: h_faction_tmp).ContinueWith((ent_vehicle) =>
+			{
+				ref var region = ref ent_vehicle.GetRegion();
+
+				region.SpawnPrefab("kobold.male", pos_tmp, faction_id: h_faction_tmp).ContinueWith((ent_kobold) =>
+				{
+					ref var region = ref ent_vehicle.GetRegion();
+
+					//SetKoboldLoadout(ent_kobold);
+
+					ref var ai = ref ent_kobold.GetComponent<AI.Data>();
+					if (!ai.IsNull())
+					{
+						ai.stance = AI.Stance.Aggressive;
+					}
+
+					ref var vehicle = ref ent_vehicle.GetComponent<Vehicle.Data>();
+					if (vehicle.IsNotNull())
+					{
+						App.WriteLine(vehicle.ent_seat_test);
+
+						Vehicle.AddPassenger(vehicle.ent_seat_test, ent_kobold);
+					}
+				});
 			});
 		}
 

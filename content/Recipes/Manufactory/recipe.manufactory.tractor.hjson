@@ -7,7 +7,8 @@
 	
 	icon:
 	{
-		texture: "tractor"
+		texture: "tractor.00.fg"
+		size: [64, 32]
 	}
 	
 	min: 1
@@ -31,7 +32,7 @@
 	[
 		{
 			type: prefab
-			prefab: "tractor"
+			prefab: "tractor.00"
 			amount: 1.000
 			amount_extra: 0.000
 		}

@@ -115,6 +115,7 @@ namespace TC2.Siege
 				Constants.Block.global_yield_modifier = 0.00f;
 
 				Constants.Organic.rotting_speed *= 10.00f;
+				Rotting.enable_effects = false;
 
 				Constants.World.save_factions = false;
 				Constants.World.save_players = true;
