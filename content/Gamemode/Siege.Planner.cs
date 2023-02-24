@@ -751,11 +751,18 @@ namespace TC2.Siege
 										var group_size_tmp = 1 + random.NextIntRange(0, 2);
 										for (int i = 0; i < group_size_tmp && total_count + i < g_siege.max_npc_count; i++)
 										{
-											var ent_spawner = entity;
-											region.SpawnPrefab("kobold.male", pos_spawn + new Vector2(random.NextFloatRange(-5, 5), 0.00f), faction_id: faction.id).ContinueWith((ent) =>
+											var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner");
+											Dormitory.SpawnCharacter(ref region, h_character, pos_spawn + new Vector2(random.NextFloatRange(-5, 5), 0.00f), h_faction: faction.id).ContinueWith((ent) =>
 											{
 												SetKoboldLoadout(ent, weapon_mult: weapon_mult, armor_mult: armor_mult);
 											});
+
+
+											//var ent_spawner = entity;
+											//region.SpawnPrefab("kobold.male", pos_spawn + new Vector2(random.NextFloatRange(-5, 5), 0.00f), faction_id: faction.id).ContinueWith((ent) =>
+											//{
+											//	SetKoboldLoadout(ent, weapon_mult: weapon_mult, armor_mult: armor_mult);
+											//});
 
 											planner.wave_size_rem = Math.Max(planner.wave_size_rem - 1, 0);
 										}

@@ -249,6 +249,8 @@ namespace TC2.Siege
 										armory.inv_storage.TryGetHandle(out h_inventory);
 									}
 
+									Crafting.Context.New(ref region, ent_selected_spawn, ent_selected_spawn, out var crafting_context, inventory: h_inventory, shipment: new(ref shipment, ent_selected_spawn), search_radius: 0.00f);
+
 									var selected_items = Spawn.RespawnGUI.character_id_to_selected_items.GetOrAdd(h_selected_character_tmp);
 
 									//var context = GUI.ItemContext.Begin();
@@ -441,27 +443,47 @@ namespace TC2.Siege
 
 														if (kit_data.character_flags.Evaluate(character_data.flags) < 0.50f) continue;
 
-														var kit_items_span = kit_data.shipment.items.AsSpan();
-														var valid = true;
+														//var kit_items_span = kit_data.shipment.items.AsSpan();
+														var valid = false;
 
-														sw.Start();
-														foreach (ref var item in kit_items_span)
+														//sw.Start();
+														//foreach (ref var item in kit_items_span)
+														//{
+														//	if (!item.IsValid()) continue;
+
+														//	var has_item = shipment_armory_span.Contains(item);
+														//	if (!has_item && item.type == Shipment.Item.Type.Resource)
+														//	{
+														//		has_item = h_inventory.GetQuantity(item.material) >= item.quantity;
+														//	}
+
+														//	if (!has_item)
+														//	{
+														//		valid = false;
+														//		break;
+														//	}
+														//}
+														//sw.Stop();
+
+														if (h_kit.Evaluate(ref character_data))
 														{
-															if (!item.IsValid()) continue;
+															Span<Crafting.Requirement> requirements = stackalloc Crafting.Requirement[8];
 
-															var has_item = shipment_armory_span.Contains(item);
-															if (!has_item && item.type == Shipment.Item.Type.Resource)
+															foreach (ref var item in kit_data.shipment.items)
 															{
-																has_item = h_inventory.GetQuantity(item.material) >= item.quantity;
+																if (!item.IsValid()) continue;
+																if (item.flags.HasAny(Shipment.Item.Flags.No_Consume)) continue;
+
+																requirements.Add(item.ToRequirement());
 															}
 
-															if (!has_item)
+															if (Crafting.Evaluate2(ref crafting_context, requirements, Crafting.EvaluateFlags.None))
 															{
-																valid = false;
-																break;
+																valid = true;
 															}
 														}
-														sw.Stop();
+
+														//GUI.Text($"{valid}");
 
 														if (valid)
 														{
@@ -475,12 +497,12 @@ namespace TC2.Siege
 
 													for (var i = 0; i < kits_unavailable_count; i++)
 													{
-														var h_kit = kits_unavailable[i];
-														ref var kit_data = ref h_kit.GetData();
+														var h_kit_unavailable = kits_unavailable[i];
+														ref var kit_unavailable_data = ref h_kit_unavailable.GetData();
 
-														if (kit_data.IsNotNull())
+														if (kit_unavailable_data.IsNotNull())
 														{
-															DrawKit(ref h_kit, ref kit_data, ref h_inventory, ref shipment_armory_span, false, selected_items);
+															DrawKit(ref h_kit_unavailable, ref kit_unavailable_data, ref h_inventory, ref shipment_armory_span, false, selected_items);
 														}
 													}
 												}
@@ -567,9 +589,9 @@ namespace TC2.Siege
 													h_selected_character = default;
 												}
 
-	
 
-												
+
+
 
 												//ref var spawn = ref ent_selected_spawn.GetComponent<Spawn.Data>();
 												//if (!spawn.IsNull())
@@ -704,7 +726,7 @@ namespace TC2.Siege
 							if (sameline) GUI.SameLine();
 							sameline = true;
 
-							var has_item = shipment_armory_span.Contains(item);
+							var has_item = item.flags.HasAny(Shipment.Item.Flags.No_Consume) || shipment_armory_span.Contains(item);
 							if (!has_item && item.type == Shipment.Item.Type.Resource)
 							{
 								has_item = h_inventory.GetQuantity(item.material) >= item.quantity;
