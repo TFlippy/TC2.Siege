@@ -49,7 +49,7 @@ namespace TC2.Siege
 #if SERVER
 		public static void SetKoboldLoadout(Entity ent_kobold, float weapon_mult = 1.00f, float armor_mult = 1.00f)
 		{
-			App.WriteLine($"weapon mult: {weapon_mult}; armor mult: {armor_mult}");
+			//App.WriteLine($"weapon mult: {weapon_mult}; armor mult: {armor_mult}");
 
 			var random = XorRandom.New();
 			var loadout = new Loadout.Data();
@@ -489,7 +489,7 @@ namespace TC2.Siege
 			}
 		}
 
-		[ISystem.Event<Spawner.SpawnEvent>(ISystem.Mode.Single)]
+		[ISystem.Event<Spawner.SpawnEvent>(ISystem.Mode.Single, order: 1000)]
 		public static void OnSpawn(ISystem.Info info, Entity entity, ref Spawner.SpawnEvent data,
 		[Source.Owned] ref Spawner.Data spawner, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state)
 		{

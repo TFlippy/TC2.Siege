@@ -85,12 +85,6 @@ namespace TC2.Siege
 					}
 				}
 
-				//var rem_height = MathF.Max(GUI.CanvasSize.Y - total_height, 0.00f);
-
-				//var rem_height = GUI.CanvasSize.Y - RespawnGUI.window_offset.Y
-
-				//RespawnGUI.window_size.Y = Maths.Clamp(RespawnGUI.window_size.Y, 0, GUI.CanvasSize.Y - RespawnGUI.window_offset.Y - 40);
-
 				if (!player.flags.HasAll(Player.Flags.Alive) && !(player.flags.HasAll(Player.Flags.Editor) && !Editor.show_respawn_menu))
 				{
 					var max_height = GUI.CanvasSize.Y - Spawn.RespawnGUI.window_offset.Y - 12;
@@ -131,16 +125,6 @@ namespace TC2.Siege
 
 									using (GUI.Wrap.Push(GUI.GetRemainingWidth()))
 									{
-										//using (GUI.Group.New(size: new(GUI.GetRemainingWidth(), 0), padding: new(4)))
-										//{
-										//	using (GUI.Wrap.Push(GUI.GetRemainingWidth()))
-										//	{
-										//		if (!info.name.IsEmpty()) GUI.Title(info.name, size: 32);
-										//		if (!info.desc.IsEmpty()) GUI.Text(info.desc);
-										//	}
-										//}
-
-										//var ts = Timestamp.Now();
 										using (var group = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 0), padding: new(4)))
 										{
 											//ref var minimap = ref Minimap.MinimapHUD.minimaps[region.GetID()];
@@ -219,12 +203,6 @@ namespace TC2.Siege
 
 								GUI.SeparatorThick();
 
-								//this.DrawSpawns(ref region, size: new(GUI.GetRemainingWidth(), (24 * 4.50f) + 8));
-
-								//GUI.SeparatorThick();
-
-								//var h_character = default(ICharacter.Handle);
-
 								if (ent_selected_spawn.IsAlive())
 								{
 									var context = GUI.ItemContext.Begin(is_readonly: true);
@@ -286,39 +264,11 @@ namespace TC2.Siege
 															if (GUI.Selectable3("selectable", group_row.GetOuterRect(), selected))
 															{
 																h_selected_character = h_character;
-
-																//if (selected) h_selected_character = 0;
-																//else h_selected_character = h_character;
 															}
 														}
 													}
 												}
 											}
-
-											//ref var platoon = ref player.ent_player.GetComponent<Siege.Platoon.Data>();
-											//if (platoon.IsNotNull())
-											//{
-											//	foreach (ref var h_character in platoon.characters)
-											//	{
-											//		ref var character_data = ref h_character.GetData();
-											//		if (character_data.IsNotNull())
-											//		{
-											//			using (GUI.ID.Push(h_character.id))
-											//			{
-											//				using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 40)))
-											//				{
-											//					Dormitory.DormitoryGUI.DrawCharacterSmall(h_character);
-
-											//					var selected = h_selected_character == h_character;
-											//					if (GUI.Selectable3("select", group_row.GetOuterRect(), selected: selected))
-											//					{
-											//						h_selected_character = selected ? default : h_character;
-											//					}
-											//				}
-											//			}
-											//		}
-											//	}
-											//}
 										}
 
 										using (var group_storage = GUI.Group.New(size: GUI.GetRemainingSpace(), padding: new(8, 8)))
@@ -340,20 +290,7 @@ namespace TC2.Siege
 												using (GUI.Group.New(size: GUI.GetRemainingSpace()))
 												{
 													GUI.DrawShipment(ref context, ent_selected_spawn, ref shipment, slot_size: new(96, 48));
-
-													//var sameline = false;
-													//foreach (ref var item in shipment.items)
-													//{
-													//	if (!item.IsValid()) continue;
-
-													//	//if (sameline) GUI.SameLine();
-													//	//sameline = true;
-
-													//	GUI.DrawItem(ref item, is_readonly: true);
-													//}
 												}
-
-												//GUI.DrawShipment(ref context, ent_selected_spawn, ref shipment, slot_size: new(48, 48));
 											}
 										}
 
@@ -389,41 +326,6 @@ namespace TC2.Siege
 										using (var group_kits = GUI.Group.New(size: GUI.GetRemainingSpace(y: -48), padding: new(8, 8)))
 										{
 											GUI.DrawBackground(GUI.tex_panel, group_kits.GetOuterRect(), new(8, 8, 8, 8));
-
-
-											//using (var group_storage = GUI.Group.New(size: new(96 + 16, GUI.GetRemainingHeight()), padding: new(8, 8)))
-											//{
-											//	GUI.DrawBackground(GUI.tex_frame, group_storage.GetOuterRect(), new(8, 8, 8, 8));
-
-
-											//	if (h_inventory.IsValid())
-											//	{
-											//		using (GUI.Group.New(size: h_inventory.GetPreferedFrameSize()))
-											//		{
-											//			GUI.DrawInventory(h_inventory, is_readonly: true);
-											//		}
-											//	}
-
-											//	if (shipment.IsNotNull())
-											//	{
-											//		var sameline = false;
-											//		foreach (ref var item in shipment.items)
-											//		{
-											//			if (!item.IsValid()) continue;
-
-											//			//if (sameline) GUI.SameLine();
-											//			//sameline = true;
-
-											//			GUI.DrawItem(ref item, is_readonly: true);
-											//		}
-
-											//		//GUI.DrawShipment(ref context, ent_selected_spawn, ref shipment, slot_size: new(48, 48));
-											//	}
-											//}
-
-											//GUI.SameLine();
-
-											//var ts = Timestamp.Now();
 											var sw = new Stopwatch();
 
 											using (var scrollable = GUI.Scrollbox.New("kits", size: GUI.GetRemainingSpace(), padding: new(4, 4), force_scrollbar: true))
@@ -443,27 +345,7 @@ namespace TC2.Siege
 
 														if (kit_data.character_flags.Evaluate(character_data.flags) < 0.50f) continue;
 
-														//var kit_items_span = kit_data.shipment.items.AsSpan();
 														var valid = false;
-
-														//sw.Start();
-														//foreach (ref var item in kit_items_span)
-														//{
-														//	if (!item.IsValid()) continue;
-
-														//	var has_item = shipment_armory_span.Contains(item);
-														//	if (!has_item && item.type == Shipment.Item.Type.Resource)
-														//	{
-														//		has_item = h_inventory.GetQuantity(item.material) >= item.quantity;
-														//	}
-
-														//	if (!has_item)
-														//	{
-														//		valid = false;
-														//		break;
-														//	}
-														//}
-														//sw.Stop();
 
 														if (h_kit.Evaluate(ref character_data))
 														{
@@ -507,53 +389,6 @@ namespace TC2.Siege
 													}
 												}
 											}
-
-											var ts_elapsed = sw.Elapsed.TotalMilliseconds; //.GetMilliseconds();
-																						   //GUI.Text($"{ts_elapsed:0.0000} ms");
-
-
-											//using (var dropdown = GUI.Dropdown.Begin("armor", "Armor", size: new(200, 40)))
-											//{
-											//	if (dropdown.show)
-											//	{
-											//		foreach (var asset in IKit.Database.GetAssets())
-											//		{
-											//			if (asset.id == 0) continue;
-
-											//			ref var kit_data = ref asset.GetData();
-
-											//			if (kit_data.category != Kit.Category.Armor) continue;
-
-											//			using (GUI.ID.Push(asset.id))
-											//			{
-											//				using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32)))
-											//				{
-											//					GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.00f));
-
-											//					if (GUI.Selectable3("select", group_row.GetOuterRect(), false))
-											//					{
-											//						dropdown.Close();
-											//					}
-											//				}
-											//			}
-											//		}
-											//	}
-											//}
-
-											//foreach (var asset in IKit.Database.GetAssets())
-											//{
-											//	if (asset.id == 0) continue;
-
-											//	ref var kit_data = ref asset.GetData();
-
-											//	using (GUI.ID.Push(asset.id))
-											//	{
-											//		using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32)))
-											//		{
-											//			GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.50f));
-											//		}
-											//	}
-											//}
 										}
 
 										if (ent_selected_spawn.IsAlive())
@@ -565,7 +400,7 @@ namespace TC2.Siege
 												{
 													var rpc = new Dormitory.DEV_RerollRPC()
 													{
-														add = true
+														add = 1
 													};
 													rpc.Send(ent_selected_spawn);
 												}
@@ -588,35 +423,6 @@ namespace TC2.Siege
 
 													h_selected_character = default;
 												}
-
-
-
-
-
-												//ref var spawn = ref ent_selected_spawn.GetComponent<Spawn.Data>();
-												//if (!spawn.IsNull())
-												//{
-												//	//if (GUI.DrawButton((this.respawn.cooldown > 0.00f ? $"Respawn ({MathF.Floor(this.respawn.cooldown):0}s)" : "Respawn"), new Vector2(168, 48), enabled: this.respawn.cooldown <= float.Epsilon && h_selected_character.id != 0, font_size: 24, color: GUI.font_color_green_b))
-												//	if (GUI.DrawButton((this.respawn.cooldown > 0.00f ? $"Respawn ({MathF.Floor(this.respawn.cooldown):0}s)" : "Respawn"), new Vector2(168, 48), enabled: this.respawn.cooldown <= float.Epsilon, font_size: 24, color: GUI.font_color_green_b))
-												//	{
-												//		var rpc = new RespawnExt.SpawnRPC
-												//		{
-												//			ent_spawn = ent_selected_spawn
-												//		};
-												//		rpc.Send(player.ent_player);
-												//	}
-												//	if (GUI.IsItemHovered())
-												//	{
-												//		using (GUI.Tooltip.New())
-												//		{
-												//			GUI.Text("Respawn as this character at the selected spawn point.");
-												//		}
-												//	}
-												//}
-												//else
-												//{
-
-												//}
 											}
 											else
 											{
@@ -635,65 +441,6 @@ namespace TC2.Siege
 									rpc.Send(player.ent_player);
 									ent_selected_spawn_new = default;
 								}
-
-								//using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 80)))
-								//{
-								//	//Dormitory.DormitoryGUI.DrawCharacterSmall()
-
-								//	//RespawnExt.DrawCharacter(ref spawn_info);
-								//}
-
-								//using (var scrollable = GUI.Scrollbox.New("Platoon", size: GUI.GetRemainingSpace(y: -48), padding: new(4, 4), force_scrollbar: true))
-								//{
-								//	ref var platoon = ref player.ent_player.GetComponent<Siege.Platoon.Data>();
-								//	if (platoon.IsNotNull())
-								//	{
-								//		foreach (ref var h_character in platoon.characters)
-								//		{
-								//			ref var character_data = ref h_character.GetData();
-								//			if (character_data.IsNotNull())
-								//			{
-								//				using (GUI.ID.Push(h_character.id))
-								//				{
-								//					using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 40)))
-								//					{
-								//						Dormitory.DormitoryGUI.DrawCharacterSmall(h_character);
-
-								//						if (GUI.Selectable3("select", group_row.GetOuterRect(), false))
-								//						{
-
-								//						}
-								//					}
-								//				}
-								//			}
-								//		}
-								//	}
-								//}
-
-								//using (var scrollbox = GUI.Scrollbox.New("levels", size: new(GUI.GetRemainingWidth(), GUI.GetRemainingHeight() - 48), padding: new(0)))
-								//{
-								//	//GUI.Title("Experience", size: 20);
-
-								//	var h_character = spawn_info.character;
-								//	ref var character = ref h_character.GetData();
-								//	if (character.IsNotNull())
-								//	{
-								//		Experience.DrawTableSmall2(ref character.experience);
-								//	}
-								//}
-
-								//GUI.SeparatorThick();
-
-
-								//ref var character_data = ref h_character.GetData();
-								//if (character_data.IsNotNull())
-								//{
-								//	ref var origin_data = ref character_data.origin.GetData();
-								//	if (origin_data.IsNotNull())
-								//	{
-								//		Experience.DrawTableSmall(ref origin_data.experience);
-								//	}
-								//}
 							}
 						}
 					}
@@ -748,282 +495,7 @@ namespace TC2.Siege
 						}
 					}
 				}
-			}
-
-			//internal static void DrawKits(IOrigin.Handle origin, Character.Flags character_flags, Vector2 size, bool read_only = false, HashSet<IKit.Handle> selected_items = null)
-			//{
-			//	//GUI.NewLine();
-			//	//GUI.Title("Kits", size: 32);
-			//	//GUI.Separator();
-
-			//	using (var scrollable = GUI.Scrollbox.New("Kits", size: size, padding: new(4, 4), force_scrollbar: true))
-			//	{
-			//		using (var table = GUI.Table.New("Kits.Table", 2))
-			//		{
-			//			if (table.show)
-			//			{
-			//				table.SetupColumnFixed(192);
-			//				table.SetupColumnFlex(1);
-			//				//table.SetupColumnFixed(100);
-
-			//				//var selected_items = character_id_to_selected_items.GetOrAdd(character.id);
-
-			//				//for (var kit_index = 1; kit_index < kits.Length; kit_index++)
-
-			//				//using (var row = table.NextRow(24, header: true))
-			//				//{
-			//				//	using (row.Column(0, padding: new(4, 4)))
-			//				//	{
-			//				//		GUI.Title("Name");
-			//				//	}
-
-			//				//	using (row.Column(1, padding: new(8, 0)))
-			//				//	{
-			//				//		GUI.Title("Items");
-			//				//	}
-
-			//				//	using (row.Column(2, padding: new(8, 0)))
-			//				//	{
-			//				//		GUI.Title("Tickets", size: 20);
-			//				//	}
-			//				//}
-
-			//				foreach (var kit_asset in IKit.Database.GetAssets())
-			//				{
-			//					if (kit_asset.id == 0) continue;
-
-			//					ref var kit = ref kit_asset.data;
-			//					//ref var kit = ref kits[kit_index];
-			//					if (!kit.flags.HasAny(Kit.Flags.Hidden)) // && character_flags.HasAll(kit.character_flags) && (kit.origin == 0 || origin == kit.origin))
-			//					{
-			//						var is_selected = !read_only && (kit.flags.HasAny(Kit.Flags.Required) || (selected_items?.Contains(kit_asset.GetHandle()) ?? false));
-
-			//						using (GUI.ID.Push(kit_asset.id))
-			//						{
-			//							using (var row = table.NextRow(40))
-			//							{
-			//								if (!read_only && is_selected)
-			//								{
-			//									current_cost += kit.cost;
-			//								}
-
-			//								using (row.Column(0, padding: new(4, 4)))
-			//								{
-			//									GUI.Title(kit.name);
-			//									//GUI.Text($"Cost: {kit.cost:0.00}");
-
-			//									if (kit.cost == 0.00f)
-			//									{
-			//										GUI.Text($"Free", color: GUI.font_color_default);
-			//									}
-			//									else if (kit.cost > 0.00f)
-			//									{
-			//										GUI.Text($"{kit.cost:0.00} tickets", color: GUI.font_color_default);
-			//									}
-			//									else
-			//									{
-			//										GUI.Text($"+{-kit.cost:0.00} tickets", color: GUI.font_color_default);
-			//									}
-			//								}
-
-			//								using (row.Column(1, padding: new(8, 0)))
-			//								{
-			//									//using (GUI.Group.New(GUI.GetAvailableSize()))
-			//									{
-			//										ref var shipment = ref kit.shipment;
-			//										for (int i = 0; i < shipment.items.Length; i++)
-			//										{
-			//											ref var item = ref shipment.items[i];
-			//											if (item.type != Shipment.Item.Type.Undefined)
-			//											{
-			//												switch (item.type)
-			//												{
-			//													case Shipment.Item.Type.Resource:
-			//													{
-			//														var resource = new Resource.Data(item.material, item.quantity);
-			//														GUI.DrawResourceSmall(ref resource, size: new Vector2(32));
-			//														GUI.SameLine();
-			//													}
-			//													break;
-
-			//													case Shipment.Item.Type.Prefab:
-			//													{
-			//														GUI.DrawPrefabSmall(item.prefab, (int)item.quantity);
-			//														GUI.SameLine();
-			//													}
-			//													break;
-			//												}
-			//											}
-			//										}
-			//									}
-			//								}
-
-			//								//using (row.Column(2, padding: new(8, 0)))
-			//								//{
-			//								//	//if (kit.cost == 0.00f)
-			//								//	//{
-			//								//	//	GUI.TextShadedCentered($"Free", pivot: new(0.50f, 0.50f), color: GUI.font_color_default);
-			//								//	//}
-			//								//	//else if (kit.cost > 0.00f)
-			//								//	//{
-			//								//	//	GUI.TextShadedCentered($"{kit.cost:0.00} tickets", pivot: new(1.00f, 0.50f), color: GUI.font_color_default);
-			//								//	//}
-			//								//	//else
-			//								//	//{
-			//								//	//	GUI.TextShadedCentered($"{kit.cost:0.00} tickets", pivot: new(1.00f, 0.50f), color: GUI.font_color_default);
-			//								//	//}
-			//								//}
-
-			//								if (!read_only)
-			//								{
-			//									GUI.SameLine();
-
-			//									//if (GUI.Selectable($"##kit_{kit_index}", is_selected, size: new Vector2(0, lh)))
-			//									if (GUI.Selectable2(is_selected, size: new Vector2(0, 40), enabled: (is_selected || selected_items.Count < max_item_count), is_readonly: read_only))
-			//									{
-			//										if (!read_only && selected_items != null && !kit.flags.HasAny(Kit.Flags.Required))
-			//										{
-			//											if (is_selected) selected_items.Remove(kit_asset.GetHandle());
-			//											else selected_items.Add(kit_asset.GetHandle());
-			//										}
-			//									}
-			//								}
-			//							}
-			//						}
-			//					}
-			//				}
-			//			}
-			//		}
-			//	}
-			//}
-
-			private void DrawSpawns(ref Region.Data region, Vector2 size)
-			{
-				//GUI.Title("Spawns", size: 32);
-				//GUI.SeparatorThick();
-
-				using (var scrollable = GUI.Scrollbox.New("Spawns", size: size, padding: new(4, 4), force_scrollbar: true))
-				{
-					using (var table = GUI.Table.New("Spawns.Table", 2, new(GUI.GetRemainingWidth(), 0)))
-					{
-						if (table.show)
-						{
-							table.SetupColumnFixed(24);
-							table.SetupColumnFlex(1);
-							//table.SetupColumnFixed(48);
-
-
-							static bool DrawSpawnsRow(Entity entity, in Spawn.Data spawn, in Nameable.Data nameable, in Faction.Data faction)
-							{
-								var pressed = false;
-
-								using (var row = GUI.Table.Row.New(new Vector2(GUI.GetRemainingWidth(), 24)))
-								{
-									using (GUI.ID.Push(entity))
-									{
-										var spawn_name = nameable.name;
-										if (spawn_name.IsEmpty()) spawn_name = "Unknown";
-
-										var color = GUI.font_color_default;
-										if (faction.id.TryGetData(out var ref_faction))
-										{
-											color = ref_faction.value.color_a;
-										}
-
-										//var text = ZString.Format("{0} {1}", spawn_name, (faction.ent_faction != 0 ? $"({faction.name})" : ""));
-
-										using (row.Column(0, padding: new(4, 0)))
-										{
-											GUI.TitleCentered($"{spawn.respawn_counter}", size: 16, color: Color32BGRA.Lerp(GUI.font_color_default_dark, GUI.font_color_default, Maths.Clamp01(spawn.respawn_counter * 0.01f)), pivot: new(0.50f, 0.50f));
-										}
-										GUI.DrawHoverTooltip("Popularity");
-
-										using (row.Column(1, padding: new(4, 0)))
-										{
-											//if (faction.id != 0)
-											//{
-											//	GUI.TitleCentered($"[{faction.tag}]", color: faction.color_a, pivot: new(0.00f, 0.50f));
-											//	GUI.ResetLine(32);
-											//}
-											GUI.TitleCentered(spawn_name, size: 24, color: faction.id != 0 ? color : GUI.font_color_default, pivot: new(0.00f, 0.50f));
-
-											if (entity.TryGetPrefab(out var prefab))
-											{
-												var prefab_name = (Utf8String)prefab.GetName();
-
-												//var text_size = default(Vector2);
-												//ImGuiNative.igCalcTextSize2(prefab_name, null, 1, 0, 16, GUI.Font.Superstar.ptr, &text_size);
-
-												//GUI.OffsetLine(GUI.GetRemainingWidth() - text_size.X);
-												GUI.TitleCentered(prefab_name, color: faction.id != 0 ? color.WithColorMult(0.50f) : GUI.font_color_default.WithColorMult(0.50f), pivot: new(1.00f, 0.50f));
-												////GUI.TextShadedCentered(prefab_name, pivot: new(1.00f, 0.50f), size: 16);
-											}
-										}
-
-										//using (row.Column(1))
-										//{
-
-										//}
-
-										GUI.SameLine();
-										if (GUI.Selectable("", Spawn.RespawnGUI.ent_selected_spawn.id == entity.id, size: GUI.GetRemainingSpace(), same_line: false))
-										{
-											SiegeDefenderGUI.ent_selected_spawn_new = entity;
-											pressed = true;
-										}
-									}
-								}
-
-								return pressed;
-							}
-
-							//App.WriteLine(faction.id);
-							if (this.faction_id != 0)
-							{
-								region.Query<Region.GetSpawnsQuery>(FuncA).Execute(ref this);
-								static void FuncA(ISystem.Info info, Entity entity, in Spawn.Data spawn, in Nameable.Data nameable, in Transform.Data transform, in Faction.Data faction)
-								{
-									ref var data = ref info.GetParameter<SiegeDefenderGUI>();
-									if (!data.IsNull())
-									{
-										if (faction.id != 0 && faction.id == data.faction_id)
-										{
-											//GUI.DrawBackground(GUI.tex_panel_white, GUI.GetRemainingRect(), new(4), faction.color_a);
-
-											DrawSpawnsRow(entity, in spawn, in nameable, in faction);
-										}
-									}
-								}
-
-								//GUI.NewLine(4);
-								//GUI.Separator(faction.color_a.WithAlphaMult(0.50f));
-								//GUI.NewLine(4);
-							}
-
-							region.Query<Region.GetSpawnsQuery>(FuncB).Execute(ref this);
-							static void FuncB(ISystem.Info info, Entity entity, in Spawn.Data spawn, in Nameable.Data nameable, in Transform.Data transform, in Faction.Data faction)
-							{
-								ref var data = ref info.GetParameter<SiegeDefenderGUI>();
-								if (!data.IsNull())
-								{
-									if (faction.id == 0)
-									{
-										var pressed = DrawSpawnsRow(entity, in spawn, in nameable, in faction);
-										if (pressed)
-										{
-											//var rpc = new RespawnExt.SetSpawnRPC()
-											//{
-											//	ent_spawn = entity
-											//};
-											//rpc.Send(data.ent_respawn);
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
+			}	
 		}
 
 		[ISystem.EarlyGUI(ISystem.Mode.Single), HasTag("local", true, Source.Modifier.Owned)]

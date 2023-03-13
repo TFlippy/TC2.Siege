@@ -429,7 +429,7 @@ namespace TC2.Siege
 										var wave_info_current = waves_filtered.Where(x => x.priority >= priority_max).FirstOrDefault();
 										g_siege_state.scenario_wave_index_current = wave_info_current.index;
 
-										App.WriteLine(wave_info_current.index);
+										//App.WriteLine(wave_info_current.index);
 									}
 
 									//Span<WaveInfo> waves_filtered = stackalloc WaveInfo[waves_tmp_count];

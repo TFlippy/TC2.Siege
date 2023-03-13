@@ -116,12 +116,12 @@ namespace TC2.Siege
 			ref var region = ref context.GetRegion();
 			if (!region.IsNull())
 			{
-				var map_handle = new Map.Handle(map);
+				//var map_handle = new Map.Handle(map);
 				//App.WriteLine($"nextmapping {map}; {map_handle}; {map_handle.id}");
 
 				//if (map_handle.id != 0)
 				{
-					Siege.ChangeMap(ref region, map_handle);
+					Siege.ChangeMap(ref region, map);
 				}
 			}
 		}
@@ -221,12 +221,17 @@ namespace TC2.Siege
 			}
 		}
 
-		public static void ChangeMap(ref Region.Data region, Map.Handle map)
+		public static void ChangeMap(ref Region.Data region, MapInfo map)
 		{
 			//ref var region = ref world.GetAnyRegion();
 			if (!region.IsNull())
 			{
 				var region_id_old = region.GetID();
+
+				if (map == null)
+				{
+					map = App.GetModContext().GetMaps().GetRandom();
+				}
 
 				ref var world = ref Server.GetWorld();
 				if (world.TryGetFirstAvailableRegionID(out var region_id_new))
@@ -240,7 +245,7 @@ namespace TC2.Siege
 						{
 							ref var world = ref Server.GetWorld();
 
-							ref var region_new = ref world.ImportRegion(region_id_new, map);
+							ref var region_new = ref world.ImportRegion2(region_id_new, map);
 							if (!region_new.IsNull())
 							{
 								world.SetContinueRegionID(region_id_new);
