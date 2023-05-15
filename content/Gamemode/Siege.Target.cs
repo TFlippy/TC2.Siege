@@ -34,11 +34,9 @@ namespace TC2.Siege
 				//}
 
 				[ISystem.LateUpdate(ISystem.Mode.Single, interval: 1.00f)]
-				public static void OnUpdateCapturable(ISystem.Info info, Entity entity,
+				public static void OnUpdateCapturable(ISystem.Info info, ref Region.Data region, Entity entity,
 				[Source.Owned] ref Capturable.Data capturable, [Source.Owned] ref Faction.Data faction, [Source.Owned] ref Siege.Target.Data siege_target, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state)
 				{
-					ref var region = ref info.GetRegion();
-
 					if (info.WorldTime >= siege_target.t_next_notification_capture)
 					{
 						if (siege_target.t_next_notification_capture > 0.00f)
@@ -63,10 +61,8 @@ namespace TC2.Siege
 				}
 
 				[ISystem.Remove(ISystem.Mode.Single)]
-				public static void OnRemove(ISystem.Info info, Entity entity, [Source.Owned] ref Siege.Target.Data siege_target)
+				public static void OnRemove(ISystem.Info info, ref Region.Data region, Entity entity, [Source.Owned] ref Siege.Target.Data siege_target)
 				{
-					ref var region = ref info.GetRegion();
-
 					Notification.Push(ref region, $"{entity.GetFullName()} has been destroyed!", Color32BGRA.Red, lifetime: 10.00f, "buzzer.02", volume: 0.20f, pitch: 0.80f, send_type: Net.SendType.Reliable);
 				}
 #endif

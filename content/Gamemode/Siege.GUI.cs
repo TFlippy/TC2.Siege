@@ -107,16 +107,16 @@ namespace TC2.Siege
 							{
 								if (!ent_selected_spawn.IsAlive())
 								{
-									region.Query<Region.GetSpawnsQuery>(Func).Execute(ref this);
-									static void Func(ISystem.Info info, Entity entity, in Spawn.Data spawn, in Nameable.Data nameable, in Transform.Data transform, in Faction.Data faction)
+									foreach (ref var row in region.IterateQuery<Region.GetSpawnsQuery>())
 									{
-										ref var player = ref Client.GetPlayer();
-										if (faction.id == 0 || (faction.id == player.faction_id))
+										row.Run((ISystem.Info info, Entity entity, in Spawn.Data spawn, in Nameable.Data nameable, in Transform.Data transform, in Faction.Data faction) =>
 										{
-											var random = XorRandom.New();
-
-											if (Spawn.RespawnGUI.ent_selected_spawn.id == 0 || random.NextBool(0.30f)) ent_selected_spawn_new = entity;
-										}
+											ref var player = ref Client.GetPlayer();
+											if (faction.id == 0 || (faction.id == player.faction_id))
+											{
+												if (Spawn.RespawnGUI.ent_selected_spawn.id == 0 || info.GetRandom().NextBool(0.30f)) ent_selected_spawn_new = entity;
+											}
+										});
 									}
 								}
 
@@ -447,7 +447,7 @@ namespace TC2.Siege
 				}
 			}
 
-			private static void DrawKit(ref IKit.Handle h_kit, ref IKit.Data kit_data, ref Inventory.Handle h_inventory, ref Span<Shipment.Item> shipment_armory_span, bool valid, HashSet<IAsset2<IKit, IKit.Data>.Handle> selected_items)
+			private static void DrawKit(ref IKit.Handle h_kit, ref IKit.Data kit_data, ref Inventory.Handle h_inventory, ref Span<Shipment.Item> shipment_armory_span, bool valid, HashSet<IKit.Handle> selected_items)
 			{
 				using (GUI.ID.Push(h_kit.id))
 				{

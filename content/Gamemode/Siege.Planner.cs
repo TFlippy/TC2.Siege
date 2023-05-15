@@ -51,7 +51,7 @@ namespace TC2.Siege
 		{
 			//App.WriteLine($"weapon mult: {weapon_mult}; armor mult: {armor_mult}");
 
-			var random = XorRandom.New();
+			var random = XorRandom.New(true);
 			var loadout = new Loadout.Data();
 			var bounty = new Siege.Bounty.Data();
 
@@ -61,7 +61,7 @@ namespace TC2.Siege
 			var items_span = shipment.items.AsSpan();
 			var rewards_span = bounty.rewards.AsSpan();
 
-			ref var gunner = ref ent_kobold.GetComponent<Gunner.Data>();
+			ref var gunner = ref ent_kobold.GetComponent<AI.Gunner.Data>();
 
 			// TODO: add proper .hjson loot tables
 			var num = random.NextIntRange(0, 11);
@@ -350,7 +350,7 @@ namespace TC2.Siege
 
 		public static void SetGiantLoadout(Entity ent_hoob, float weapon_mult = 1.00f, float armor_mult = 1.00f)
 		{
-			var random = XorRandom.New();
+			var random = XorRandom.New(true);
 			var loadout = new Loadout.Data();
 			var bounty = new Siege.Bounty.Data();
 
@@ -393,7 +393,7 @@ namespace TC2.Siege
 					else if (random.NextBool(0.40f))
 					{
 						items_span.Add(Shipment.Item.Prefab("cannon.short", flags: Shipment.Item.Flags.Pickup | Shipment.Item.Flags.Despawn));
-		
+
 						if (random.NextBool(0.50f))
 						{
 							items_span.Add(Shipment.Item.Resource("ammo_shell.shrapnel", 10));
@@ -437,7 +437,7 @@ namespace TC2.Siege
 						{
 							items_span.Add(Shipment.Item.Resource("ammo_shell.he", 10));
 						}
-							
+
 						rewards_span.Add(Crafting.Product.Money(1500));
 					}
 					else
@@ -514,11 +514,9 @@ namespace TC2.Siege
 		{
 			var arg = new FindTargetArgs(ent_planner, faction.id, position_src, default, default, float.MaxValue, default);
 
-			region.Query<Siege.GetAllTargetsQuery>(Func).Execute(ref arg);
-			static void Func(ISystem.Info info, Entity entity, in Siege.Target.Data target, in Transform.Data transform, in Faction.Data faction)
+			foreach (ref var row in region.IterateQuery<Siege.GetAllTargetsQuery>())
 			{
-				ref var arg = ref info.GetParameter<FindTargetArgs>();
-				if (!arg.IsNull())
+				row.Run((ISystem.Info info, Entity entity, in Siege.Target.Data target, in Transform.Data transform, in Faction.Data faction) =>
 				{
 					ref var region = ref info.GetRegion();
 
@@ -538,7 +536,7 @@ namespace TC2.Siege
 							arg.target_position = transform.position;
 						}
 					}
-				}
+				});
 			}
 
 			ent_target = arg.ent_target;
@@ -573,11 +571,9 @@ namespace TC2.Siege
 		{
 			var arg = new FindNearestSpawnArgs(faction, position_target);
 
-			region.Query<Region.GetSpawnsQuery>(Func).Execute(ref arg);
-			static void Func(ISystem.Info info, Entity entity, [Source.Owned] in Spawn.Data spawn, [Source.Owned, Optional] in Nameable.Data nameable, [Source.Owned] in Transform.Data transform, [Source.Owned, Optional] in Faction.Data faction)
+			foreach (ref var row in region.IterateQuery<Region.GetSpawnsQuery>())
 			{
-				ref var arg = ref info.GetParameter<FindNearestSpawnArgs>();
-				if (!arg.IsNull())
+				row.Run((ISystem.Info info, Entity entity, [Source.Owned] in Spawn.Data spawn, [Source.Owned, Optional] in Nameable.Data nameable, [Source.Owned] in Transform.Data transform, [Source.Owned, Optional] in Faction.Data faction) =>
 				{
 					ref var region = ref info.GetRegion();
 
@@ -588,7 +584,7 @@ namespace TC2.Siege
 						arg.target_dist_nearest_sq = dist_sq;
 						arg.position_spawn = transform.position;
 					}
-				}
+				});
 			}
 
 			ent_spawn = arg.ent_spawn;
@@ -598,11 +594,9 @@ namespace TC2.Siege
 		}
 
 		[ISystem.Update(ISystem.Mode.Single, interval: 0.10f)]
-		public static void OnUpdate(ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform,
+		public static void OnUpdate(ref Region.Data region, ref XorRandom random, ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform,
 		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state, [Source.Owned, Optional] in Faction.Data faction)
 		{
-			ref var region = ref info.GetRegion();
-
 			if (Constants.World.enable_npc_spawning && Constants.World.enable_ai && g_siege_state.status == Gamemode.Status.Running && g_siege_state.flags.HasAny(Siege.Gamemode.Flags.Active))
 			{
 				var time = g_siege_state.t_match_elapsed;
@@ -620,8 +614,6 @@ namespace TC2.Siege
 					//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f);
 					Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f, send_type: Net.SendType.Reliable);
 				}
-
-				var random = XorRandom.New();
 
 				switch (planner.status)
 				{
@@ -680,11 +672,9 @@ namespace TC2.Siege
 
 									var arg = new GetAllUnitsQueryArgs(entity, ent_target, faction.id, transform.position, target_position, 0, planner.wave_size_rem, default);
 
-									region.Query<Siege.GetAllUnitsQuery>(Func2).Execute(ref arg);
-									static void Func2(ISystem.Info info, Entity entity, [Source.Owned] in Commandable.Data commandable, [Source.Owned, Override] in AI.Movement movement, [Source.Owned, Override] in AI.Behavior behavior, [Source.Owned] in Transform.Data transform, [Source.Owned] in Faction.Data faction)
+									foreach (ref var row in region.IterateQuery<Siege.GetAllUnitsQuery>())
 									{
-										ref var arg = ref info.GetParameter<GetAllUnitsQueryArgs>();
-										if (!arg.IsNull() && arg.selection_count < arg.selection.Length)
+										row.Run((ISystem.Info info, Entity entity, [Source.Owned] in Commandable.Data commandable, [Source.Owned, Override] in AI.Movement movement, [Source.Owned, Override] in AI.Behavior behavior, [Source.Owned] in Transform.Data transform, [Source.Owned] in Faction.Data faction) =>
 										{
 											//App.WriteLine(behavior.idle_timer);
 											if (faction.id == arg.faction_id && !commandable.flags.HasAny(Commandable.Data.Flags.No_Select) && (behavior.idle_timer >= 2.00f || !behavior.ref_target_body.entity.IsValid() || behavior.type == AI.Behavior.Type.None || movement.type == AI.Movement.Type.None))
@@ -705,7 +695,7 @@ namespace TC2.Siege
 												arg.selection[arg.selection_count++].Set(entity);
 												//App.WriteLine(entity);
 											}
-										}
+										});
 									}
 
 									//planner.wave_size_rem = arg.wave_size_rem;

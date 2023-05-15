@@ -11,11 +11,18 @@ namespace TC2.Siege
 		{
 			ref var region = ref context.GetRegion();
 			ref var player = ref context.GetPlayer();
+			var random = XorRandom.New(true);
 
-			region.SpawnPrefab("kobold.male", player.control.mouse.position, faction_id: faction_id ?? player.faction_id).ContinueWith((ent) =>
+			var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner");
+			Dormitory.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
 			{
 				SetKoboldLoadout(ent);
 			});
+
+			//region.SpawnPrefab("kobold.male", player.control.mouse.position, faction_id: faction_id ?? player.faction_id).ContinueWith((ent) =>
+			//{
+			//	SetKoboldLoadout(ent);
+			//});
 		}
 
 		[ChatCommand.Region("giant", "", creative: true)]

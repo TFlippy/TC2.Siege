@@ -76,24 +76,24 @@ namespace TC2.Siege
 				[Save.Ignore] public IFaction.Handle faction_defenders = "defenders";
 				[Save.Ignore] public IFaction.Handle faction_attackers = "attackers";
 
-				[Save.Ignore] public ushort wave_current;
+				public ushort wave_current;
 				[Save.Ignore] public byte target_count;
 				[Save.Ignore] public byte player_count;
 
-				[Save.Ignore] public IScenario.Handle scenario = "bouda.00";
-				[Save.Ignore] public int? scenario_wave_index_current;
+				public IScenario.Handle scenario = "bouda.00";
+				public int? scenario_wave_index_current;
 
 				/// <summary>
 				/// Current match difficulty.
 				/// </summary>
-				[Save.Ignore] public float difficulty = 1.00f;
+				public float difficulty = 1.00f;
 
-				[Save.Ignore] public Siege.Gamemode.Flags flags;
-				[Save.Ignore] public Siege.Gamemode.Status status;
+				public Siege.Gamemode.Flags flags;
+				public Siege.Gamemode.Status status;
 
-				[Save.Ignore] public float t_match_elapsed;
-				[Save.Ignore] public float t_last_wave;
-				[Save.Ignore] public float t_next_wave;
+				public float t_match_elapsed;
+				public float t_last_wave;
+				public float t_next_wave;
 				[Save.Ignore, Net.Ignore] public float t_next_restart;
 				[Save.Ignore, Net.Ignore] public float t_last_notification;
 
@@ -119,11 +119,11 @@ namespace TC2.Siege
 
 				Constants.World.save_factions = false;
 				Constants.World.save_players = true;
-				Constants.World.save_characters = false;
+				Constants.World.save_characters = true;
 
 				Constants.World.load_factions = false;
 				Constants.World.load_players = true;
-				Constants.World.load_characters = false;
+				Constants.World.load_characters = true;
 
 				Constants.World.enable_autosave = false;
 
@@ -161,6 +161,7 @@ namespace TC2.Siege
 					else if (identifier.StartsWith("forge.", StringComparison.OrdinalIgnoreCase)) return true;
 					else if (identifier.StartsWith("manufactory.", StringComparison.OrdinalIgnoreCase)) return true;
 					else if (identifier.StartsWith("vending.", StringComparison.OrdinalIgnoreCase)) return true;
+					else if (identifier.StartsWith("wrench.", StringComparison.OrdinalIgnoreCase)) return true;
 					else return false;
 				});
 
@@ -180,6 +181,12 @@ namespace TC2.Siege
 				});
 
 				IOrigin.Database.AddAssetFilter((string path, string identifier, ModInfo mod_info) =>
+				{
+					if (mod_info == mod_siege) return true;
+					else return false;
+				});
+
+				IKit.Database.AddAssetFilter((string path, string identifier, ModInfo mod_info) =>
 				{
 					if (mod_info == mod_siege) return true;
 					else return false;
@@ -310,11 +317,9 @@ namespace TC2.Siege
 		}
 
 		[ISystem.VeryLateUpdate(ISystem.Mode.Single)]
-		public static void UpdateSiegeLate(ISystem.Info info, [Source.Global] ref Siege.Gamemode g_siege, [Source.Global] ref Siege.Gamemode.State g_siege_state)
+		public static void UpdateSiegeLate(ISystem.Info info, ref Region.Data region, ref XorRandom random, [Source.Global] ref Siege.Gamemode g_siege, [Source.Global] ref Siege.Gamemode.State g_siege_state)
 		{
 			//App.WriteLine(siege.target_count);
-
-			ref var region = ref info.GetRegion();
 
 #if SERVER
 			var sync = false;
@@ -388,7 +393,7 @@ namespace TC2.Siege
 								g_siege_state.scenario_wave_index_current = null;
 
 								var duration = g_siege.wave_interval;
-						
+
 								ref var scenario = ref g_siege_state.scenario.GetData(out var scenario_asset);
 								if (!scenario.IsNull())
 								{
