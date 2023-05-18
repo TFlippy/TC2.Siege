@@ -1,19 +1,22 @@
-{
+﻿{
 	name: "Tank"
 	desc: ""
 	
 	flags: none
-	category: undefined
-	faction: "null"
-	species: "null"
+	categories: vehicle
+	faction: "defenders"
+	species: "human"
 	
 	character_flags:
 	{
-		require: military, soldier
-		include: military, soldier
+		require: military
+		include: military
 		exclude: medical
-		weight: 1.000
+		weight: 0.200
 	}
+	
+	amount_multiplier_min: 1.000
+	amount_multiplier_max: 1.000
 	
 	shipment:
 	{
@@ -21,11 +24,13 @@
 		[
 			{
 				type: prefab
-				prefab: "tank.00.combined"
+				prefab: "cmb.tractor.00.mg"
 				quantity: 1.000
-				mass_per_unit: 0.000
 				flags: drive, no_consume
 			}
+			null
+			null
+			null
 		]
 		flags: dirty, unpack
 	}

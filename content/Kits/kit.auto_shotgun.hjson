@@ -1,18 +1,22 @@
-{
+﻿{
 	name: "Auto-Shotgun"
 	desc: ""
 	
 	flags: none
-	category: undefined
-	faction: "null"
-	species: "null"
+	categories: weapon
+	faction: "defenders"
+	species: "human"
 	
 	character_flags:
 	{
 		require: military, technician
 		include: military, technician
-		weight: 1.000
+		exclude: none
+		weight: 1.700
 	}
+	
+	amount_multiplier_min: 1.000
+	amount_multiplier_max: 1.000
 	
 	shipment:
 	{
@@ -22,14 +26,12 @@
 				type: prefab
 				prefab: "auto_shotgun"
 				quantity: 1.000
-				mass_per_unit: 0.000
 				flags: pickup, despawn
 			}
 			{
 				type: resource
 				material: "ammo_sg.buck"
 				quantity: 32.000
-				mass_per_unit: 0.000
 				flags: none
 			}
 			null

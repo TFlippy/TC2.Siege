@@ -250,20 +250,23 @@ namespace TC2.Siege
 													{
 														using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 40)))
 														{
-															var h_character = characters[i];
-
-															if (h_character.id != 0 && h_selected_character_tmp.id == 0)
+															if (group_row.IsVisible())
 															{
-																h_selected_character_tmp = h_character;
-																h_selected_character = h_character;
-															}
+																var h_character = characters[i];
 
-															Dormitory.DormitoryGUI.DrawCharacterSmall(h_character);
+																if (h_character.id != 0 && h_selected_character_tmp.id == 0)
+																{
+																	h_selected_character_tmp = h_character;
+																	h_selected_character = h_character;
+																}
 
-															var selected = h_selected_character_tmp.id != 0 && h_character == h_selected_character_tmp; // selected_index;
-															if (GUI.Selectable3("selectable", group_row.GetOuterRect(), selected))
-															{
-																h_selected_character = h_character;
+																Dormitory.DormitoryGUI.DrawCharacterSmall(h_character);
+
+																var selected = h_selected_character_tmp.id != 0 && h_character == h_selected_character_tmp; // selected_index;
+																if (GUI.Selectable3("selectable", group_row.GetOuterRect(), selected))
+																{
+																	h_selected_character = h_character;
+																}
 															}
 														}
 													}
@@ -453,49 +456,52 @@ namespace TC2.Siege
 				{
 					using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 40), padding: new(0, 0)))
 					{
-						GUI.DrawBackground(GUI.tex_panel, group_row.GetOuterRect(), new(8, 8, 8, 8));
-
-						using (var group_title = GUI.Group.New(size: new(128, GUI.GetRemainingHeight()), padding: new(4, 0)))
+						if (group_row.IsVisible())
 						{
-							GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.50f), color: GUI.font_color_title.WithAlphaMult(valid ? 1.00f : 0.50f));
-						}
+							GUI.DrawBackground(GUI.tex_panel, group_row.GetOuterRect(), new(8, 8, 8, 8));
 
-						GUI.SameLine();
-
-						//GUI.DrawItems(shipment.items.AsSpan(), is_readonly: true);
-						//GUI.DrawItems(shipment.items.AsSpan(), is_readonly: true);
-
-						var sameline = false;
-						foreach (ref var item in kit_data.shipment.items)
-						{
-							if (!item.IsValid()) continue;
-
-							if (sameline) GUI.SameLine();
-							sameline = true;
-
-							var has_item = item.flags.HasAny(Shipment.Item.Flags.No_Consume) || shipment_armory_span.Contains(item);
-							if (!has_item && item.type == Shipment.Item.Type.Resource)
+							using (var group_title = GUI.Group.New(size: new(128, GUI.GetRemainingHeight()), padding: new(4, 0)))
 							{
-								has_item = h_inventory.GetQuantity(item.material) >= item.quantity;
+								GUI.TitleCentered(kit_data.name, pivot: new(0.00f, 0.50f), color: GUI.font_color_title.WithAlphaMult(valid ? 1.00f : 0.50f));
 							}
 
-							if (has_item)
-							{
+							GUI.SameLine();
 
+							//GUI.DrawItems(shipment.items.AsSpan(), is_readonly: true);
+							//GUI.DrawItems(shipment.items.AsSpan(), is_readonly: true);
+
+							var sameline = false;
+							foreach (ref var item in kit_data.shipment.items)
+							{
+								if (!item.IsValid()) continue;
+
+								if (sameline) GUI.SameLine();
+								sameline = true;
+
+								var has_item = item.flags.HasAny(Shipment.Item.Flags.No_Consume) || shipment_armory_span.Contains(item);
+								if (!has_item && item.type == Shipment.Item.Type.Resource)
+								{
+									has_item = h_inventory.GetQuantity(item.material) >= item.quantity;
+								}
+
+								if (has_item)
+								{
+
+								}
+
+								GUI.DrawItem(ref item, is_readonly: true, text_color: has_item ? GUI.font_color_default : GUI.col_button_error.WithAlphaMult(0.50f), icon_color: has_item ? Color32BGRA.White : GUI.col_button_error.WithAlphaMult(0.50f));
 							}
 
-							GUI.DrawItem(ref item, is_readonly: true, text_color: has_item ? GUI.font_color_default : GUI.col_button_error.WithAlphaMult(0.50f), icon_color: has_item ? Color32BGRA.White : GUI.col_button_error.WithAlphaMult(0.50f));
-						}
-
-						var selected = selected_items.Contains(h_kit);
-						if (GUI.Selectable3("selectable", group_row.GetOuterRect(), selected, is_readonly: !valid))
-						{
-							if (selected) selected_items.Remove(h_kit);
-							else selected_items.Add(h_kit);
+							var selected = selected_items.Contains(h_kit);
+							if (GUI.Selectable3("selectable", group_row.GetOuterRect(), selected, is_readonly: !valid))
+							{
+								if (selected) selected_items.Remove(h_kit);
+								else selected_items.Add(h_kit);
+							}
 						}
 					}
 				}
-			}	
+			}
 		}
 
 		[ISystem.EarlyGUI(ISystem.Mode.Single), HasTag("local", true, Source.Modifier.Owned)]
@@ -528,21 +534,121 @@ namespace TC2.Siege
 			public Siege.Gamemode g_siege;
 			public Siege.Gamemode.State g_siege_state;
 
+			public static EntRef<Dormitory.Data> ref_selected_dormitory;
+			public static uint? dormitory_selected_index;
+
 			public void Draw()
 			{
-				var window_pos = (GUI.CanvasSize * new Vector2(0.50f, 0.00f)) + new Vector2(0, 64);
-				using (var window = GUI.Window.Standalone("Siege2", position: window_pos, size: new Vector2(100, 100), pivot: new Vector2(0.50f, 0.00f), padding: new(6, 6)))
+				var window_pos = (GUI.CanvasSize * new Vector2(0.50f, 0.00f)) + new Vector2(0, 80);
+				using (var window = GUI.Window.Standalone("Siege2", position: window_pos, size: new Vector2(600, 500), pivot: new Vector2(0.50f, 0.00f), padding: new(6, 6), force_position: false))
 				{
 					this.StoreCurrentWindowTypeID();
 					if (window.show)
 					{
-						GUI.DrawWindowBackground();
+						GUI.DrawWindowBackground(GUI.tex_window_menu);
 
-						ref var region = ref Client.GetRegion();
-						ref var world = ref Client.GetWorld();
-						ref var game_info = ref Client.GetGameInfo();
+						using (GUI.Group.New(size: GUI.GetRemainingSpace(), padding: new(4)))
+						{
+							ref var region = ref Client.GetRegion();
+							ref var world = ref Client.GetWorld();
+							ref var game_info = ref Client.GetGameInfo();
 
-						GUI.Title($"{this.g_siege_state.faction_defenders.id}");
+							var h_faction = g_siege_state.faction_attackers;
+							var total_count = region.GetTotalTagCount("kobold", "dead");
+
+							//GUI.Title($"{this.g_siege_state.faction_defenders.id}");
+							GUI.Title($"{total_count}/{this.g_siege.max_npc_count} kobolds");
+
+							using (var scrollbox = GUI.Scrollbox.New("scroll.spawns", size: new(GUI.GetRemainingWidth() - 100, 150)))
+							{
+								foreach (ref var row in region.IterateQuery<Region.GetSpawnsQuery>())
+								{
+									row.Run((ISystem.Info info, Entity entity, [Source.Owned] in Spawn.Data spawn, [Source.Owned, Optional] in Nameable.Data nameable, [Source.Owned] in Transform.Data transform, [Source.Owned, Optional] in Faction.Data faction) =>
+									{
+										if (faction.id == h_faction)
+										{
+											using (GUI.ID.Push(entity))
+											{
+												using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32)))
+												{
+													group_row.DrawBackground(GUI.tex_panel);
+
+													GUI.TitleCentered(entity.GetFullName(), size: 16, pivot: new(0.00f, 0.00f), offset: new(6, 2));
+
+													var selected = ref_selected_dormitory == entity;
+													if (GUI.Selectable3("select", group_row.GetOuterRect(), selected))
+													{
+														ref_selected_dormitory = selected ? default : entity;
+													}
+												}
+											}
+										}
+									});
+								}
+							}
+
+							GUI.SeparatorThick();
+
+							using (var group_bottom = GUI.Group.New(size: GUI.GetRemainingSpace()))
+							{
+								ref var selected_dormitory = ref ref_selected_dormitory.GetValueOrNullRef();
+
+								using (var group_left = GUI.Group.New(size: GUI.GetRemainingSpace(x: -250)))
+								{
+									using (var scrollbox = GUI.Scrollbox.New("scroll.characters", size: GUI.GetRemainingSpace()))
+									{
+										if (selected_dormitory.IsNotNull())
+										{
+											var characters_span = selected_dormitory.characters.Slice(selected_dormitory.characters_capacity);
+
+											var index = 0u;
+											foreach (ref var h_character in characters_span)
+											{
+												//if (h_character.id != 0)
+												//{
+												using (GUI.ID.Push(index))
+												{
+													using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 40)))
+													{
+														group_row.DrawBackground(GUI.tex_panel);
+
+														Dormitory.DormitoryGUI.DrawCharacterSmall(h_character);
+
+														//GUI.TitleCentered(entity.GetFullName(), size: 16, pivot: new(0.00f, 0.00f), offset: new(6, 2));
+
+														//var selected = ref_selected_dormitory == entity;
+														var selected = index == dormitory_selected_index;
+														if (GUI.Selectable3("select", group_row.GetOuterRect(), selected))
+														{
+															dormitory_selected_index = selected ? null : index;
+															//ref_selected_dormitory = selected ? default : entity;
+														}
+													}
+
+													index++;
+												}
+												//}
+											}
+										}
+									}
+								}
+
+								GUI.SameLine();
+
+								using (var group_right = GUI.Group.New(size: GUI.GetRemainingSpace(), padding: new(4)))
+								{
+									group_right.DrawBackground(GUI.tex_window);
+
+									if (selected_dormitory.IsNotNull())
+									{
+										var ent_dormitory = ref_selected_dormitory.entity;
+										GUI.TitleCentered(ent_dormitory.GetName(), size: 24, pivot: new(0.00f, 0.00f), offset: new(6, 2));
+
+
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -554,6 +660,7 @@ namespace TC2.Siege
 			if (player.IsLocal() && player.faction_id == g_siege_state.faction_attackers)
 			{
 				Spawn.RespawnGUI.enabled = false;
+				Editor.show_respawn_menu = false; // TODO: workaround for testing
 
 				var gui = new SiegeAttackerGUI()
 				{

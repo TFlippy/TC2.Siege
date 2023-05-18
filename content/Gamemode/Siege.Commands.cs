@@ -30,13 +30,25 @@ namespace TC2.Siege
 		{
 			ref var region = ref context.GetRegion();
 			ref var player = ref context.GetPlayer();
+			var random = XorRandom.New(true);
 
-			App.WriteLine(faction_id);
-
-			region.SpawnPrefab("giant.male", player.control.mouse.position, faction_id: faction_id ?? player.faction_id).ContinueWith((ent) =>
+			var h_character = Dormitory.CreateCharacter(ref region, ref random, "giant.artillerist");
+			Dormitory.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
 			{
 				SetGiantLoadout(ent);
 			});
+
+
+			//ref var region = ref context.GetRegion();
+			//ref var player = ref context.GetPlayer();
+
+			//App.WriteLine(faction_id);
+
+
+			//region.SpawnPrefab("giant.male", player.control.mouse.position, faction_id: faction_id ?? player.faction_id).ContinueWith((ent) =>
+			//{
+			//	SetGiantLoadout(ent);
+			//});
 		}
 
 		[ChatCommand.Region("tank", "", creative: true)]
@@ -54,8 +66,10 @@ namespace TC2.Siege
 			region.SpawnPrefab(prefab_name, pos_tmp, faction_id: h_faction_tmp).ContinueWith((ent_vehicle) =>
 			{
 				ref var region = ref ent_vehicle.GetRegion();
-				
-				region.SpawnPrefab("kobold.male", pos_tmp, faction_id: h_faction_tmp).ContinueWith((ent_kobold) =>
+				var random = XorRandom.New(true);
+
+				var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner");
+				Dormitory.SpawnCharacter(ref region, h_character, pos_tmp, h_faction: h_faction_tmp).ContinueWith((ent_kobold) =>
 				{
 					ref var region = ref ent_vehicle.GetRegion();
 
@@ -90,7 +104,7 @@ namespace TC2.Siege
 			var h_faction_tmp = (IFaction.Handle)(faction_id ?? player.faction_id);
 
 			//region.SpawnPrefab("tank.00.combined", pos_tmp, faction_id: h_faction_tmp).ContinueWith((ent_vehicle) =>
-			region.SpawnPrefab("tractor.00.tank", pos_tmp, faction_id: h_faction_tmp).ContinueWith((ent_vehicle) =>
+			region.SpawnPrefab("cmb.tractor.00.tank", pos_tmp, faction_id: h_faction_tmp).ContinueWith((ent_vehicle) =>
 			{
 				ref var region = ref ent_vehicle.GetRegion();
 
@@ -219,6 +233,27 @@ namespace TC2.Siege
 					var sync = false;
 					sync |= g_siege_state.flags.TrySetFlag(Siege.Gamemode.Flags.Paused, value ?? !g_siege_state.flags.HasAll(Siege.Gamemode.Flags.Paused));
 					Server.SendChatMessage(g_siege_state.flags.HasAll(Siege.Gamemode.Flags.Paused) ? "Paused Siege." : "Unpaused Siege.", channel: Chat.Channel.System);
+
+					if (sync)
+					{
+						region.SyncGlobal(ref g_siege_state);
+					}
+				}
+			}
+		}
+
+		[ChatCommand.Region("dispatcher", "", admin: true)]
+		public static void DispatcherCommand(ref ChatCommand.Context context, bool? value = null)
+		{
+			ref var region = ref context.GetRegion();
+			if (!region.IsNull())
+			{
+				ref var g_siege_state = ref region.GetSingletonComponent<Siege.Gamemode.State>();
+				if (!g_siege_state.IsNull())
+				{
+					var sync = false;
+					sync |= g_siege_state.flags.TrySetFlag(Siege.Gamemode.Flags.No_Dispatcher, value ?? !g_siege_state.flags.HasAll(Siege.Gamemode.Flags.No_Dispatcher));
+					Server.SendChatMessage(g_siege_state.flags.HasAll(Siege.Gamemode.Flags.No_Dispatcher) ? "Disabled Dispatcher AI." : "Enabled Dispatcher AI.", channel: Chat.Channel.System);
 
 					if (sync)
 					{

@@ -1,18 +1,27 @@
-$name: "Spawner"
+$name: "Koboldwagon"
 $desc: ""
 $tags: []
 
 body:
 {
+	inventory_weight_multiplier: 0.150
 	type: static
 	
-	@shape.box:
+	@shape.polygon:
 	{
-		size: [6.000, 6.000]
-		offset: [0.000, 0.000]
-		friction: 0.500
-		elasticity: 0.500
-		layer: entity, building, ignore_melee
+		points: 
+		[
+			[-2.125, -0.750]
+			[2.125, -1.125]
+			[2.250, 1.750]
+			[-1.875, 1.750]
+		]
+		mass: 500.000
+		radius: 0.250
+		friction: 0.750
+		elasticity: 0.400
+		material: metal
+		layer: entity, solid, crate, ignore_bullet
 		mask: world
 	}
 }
@@ -21,9 +30,10 @@ animated.renderer:
 {
 	sprite:
 	{
-		texture: "ruins"
+		texture: "spawner.kobold.00"
 	}
-	z: -400.000
+	z: -100.000
+	// mask: "container.personnel.mask"
 }
 
 transform:
@@ -43,7 +53,7 @@ spawner:
 	group_size: 1
 	group_size_extra: 1
 
-	max_count: 4
+	max_count: 0
 }
 
 spawn:
@@ -102,4 +112,39 @@ minimap.marker:
 		frame: [1, 0]
 	}
 	// flags: faction
+}
+
+dormitory:
+{
+	species: "kobold"
+	kit_default: "kobold"
+	flags: no_hiring
+	kits_max: 3
+	characters_capacity: 16
+	characters_initial_count: 4
+
+	character_flags_filter: 
+	{
+		require: none
+		include: criminal, laborer, armed, lowlife, insane
+		exclude: none
+		weight: 5.000
+	}
+}
+
+armory:
+{
+	@inventory4:
+	{
+		name: "Ammo"
+		stack_size_multiplier: 20.000
+		filter_flags: ammo
+		type: ammo
+		flags: ignore_mass
+	}
+}
+
+shipment:
+{
+	flags: keep_items, no_gui, allow_deposit, allow_withdraw
 }

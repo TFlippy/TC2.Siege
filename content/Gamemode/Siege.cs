@@ -56,7 +56,8 @@ namespace TC2.Siege
 				None = 0,
 
 				Active = 1 << 0,
-				Paused = 1 << 1
+				Paused = 1 << 1,
+				No_Dispatcher = 1 << 2,
 			}
 
 			public enum Status: uint

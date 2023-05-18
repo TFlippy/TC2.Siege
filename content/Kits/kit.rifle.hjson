@@ -1,18 +1,22 @@
-{
+﻿{
 	name: "Rifle"
 	desc: ""
 	
 	flags: none
-	category: undefined
-	faction: "null"
-	species: "null"
+	categories: weapon
+	faction: "defenders"
+	species: "human"
 	
 	character_flags:
 	{
-		require: military, soldier
-		include: military, soldier
-		weight: 1.000
+		require: military
+		include: military
+		exclude: none
+		weight: 0.700
 	}
+	
+	amount_multiplier_min: 1.000
+	amount_multiplier_max: 1.000
 	
 	shipment:
 	{
@@ -22,16 +26,16 @@
 				type: prefab
 				prefab: "rifle"
 				quantity: 1.000
-				mass_per_unit: 0.000
 				flags: pickup, despawn
 			}
 			{
 				type: resource
 				material: "ammo_hc.hv"
 				quantity: 25.000
-				mass_per_unit: 0.000
 				flags: none
 			}
+			null
+			null
 		]
 		flags: dirty, unpack
 	}

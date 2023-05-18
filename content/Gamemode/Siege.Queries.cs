@@ -9,7 +9,11 @@ namespace TC2.Siege
 		public delegate void GetAllTargetsQuery(ISystem.Info info, Entity entity, [Source.Owned] in Siege.Target.Data target, [Source.Owned] in Transform.Data transform, [Source.Owned, Optional] in Faction.Data faction);
 
 		[Query]
-		public delegate void GetAllUnitsQuery(ISystem.Info info, Entity entity, [Source.Owned] in Commandable.Data commandable, [Source.Owned, Override] in AI.Movement movement, [Source.Owned, Override] in AI.Behavior behavior, [Source.Owned] in Transform.Data transform, [Source.Owned] in Faction.Data faction);
+		public delegate void GetAllUnitsQuery(ISystem.Info info, Entity entity, 
+		[Source.Owned] in Commandable.Data commandable, 
+		[Source.Owned, Override] in AI.Movement movement, [Source.Owned, Override] in AI.Behavior behavior, 
+		[Source.Owned] in Transform.Data transform, [Source.Owned] in Faction.Data faction, 
+		[Source.Owned, Pair.Any, Optional(true)] in Squad.Relation squad_rel, [Source.Parent<Squad.Relation>, Optional(true)] in Squad.Data squad);
 
 		private struct FindTargetArgs
 		{
