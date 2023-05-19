@@ -1,16 +1,17 @@
-{
-	name: "Gunner"
+﻿{
+	name: "Bomber"
 	desc:
 		'''
 		TODO: Desc
 		'''
 	
 	money: 3.000
-	age: [4, 5, 7, 8, 10, 20]
+	age: [4.000, 5.000, 7.000, 8.000, 10.000, 20.000]
 	genders: male, female
 	gender_ratio: 0.100
 	species: "kobold"
-	character_flags: slave, unskilled, laborer, civillian, lowlife, poor, miner, insane, alcoholic, illiterate, lower_class
+	kit_default: "null"
+	character_flags: construction, scientist, armed, lowlife, technician, engineer, poor, miner, chemist, soldier, insane, alcoholic, nomad, evil, terrorist, fanatic, lower_middle_class
 	
 	conditions:
 	{

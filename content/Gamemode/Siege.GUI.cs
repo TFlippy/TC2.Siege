@@ -540,14 +540,17 @@ namespace TC2.Siege
 			public void Draw()
 			{
 				var window_pos = (GUI.CanvasSize * new Vector2(0.50f, 0.00f)) + new Vector2(0, 80);
-				using (var window = GUI.Window.Standalone("Siege2", position: window_pos, size: new Vector2(650, 540), pivot: new Vector2(0.50f, 0.00f), padding: new(6, 6), force_position: false))
+
+				//using (var window = GUI.Window.Standalone("Siege2", position: window_pos, size: new Vector2(650, 540), pivot: new Vector2(0.50f, 0.00f), padding: new(6, 6), force_position: false))
+				using (var widget = Sidebar.Widget.New("siege.attackers", "Siege", new Sprite(GUI.tex_icons_widget, 16, 16, 3, 0), new Vector2(650, 540), lockable: false, order: 5.00f, flags: Sidebar.Widget.Flags.Align_Right))
 				{
-					this.StoreCurrentWindowTypeID();
-					if (window.show)
+					//this.StoreCurrentWindowTypeID();
+					//if (window.show)
+					if (widget.state_flags.HasAny(Sidebar.Widget.StateFlags.Show))
 					{
 						GUI.DrawWindowBackground(GUI.tex_window_menu);
 
-						using (GUI.Group.New(size: GUI.GetRemainingSpace(), padding: new(4)))
+						using (GUI.Group.New(size: GUI.GetAvailableSize(), padding: new(4)))
 						{
 							ref var region = ref Client.GetRegion();
 							ref var world = ref Client.GetWorld();
@@ -563,12 +566,12 @@ namespace TC2.Siege
 							}
 
 							var h_faction = g_siege_state.faction_attackers;
-							var total_count = region.GetTotalTagCount("kobold", "dead");
+							//var total_count = region.GetTotalTagCount("kobold", "dead");
 
 							//GUI.Title($"{this.g_siege_state.faction_defenders.id}");
-							GUI.Title($"{total_count}/{this.g_siege.max_npc_count} kobolds");
+							//GUI.Title($"{total_count}/{this.g_siege.max_npc_count} kobolds");
 
-							using (var scrollbox = GUI.Scrollbox.New("scroll.spawns", size: new(GUI.GetRemainingWidth() - 100, 150)))
+							using (var scrollbox = GUI.Scrollbox.New("scroll.spawns", size: new(GUI.GetRemainingWidth() - 300, 150)))
 							{
 								foreach (ref var row in region.IterateQuery<Region.GetSpawnsQuery>())
 								{
@@ -582,7 +585,7 @@ namespace TC2.Siege
 												{
 													group_row.DrawBackground(GUI.tex_panel);
 
-													GUI.TitleCentered(entity.GetFullName(), size: 16, pivot: new(0.00f, 0.00f), offset: new(6, 2));
+													GUI.TitleCentered(entity.GetFullName(), size: 20, pivot: new(0.00f, 0.50f), offset: new(6, 0));
 
 													var selected = ref_selected_dormitory == entity;
 													if (GUI.Selectable3("select", group_row.GetOuterRect(), selected))
@@ -682,13 +685,29 @@ namespace TC2.Siege
 
 										using (var group_title = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32), padding: new(4)))
 										{
-											GUI.TitleCentered(ent_dormitory.GetFullName(), size: 24, pivot: new(0.00f, 0.00f), offset: new(6, 2));
+											//GUI.TitleCentered(ent_dormitory.GetFullName(), size: 24, pivot: new(0.00f, 0.00f), offset: new(6, 2));
 										}
 
 										GUI.SeparatorThick();
 
 										if (character_data.IsNotNull())
 										{
+											using (var group_kits = GUI.Group.New(size: GUI.GetRemainingSpace(y: -40)))
+											{
+												GUI.DrawBackground(GUI.tex_panel, group_kits.GetOuterRect(), new(8, 8, 8, 8));
+
+												using (var scrollable = GUI.Scrollbox.New("kits", size: GUI.GetRemainingSpace(), padding: new(4, 4), force_scrollbar: true))
+												{
+													if (character_data.IsNotNull())
+													{
+														foreach (var h_kit in character_data.kits)
+														{
+															Dormitory.DrawKit(in h_kit, true, true, force_readonly: true);
+														}
+													}
+												}
+											}
+
 											if (GUI.DrawButton("Spawn", size: new(GUI.GetRemainingWidth(), 40)))
 											{
 												var rpc = new Siege.DEV_SpawnUnitRPC()

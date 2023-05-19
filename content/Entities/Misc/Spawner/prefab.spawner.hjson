@@ -98,7 +98,7 @@ selection:
 
 }
 
-siege.planner:
+siege.coordinator:
 {
 
 }
@@ -118,7 +118,7 @@ dormitory:
 {
 	species: "kobold"
 	kit_default: "kobold"
-	flags: no_hiring
+	flags: no_hiring, no_repopulate
 	kits_max: 3
 	characters_capacity: 16
 	characters_initial_count: 4
@@ -147,4 +147,9 @@ armory:
 shipment:
 {
 	flags: keep_items, no_gui, allow_deposit, allow_withdraw
+}
+
+stockpile:
+{
+	
 }

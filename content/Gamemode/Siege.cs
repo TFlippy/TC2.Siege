@@ -477,7 +477,7 @@ namespace TC2.Siege
 
 								sync |= true;
 
-								//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
+								//Notification.Push(ref region, $"Group of {coordinator.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
 								//Notification.Push(ref region, $"Wave #{g_siege_state.wave_current}!", Color32BGRA.Red, lifetime: 30.00f, "ui.alert.11", volume: 0.60f, pitch: 0.80f);
 								Notification.Push(ref region, $"Wave #{g_siege_state.wave_current}!", Color32BGRA.Red, lifetime: 30.00f, "siren.00", volume: 0.20f, pitch: 1.00f, send_type: Net.SendType.Reliable);
 							}
