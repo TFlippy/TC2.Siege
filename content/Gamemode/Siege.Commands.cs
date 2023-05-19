@@ -13,7 +13,7 @@ namespace TC2.Siege
 			ref var player = ref context.GetPlayer();
 			var random = XorRandom.New(true);
 
-			var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner");
+			var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner", h_faction: faction_id.GetValueOrDefault());
 			Dormitory.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
 			{
 				SetKoboldLoadout(ent);
@@ -32,7 +32,7 @@ namespace TC2.Siege
 			ref var player = ref context.GetPlayer();
 			var random = XorRandom.New(true);
 
-			var h_character = Dormitory.CreateCharacter(ref region, ref random, "giant.artillerist");
+			var h_character = Dormitory.CreateCharacter(ref region, ref random, "giant.artillerist", h_faction: faction_id.GetValueOrDefault());
 			Dormitory.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
 			{
 				SetGiantLoadout(ent);
@@ -68,18 +68,18 @@ namespace TC2.Siege
 				ref var region = ref ent_vehicle.GetRegion();
 				var random = XorRandom.New(true);
 
-				var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner");
+				var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner", h_faction: h_faction_tmp);
 				Dormitory.SpawnCharacter(ref region, h_character, pos_tmp, h_faction: h_faction_tmp).ContinueWith((ent_kobold) =>
 				{
 					ref var region = ref ent_vehicle.GetRegion();
 
 					//SetKoboldLoadout(ent_kobold);
 
-					ref var ai = ref ent_kobold.GetComponent<AI.Data>();
-					if (!ai.IsNull())
-					{
-						ai.stance = AI.Stance.Aggressive;
-					}
+					//ref var ai = ref ent_kobold.GetComponent<AI.Data>();
+					//if (!ai.IsNull())
+					//{
+					//	ai.stance = AI.Stance.Aggressive;
+					//}
 
 					ref var vehicle = ref ent_vehicle.GetComponent<Vehicle.Data>();
 					if (vehicle.IsNotNull())
@@ -114,11 +114,11 @@ namespace TC2.Siege
 
 					//SetKoboldLoadout(ent_kobold);
 
-					ref var ai = ref ent_kobold.GetComponent<AI.Data>();
-					if (!ai.IsNull())
-					{
-						ai.stance = AI.Stance.Aggressive;
-					}
+					//ref var ai = ref ent_kobold.GetComponent<AI.Data>();
+					//if (!ai.IsNull())
+					//{
+					//	ai.stance = AI.Stance.Aggressive;
+					//}
 
 					ref var vehicle = ref ent_vehicle.GetComponent<Vehicle.Data>();
 					if (vehicle.IsNotNull())

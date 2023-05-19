@@ -6,6 +6,7 @@ namespace TC2.Siege
 {
 	public static partial class Siege
 	{
+		// TODO: rename to Coordinator
 		[IComponent.Data(Net.SendType.Unreliable)]
 		public partial struct Planner: IComponent
 		{
@@ -53,6 +54,67 @@ namespace TC2.Siege
 			{
 
 			}
+		}
+
+		public partial struct DEV_SpawnUnitRPC: Net.IRPC<Dormitory.Data>
+		{
+			public ICharacter.Handle h_character;
+			public FixedArray4<IKit.Handle> kits;
+			public Entity ent_squad;
+
+#if SERVER
+			public void Invoke(ref NetConnection connection, Entity entity, ref Dormitory.Data data)
+			{
+				ref var region = ref connection.GetRegion();
+				ref var player = ref connection.GetPlayer();
+				var random = XorRandom.New(true);
+
+				if (region.IsNotNull() && player.IsNotNull())
+				{
+					var ent_squad_tmp = this.ent_squad;
+
+					ref var transform = ref entity.GetComponent<Transform.Data>();
+					if (transform.IsNotNull())
+					{
+						if (Dormitory.TryGenerateKits(ref data, ref random, this.h_character))
+						{
+							App.WriteLine("ok");
+						}
+
+						Dormitory.SpawnCharacterWithKits(ref region, position: transform.position, ent_dormitory: entity, h_character: this.h_character, kits: in this.kits, h_faction: player.faction_id).ContinueWith((ent_unit) =>
+						{
+							ent_unit.AddRel<Squad.Relation>(ent_squad_tmp);
+						});
+					}
+				}
+			}
+#endif
+		}
+
+		public partial struct DEV_BuyUnitRPC: Net.IRPC<Dormitory.Data>
+		{
+			public IOrigin.Handle h_origin;
+
+#if SERVER
+			public void Invoke(ref NetConnection connection, Entity entity, ref Dormitory.Data data)
+			{
+				ref var region = ref connection.GetRegion();
+				ref var player = ref connection.GetPlayer();
+				var random = XorRandom.New(true);
+
+				if (region.IsNotNull() && player.IsNotNull())
+				{
+					var span_characters = data.GetCharacterSpan();
+					if (span_characters.TryGetEmptyIndex(out var index))
+					{
+						var h_character = Dormitory.CreateCharacter(ref region, ref random, this.h_origin, h_faction: player.faction_id);
+						span_characters[index] = h_character;
+
+						data.Sync(entity, true);
+					}
+				}
+			}
+#endif
 		}
 
 #if SERVER
@@ -389,11 +451,11 @@ namespace TC2.Siege
 				//App.WriteLine($"add bounty {bounty_new.rewards[0].type} {bounty_new.rewards[0].amount}");
 			}
 
-			ref var ai = ref ent_kobold.GetComponent<AI.Data>();
-			if (!ai.IsNull())
-			{
-				ai.stance = AI.Stance.Aggressive;
-			}
+			//ref var ai = ref ent_kobold.GetComponent<AI.Data>();
+			//if (!ai.IsNull())
+			//{
+			//	ai.stance = AI.Stance.Aggressive;
+			//}
 
 			foreach (var h_inventory in ent_kobold.GetInventories())
 			{
@@ -530,11 +592,11 @@ namespace TC2.Siege
 				//App.WriteLine($"add bounty {bounty_new.rewards[0].type} {bounty_new.rewards[0].amount}");
 			}
 
-			ref var ai = ref ent_hoob.GetComponent<AI.Data>();
-			if (!ai.IsNull())
-			{
-				ai.stance = AI.Stance.Aggressive;
-			}
+			//ref var ai = ref ent_hoob.GetComponent<AI.Data>();
+			//if (!ai.IsNull())
+			//{
+			//	ai.stance = AI.Stance.Aggressive;
+			//}
 
 			foreach (var h_inventory in ent_hoob.GetInventories())
 			{
@@ -650,7 +712,9 @@ namespace TC2.Siege
 
 		[ISystem.Update(ISystem.Mode.Single, interval: 0.10f)]
 		public static void OnUpdate(ref Region.Data region, ref XorRandom random, ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform,
-		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state, [Source.Owned, Optional] in Faction.Data faction)
+		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Planner planner, [Source.Owned] ref Stockpile.Data stockpile,
+		[Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state,
+		[Source.Owned, Optional] in Faction.Data faction)
 		{
 			if (Constants.World.enable_npc_spawning && Constants.World.enable_ai && g_siege_state.status == Gamemode.Status.Running && g_siege_state.flags.HasAny(Siege.Gamemode.Flags.Active))
 			{
@@ -669,6 +733,22 @@ namespace TC2.Siege
 					//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f);
 					Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f, send_type: Net.SendType.Reliable);
 
+					if (!stockpile.h_stockpile.IsValid())
+					{
+						var identifier = Asset.GenerateRandomIdentifier();
+						App.WriteLine(identifier);
+
+						var stockpile_data = new IStockpile.Data();
+						stockpile_data.name = "Stuffpile";
+						stockpile_data.items = new Shipment.Item[64];
+
+						var asset = IStockpile.Database.RegisterOrUpdate(identifier, null, scope: Asset.Scope.Region, region_id: region.GetID(), data: ref stockpile_data);
+						asset.Sync();
+
+						stockpile.h_stockpile = asset;
+						stockpile.Sync(entity, true);
+					}
+
 					if (!planner.ref_squad_defense.IsValid())
 					{
 						region.SpawnPrefab("squad", position: transform.position, faction_id: faction.id).ContinueWith((ent_squad) =>
@@ -677,9 +757,9 @@ namespace TC2.Siege
 							if (squad.IsNotNull())
 							{
 								squad.color = 0xff1cc29a;
-								squad.flags.SetFlag(Commandable.OrderFlags.Hold, true);
-								squad.flags.SetFlag(Commandable.OrderFlags.Wander, false);
-								squad.order_type = Commandable.OrderType.Defend;
+								//squad.flags.SetFlag(Commandable.OrderFlags.Hold, true);
+								//squad.flags.SetFlag(Commandable.OrderFlags.Wander, false);
+								//squad.order_type = Commandable.OrderType.Defend;
 								squad.Sync(ent_squad, true);
 							}
 
@@ -706,9 +786,9 @@ namespace TC2.Siege
 							if (squad.IsNotNull())
 							{
 								squad.color = 0xffff2e1a;
-								squad.flags.SetFlag(Commandable.OrderFlags.Hold, false);
-								squad.flags.SetFlag(Commandable.OrderFlags.Wander, true);
-								squad.order_type = Commandable.OrderType.Capture;
+								//squad.flags.SetFlag(Commandable.OrderFlags.Hold, false);
+								//squad.flags.SetFlag(Commandable.OrderFlags.Wander, true);
+								//squad.order_type = Commandable.OrderType.Capture;
 								squad.Sync(ent_squad, true);
 							}
 
@@ -735,9 +815,9 @@ namespace TC2.Siege
 							if (squad.IsNotNull())
 							{
 								squad.color = 0xffffcb00;
-								squad.flags.SetFlag(Commandable.OrderFlags.Hold, true);
-								squad.flags.SetFlag(Commandable.OrderFlags.Wander, true);
-								squad.order_type = Commandable.OrderType.Attack;
+								//squad.flags.SetFlag(Commandable.OrderFlags.Hold, true);
+								//squad.flags.SetFlag(Commandable.OrderFlags.Wander, true);
+								//squad.order_type = Commandable.OrderType.Attack;
 								squad.Sync(ent_squad, true);
 							}
 
@@ -814,19 +894,19 @@ namespace TC2.Siege
 										var ent_target = h_target_transform.entity;
 										var target_position = h_target_transform.data.position;
 
-										ref var squad_front = ref planner.ref_squad_assault.GetValueOrNullRef();
-										if (squad_front.IsNotNull())
+										ref var squad_assault = ref planner.ref_squad_assault.GetValueOrNullRef();
+										if (squad_assault.IsNotNull())
 										{
-											squad_front.position_a = target_position;
-											squad_front.position_b = target_position;
+											squad_assault.position_a = target_position;
+											squad_assault.position_b = target_position;
 
-											squad_front.ent_target = ent_target;
-											squad_front.t_last_order = region.GetWorldTime();
+											squad_assault.ent_target = ent_target;
+											squad_assault.t_last_order = region.GetWorldTime();
 
-											squad_front.order_type = Commandable.OrderType.Capture;
-											squad_front.flags = Commandable.OrderFlags.None;
+											//squad_front.order_type = Commandable.OrderType.Capture;
+											//squad_front.flags = Commandable.OrderFlags.None;
 
-											squad_front.Sync(planner.ref_squad_assault.entity, true);
+											squad_assault.Sync(planner.ref_squad_assault.entity, true);
 										}
 
 										var arg = new GetAllUnitsQueryArgs(entity, ent_target, faction.id, transform.position, target_position, 0, planner.wave_size_rem, default);
@@ -908,12 +988,12 @@ namespace TC2.Siege
 										{
 											var ent_squad_front = planner.ref_squad_assault.entity;
 
-											var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner");
-											Dormitory.SpawnCharacter(ref region, h_character, pos_spawn + new Vector2(random.NextFloatRange(-5, 5), 0.00f), h_faction: faction.id).ContinueWith((ent) =>
-											{
-												SetKoboldLoadout(ent, weapon_mult: weapon_mult, armor_mult: armor_mult);
-												ent.AddRel<Squad.Relation>(ent_squad_front);
-											});
+											//var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner");
+											//Dormitory.SpawnCharacter(ref region, h_character, pos_spawn + new Vector2(random.NextFloatRange(-5, 5), 0.00f), h_faction: faction.id).ContinueWith((ent) =>
+											//{
+											//	SetKoboldLoadout(ent, weapon_mult: weapon_mult, armor_mult: armor_mult);
+											//	ent.AddRel<Squad.Relation>(ent_squad_front);
+											//});
 
 
 											//var ent_spawner = entity;

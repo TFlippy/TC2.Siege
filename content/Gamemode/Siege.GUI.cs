@@ -540,7 +540,7 @@ namespace TC2.Siege
 			public void Draw()
 			{
 				var window_pos = (GUI.CanvasSize * new Vector2(0.50f, 0.00f)) + new Vector2(0, 80);
-				using (var window = GUI.Window.Standalone("Siege2", position: window_pos, size: new Vector2(600, 500), pivot: new Vector2(0.50f, 0.00f), padding: new(6, 6), force_position: false))
+				using (var window = GUI.Window.Standalone("Siege2", position: window_pos, size: new Vector2(650, 540), pivot: new Vector2(0.50f, 0.00f), padding: new(6, 6), force_position: false))
 				{
 					this.StoreCurrentWindowTypeID();
 					if (window.show)
@@ -552,6 +552,15 @@ namespace TC2.Siege
 							ref var region = ref Client.GetRegion();
 							ref var world = ref Client.GetWorld();
 							ref var game_info = ref Client.GetGameInfo();
+							ref var player = ref Client.GetPlayer();
+
+							var ent_selected_squad = default(Entity);
+
+							ref var selection = ref player.ent_player.GetComponent<Selection.Data>();
+							if (selection.IsNotNull())
+							{
+								ent_selected_squad = selection.ref_selected_squad;
+							}
 
 							var h_faction = g_siege_state.faction_attackers;
 							var total_count = region.GetTotalTagCount("kobold", "dead");
@@ -593,13 +602,13 @@ namespace TC2.Siege
 							{
 								ref var selected_dormitory = ref ref_selected_dormitory.GetValueOrNullRef();
 
-								using (var group_left = GUI.Group.New(size: GUI.GetRemainingSpace(x: -250)))
+								using (var group_left = GUI.Group.New(size: GUI.GetRemainingSpace(x: -280)))
 								{
 									using (var scrollbox = GUI.Scrollbox.New("scroll.characters", size: GUI.GetRemainingSpace()))
 									{
 										if (selected_dormitory.IsNotNull())
 										{
-											var characters_span = selected_dormitory.characters.Slice(selected_dormitory.characters_capacity);
+											var characters_span = selected_dormitory.GetCharacterSpan();
 
 											var index = 0u;
 											foreach (ref var h_character in characters_span)
@@ -610,18 +619,34 @@ namespace TC2.Siege
 												{
 													using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 40)))
 													{
-														group_row.DrawBackground(GUI.tex_panel);
-
-														Dormitory.DormitoryGUI.DrawCharacterSmall(h_character);
-
-														//GUI.TitleCentered(entity.GetFullName(), size: 16, pivot: new(0.00f, 0.00f), offset: new(6, 2));
-
-														//var selected = ref_selected_dormitory == entity;
-														var selected = index == dormitory_selected_index;
-														if (GUI.Selectable3("select", group_row.GetOuterRect(), selected))
+														using (var group_row_left = GUI.Group.New(size: GUI.GetRemainingSpace(x: -64)))
 														{
-															dormitory_selected_index = selected ? null : index;
-															//ref_selected_dormitory = selected ? default : entity;
+															group_row_left.DrawBackground(GUI.tex_panel);
+
+															Dormitory.DormitoryGUI.DrawCharacterSmall(h_character);
+
+															//GUI.TitleCentered(entity.GetFullName(), size: 16, pivot: new(0.00f, 0.00f), offset: new(6, 2));
+
+															//var selected = ref_selected_dormitory == entity;
+															var selected = index == dormitory_selected_index;
+															if (GUI.Selectable3("select", group_row_left.GetOuterRect(), selected))
+															{
+																dormitory_selected_index = selected ? null : index;
+																//ref_selected_dormitory = selected ? default : entity;
+															}
+														}
+
+														GUI.SameLine();
+
+														var is_valid = h_character.IsValid();
+														if (GUI.DrawButton("Spawn", size: GUI.GetRemainingSpace(), enabled: is_valid, color: is_valid ? GUI.col_button_ok : GUI.col_button))
+														{
+															var rpc = new Siege.DEV_SpawnUnitRPC()
+															{
+																h_character = h_character,
+																ent_squad = ent_selected_squad
+															};
+															rpc.Send(ref_selected_dormitory);
 														}
 													}
 
@@ -641,10 +666,85 @@ namespace TC2.Siege
 
 									if (selected_dormitory.IsNotNull())
 									{
+										var h_species_kobold = new ISpecies.Handle("kobold");
+										var characters_span = selected_dormitory.GetCharacterSpan();
+
+										var h_selected_character = characters_span.GetAtIndexOrDefault(dormitory_selected_index ?? uint.MaxValue);
+										ref var character_data = ref h_selected_character.GetData();
+
+										Span<IOrigin.Handle> origins = stackalloc IOrigin.Handle[16];
+										IOrigin.Database.GetHandlesFiltered(ref origins, in h_species_kobold, (IOrigin.Definition d_origin, in ISpecies.Handle h_species) =>
+										{
+											return d_origin.data.species == h_species;
+										});
+
 										var ent_dormitory = ref_selected_dormitory.entity;
-										GUI.TitleCentered(ent_dormitory.GetName(), size: 24, pivot: new(0.00f, 0.00f), offset: new(6, 2));
 
+										using (var group_title = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32), padding: new(4)))
+										{
+											GUI.TitleCentered(ent_dormitory.GetFullName(), size: 24, pivot: new(0.00f, 0.00f), offset: new(6, 2));
+										}
 
+										GUI.SeparatorThick();
+
+										if (character_data.IsNotNull())
+										{
+											if (GUI.DrawButton("Spawn", size: new(GUI.GetRemainingWidth(), 40)))
+											{
+												var rpc = new Siege.DEV_SpawnUnitRPC()
+												{
+													h_character = h_selected_character,
+													ent_squad = ent_selected_squad
+												};
+												rpc.Send(ent_dormitory);
+											}
+										}
+										else
+										{
+											using (var scrollbox = GUI.Scrollbox.New("scroll.origins", size: GUI.GetRemainingSpace()))
+											{
+												foreach (var h_origin in origins)
+												{
+													ref var origin_data = ref h_origin.GetData();
+													if (origin_data.IsNotNull())
+													{
+														using (GUI.ID.Push(h_origin))
+														{
+															using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 40)))
+															{
+																group_row.DrawBackground(GUI.tex_panel);
+
+																//Dormitory.DormitoryGUI.DrawCharacterSmall(h_character);
+
+																GUI.TitleCentered(origin_data.name, size: 16, pivot: new(0.00f, 0.00f), offset: new(6, 2));
+
+																//var selected = ref_selected_dormitory == entity;
+																//var selected = false;
+																//if (GUI.Selectable3("select", group_row.GetOuterRect(), selected))
+																//{
+																//	//dormitory_selected_index = selected ? null : index;
+																//	//ref_selected_dormitory = selected ? default : entity;
+																//}
+
+																//GUI.SameLine();
+
+																using (var group_button = group_row.Split(size: new(64, GUI.GetRemainingHeight()), align_x: GUI.AlignX.Right, align_y: GUI.AlignY.Center))
+																{
+																	if (GUI.DrawButton("Buy", size: GUI.GetRemainingSpace(), color: GUI.col_button_yellow))
+																	{
+																		var rpc = new Siege.DEV_BuyUnitRPC()
+																		{
+																			h_origin = h_origin
+																		};
+																		rpc.Send(ent_dormitory);
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
 									}
 								}
 							}
