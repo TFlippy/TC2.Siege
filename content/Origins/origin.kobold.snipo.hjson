@@ -13,6 +13,32 @@
 	kit_default: "null"
 	character_flags: criminal, military, armed, technician, poor, hunter, soldier, nomad, sedentary, outdoor, strong, evil, murderer, terrorist, lower_class
 	
+	kit_filter_primary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: weapon, gun, long_range
+			include: weapon, dangerous, heavy, gun, long_range, powerful
+			exclude: short_range
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_secondary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: weapon
+			include: weapon
+			exclude: primitive
+			weight: 1.000
+		}
+	}
+	
 	conditions:
 	{
 		weight_mult: 1.000

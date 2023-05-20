@@ -4,15 +4,15 @@
 	
 	flags: none
 	slot: secondary
-	categories: weapon, junk, melee, gun
+	categories: weapon, junk, melee, gun, short_range, weak
 	faction: "attackers"
 	species: "kobold"
 	
 	character_flags:
 	{
-		require: slave, unskilled, lowlife
-		include: slave, unskilled, lowlife, poor, insane, alcoholic, nomad, pest
-		exclude: technician
+		require: none
+		include: slave, unskilled, lowlife, poor
+		exclude: none
 		weight: 1.400
 	}
 	

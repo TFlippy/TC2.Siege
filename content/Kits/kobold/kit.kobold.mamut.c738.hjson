@@ -4,7 +4,7 @@
 	
 	flags: none
 	slot: primary
-	categories: weapon, dangerous, rare, heavy, gun
+	categories: weapon, dangerous, rare, heavy, gun, long_range, advanced, powerful
 	faction: "attackers"
 	species: "kobold"
 	

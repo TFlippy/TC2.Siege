@@ -4,15 +4,15 @@
 	
 	flags: none
 	slot: primary
-	categories: weapon, dangerous, rare, illegal, heavy, explosive, gun
+	categories: weapon, dangerous, rare, illegal, heavy, explosive, gun, short_range, advanced, powerful
 	faction: "attackers"
 	species: "kobold"
 	
 	character_flags:
 	{
-		require: construction, technician, insane, evil, terrorist
-		include: construction, technician, insane, evil, terrorist
-		exclude: slave
+		require: insane, evil, terrorist
+		include: construction, scientist, military, armed, technician, engineer, soldier, insane, arcane, evil, murderer, terrorist, fanatic
+		exclude: slave, unskilled
 		weight: 1.100
 	}
 	

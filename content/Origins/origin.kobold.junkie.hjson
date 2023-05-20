@@ -13,6 +13,32 @@
 	kit_default: "null"
 	character_flags: slave, criminal, unskilled, lowlife, poor, chemist, culinary, insane, alcoholic, nomad, pet, entertainer, illiterate, artist, feral, pest, animal, brawler, strong, junkie, thief, murderer, terrorist, fanatic, lower_class
 	
+	kit_filter_primary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: dangerous
+			include: weapon, dangerous, illegal, melee
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_secondary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: melee
+			include: melee, short_range
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
 	conditions:
 	{
 		weight_mult: 1.000

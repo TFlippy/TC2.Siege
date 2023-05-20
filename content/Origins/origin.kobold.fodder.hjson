@@ -13,6 +13,32 @@
 	kit_default: "null"
 	character_flags: slave, bureaucrat, criminal, unskilled, laborer, lowlife, poor, insane, alcoholic, nomad, pet, illiterate, pest, brawler, thief, lower_class
 	
+	kit_filter_primary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: none
+			include: tools, weapon, junk, melee, gun, primitive
+			exclude: rare, heavy, advanced
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_secondary:
+	{
+		chance: 0.500
+		
+		categories:
+		{
+			require: weapon, short_range, weak
+			include: weapon, junk, melee, gun
+			exclude: rare, heavy, advanced, powerful
+			weight: 1.000
+		}
+	}
+	
 	conditions:
 	{
 		weight_mult: 1.000

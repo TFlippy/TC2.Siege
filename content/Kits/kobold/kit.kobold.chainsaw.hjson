@@ -4,15 +4,15 @@
 	
 	flags: none
 	slot: primary
-	categories: tools, weapon, dangerous, heavy, melee
+	categories: tools, weapon, dangerous, heavy, melee, short_range, advanced, powerful, machine
 	faction: "attackers"
 	species: "kobold"
 	
 	character_flags:
 	{
 		require: none
-		include: farmer, laborer, technician, engineer, hunter, insane, outdoor, evil, murderer, terrorist, fanatic
-		exclude: sedentary
+		include: farmer, laborer, technician, engineer, hunter, insane, brawler, outdoor, strong, evil, murderer, terrorist, fanatic
+		exclude: none
 		weight: 1.300
 	}
 	

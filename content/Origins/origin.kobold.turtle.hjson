@@ -13,6 +13,32 @@
 	kit_default: "null"
 	character_flags: construction, criminal, military, laborer, armed, technician, engineer, poor, miner, culinary, soldier, insane, alcoholic, nomad, pet, entertainer, illiterate, brawler, strong, junkie, fanatic, lower_class
 	
+	kit_filter_primary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: weapon, short_range
+			include: weapon, dangerous, heavy, powerful
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_secondary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: weapon, short_range
+			include: weapon, short_range
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
 	conditions:
 	{
 		weight_mult: 1.000

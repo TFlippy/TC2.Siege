@@ -4,7 +4,7 @@
 	
 	flags: none
 	slot: secondary
-	categories: tools, weapon, dangerous, melee
+	categories: tools, weapon, melee, short_range
 	faction: "attackers"
 	species: "kobold"
 	

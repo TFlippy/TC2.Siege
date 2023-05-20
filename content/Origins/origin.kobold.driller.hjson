@@ -13,6 +13,32 @@
 	kit_default: "null"
 	character_flags: slave, construction, laborer, civillian, armed, lowlife, technician, engineer, poor, miner, insane, alcoholic, nomad, brawler, strong, lower_class
 	
+	kit_filter_primary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: tools, weapon, dangerous, heavy, melee, powerful, machine
+			include: tools, weapon, dangerous, heavy, melee
+			exclude: junk, long_range, weak
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_secondary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: short_range
+			include: tools, weapon, dangerous
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
 	conditions:
 	{
 		weight_mult: 1.000

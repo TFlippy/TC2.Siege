@@ -13,6 +13,32 @@
 	kit_default: "null"
 	character_flags: construction, scientist, armed, lowlife, technician, engineer, poor, miner, chemist, soldier, insane, alcoholic, nomad, evil, terrorist, fanatic, lower_middle_class
 	
+	kit_filter_primary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: weapon, explosive
+			include: weapon, dangerous, heavy, explosive, melee, gun, powerful
+			exclude: none
+			weight: 2.000
+		}
+	}
+	
+	kit_filter_secondary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: weapon
+			include: tools, weapon, dangerous, explosive, melee, gun
+			exclude: rare, heavy
+			weight: 1.000
+		}
+	}
+	
 	conditions:
 	{
 		weight_mult: 1.000

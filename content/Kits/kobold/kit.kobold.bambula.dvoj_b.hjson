@@ -4,14 +4,14 @@
 	
 	flags: none
 	slot: primary
-	categories: weapon, dangerous, illegal, gun
+	categories: weapon, dangerous, illegal, gun, advanced, powerful
 	faction: "attackers"
 	species: "kobold"
 	
 	character_flags:
 	{
-		require: strong, military, brawler
-		include: military, technician, engineer, soldier, brawler, strong, terrorist, murderer
+		require: military, brawler, strong
+		include: military, technician, engineer, soldier, brawler, strong, murderer, terrorist
 		exclude: sedentary
 		weight: 2.200
 	}

@@ -4,15 +4,15 @@
 	
 	flags: none
 	slot: primary
-	categories: weapon, dangerous, gun
+	categories: weapon, gun
 	faction: "attackers"
 	species: "kobold"
 	
 	character_flags:
 	{
 		require: none
-		include: criminal, military, armed, technician, engineer, soldier
-		exclude: sedentary
+		include: criminal, armed, lowlife, poor
+		exclude: none
 		weight: 1.200
 	}
 	
