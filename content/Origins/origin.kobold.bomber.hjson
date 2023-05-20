@@ -11,7 +11,7 @@
 	gender_ratio: 0.100
 	species: "kobold"
 	kit_default: "null"
-	character_flags: construction, scientist, armed, lowlife, technician, engineer, poor, miner, chemist, soldier, insane, alcoholic, nomad, evil, terrorist, fanatic, lower_middle_class
+	character_flags: construction, scientist, armed, lowlife, technician, engineer, poor, miner, chemist, soldier, insane, alcoholic, nomad, evil, terrorist, fanatic, lower_middle_class, strong
 	
 	kit_filter_primary:
 	{
@@ -33,8 +33,34 @@
 		categories:
 		{
 			require: weapon
-			include: tools, weapon, dangerous, explosive, melee, gun
-			exclude: rare, heavy
+			include: tools, weapon, dangerous, explosive, melee, gun, defensive, armor
+			exclude: rare
+			weight: 1.000
+		}
+	}
+
+	kit_filter_head:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: heavy
+			include: armor, heavy
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_chest:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: heavy
+			include: armor, heavy
+			exclude: none
 			weight: 1.000
 		}
 	}

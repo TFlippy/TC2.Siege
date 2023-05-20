@@ -1,19 +1,19 @@
 ﻿{
-	name: "Smrtec-A24"
+	name: "Bazooka"
 	desc: ""
 	
 	flags: none
 	slot: primary
-	categories: weapon, dangerous, rare, illegal, heavy, explosive, gun, short_range, advanced, powerful
+	categories: weapon, dangerous, heavy, explosive, gun, short_range, powerful
 	faction: "attackers"
 	species: "kobold"
 	
 	character_flags:
 	{
-		require: insane, evil, terrorist
-		include: construction, scientist, military, armed, technician, engineer, soldier, insane, arcane, evil, murderer, terrorist, fanatic
+		require: insane, terrorist
+		include: construction, armed, technician, miner, insane, strong, terrorist, fanatic
 		exclude: slave, unskilled
-		weight: 0.200
+		weight: 1.100
 	}
 	
 	amount_multiplier_min: 1.000
@@ -25,14 +25,14 @@
 		[
 			{
 				type: prefab
-				prefab: "bp.smrtec.a24"
+				prefab: "bazooka"
 				quantity: 1.000
 				flags: pickup, despawn
 			}
 			{
 				type: resource
-				material: "ammo_sg.grenade"
-				quantity: 20.000
+				material: "ammo_rocket"
+				quantity: 4.000
 				flags: none
 			}
 			null

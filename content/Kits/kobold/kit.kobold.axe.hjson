@@ -1,19 +1,19 @@
 ﻿{
-	name: "Drill"
+	name: "Axe"
 	desc: ""
 	
 	flags: none
-	slot: primary
-	categories: armor, tools, weapon, dangerous, heavy, melee, short_range, advanced, powerful, machine, defensive
+	slot: secondary
+	categories: tools, weapon, melee, short_range
 	faction: "attackers"
 	species: "kobold"
 	
 	character_flags:
 	{
-		require: technician, miner, strong
-		include: construction, laborer, technician, engineer, miner, strong
-		exclude: sedentary
-		weight: 1.900
+		require: none
+		include: laborer, hunter, brawler
+		exclude: none
+		weight: 1.300
 	}
 	
 	amount_multiplier_min: 1.000
@@ -25,7 +25,7 @@
 		[
 			{
 				type: prefab
-				prefab: "drill"
+				prefab: "axe"
 				quantity: 1.000
 				flags: pickup, despawn
 			}

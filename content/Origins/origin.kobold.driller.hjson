@@ -38,6 +38,32 @@
 			weight: 1.000
 		}
 	}
+
+	kit_filter_head:
+	{
+		chance: 0.900
+		
+		categories:
+		{
+			require: none
+			include: armor, heavy
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_chest:
+	{
+		chance: 0.700
+		
+		categories:
+		{
+			require: none
+			include: armor
+			exclude: none
+			weight: 1.000
+		}
+	}
 	
 	conditions:
 	{

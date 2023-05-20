@@ -32,8 +32,34 @@
 		
 		categories:
 		{
-			require: weapon, short_range
-			include: weapon, short_range
+			require: armor, defensive
+			include: armor, weapon, heavy, short_range, defensive
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_head:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: heavy
+			include: armor, heavy
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_chest:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: none
+			include: armor, heavy
 			exclude: none
 			weight: 1.000
 		}

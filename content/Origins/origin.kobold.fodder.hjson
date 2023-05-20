@@ -28,7 +28,7 @@
 	
 	kit_filter_secondary:
 	{
-		chance: 0.500
+		chance: 0.700
 		
 		categories:
 		{
@@ -38,7 +38,20 @@
 			weight: 1.000
 		}
 	}
-	
+
+	kit_filter_head:
+	{
+		chance: 0.300
+		
+		categories:
+		{
+			require: weak
+			include: armor, weak
+			exclude: none
+			weight: 1.000
+		}
+	}
+
 	conditions:
 	{
 		weight_mult: 1.000
