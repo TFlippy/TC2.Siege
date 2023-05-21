@@ -542,7 +542,7 @@ namespace TC2.Siege
 				var window_pos = (GUI.CanvasSize * new Vector2(0.50f, 0.00f)) + new Vector2(0, 80);
 
 				//using (var window = GUI.Window.Standalone("Siege2", position: window_pos, size: new Vector2(650, 540), pivot: new Vector2(0.50f, 0.00f), padding: new(6, 6), force_position: false))
-				using (var widget = Sidebar.Widget.New("siege.attackers", "Siege", new Sprite(GUI.tex_icons_widget, 16, 16, 3, 0), new Vector2(650, 540), lockable: false, order: 5.00f, flags: Sidebar.Widget.Flags.Align_Right))
+				using (var widget = Sidebar.Widget.New("siege.attackers", "Siege", new Sprite(GUI.tex_icons_widget, 16, 16, 3, 0), new Vector2(600, 400), lockable: false, order: 5.00f, flags: Sidebar.Widget.Flags.Align_Right))
 				{
 					//this.StoreCurrentWindowTypeID();
 					//if (window.show)
@@ -571,41 +571,15 @@ namespace TC2.Siege
 							//GUI.Title($"{this.g_siege_state.faction_defenders.id}");
 							//GUI.Title($"{total_count}/{this.g_siege.max_npc_count} kobolds");
 
-							using (var scrollbox = GUI.Scrollbox.New("scroll.spawns", size: new(GUI.GetRemainingWidth() - 300, 150)))
-							{
-								foreach (ref var row in region.IterateQuery<Region.GetSpawnsQuery>())
-								{
-									row.Run((ISystem.Info info, Entity entity, [Source.Owned] in Spawn.Data spawn, [Source.Owned, Optional] in Nameable.Data nameable, [Source.Owned] in Transform.Data transform, [Source.Owned, Optional] in Faction.Data faction) =>
-									{
-										if (faction.id == h_faction)
-										{
-											using (GUI.ID.Push(entity))
-											{
-												using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32)))
-												{
-													group_row.DrawBackground(GUI.tex_panel);
-
-													GUI.TitleCentered(entity.GetFullName(), size: 20, pivot: new(0.00f, 0.50f), offset: new(6, 0));
-
-													var selected = ref_selected_dormitory == entity;
-													if (GUI.Selectable3("select", group_row.GetOuterRect(), selected))
-													{
-														ref_selected_dormitory = selected ? default : entity;
-													}
-												}
-											}
-										}
-									});
-								}
-							}
+							
 
 							GUI.SeparatorThick();
 
-							using (var group_bottom = GUI.Group.New(size: GUI.GetRemainingSpace()))
+							//using (var group_bottom = GUI.Group.New(size: GUI.GetRemainingSpace()))
 							{
 								ref var selected_dormitory = ref ref_selected_dormitory.GetValueOrNullRef();
 
-								using (var group_left = GUI.Group.New(size: GUI.GetRemainingSpace(x: -280)))
+								using (var group_left = GUI.Group.New(size: new(320, GUI.GetRemainingHeight())))
 								{
 									using (var scrollbox = GUI.Scrollbox.New("scroll.characters", size: GUI.GetRemainingSpace()))
 									{
@@ -667,6 +641,36 @@ namespace TC2.Siege
 								{
 									group_right.DrawBackground(GUI.tex_window);
 
+									using (var scrollbox = GUI.Scrollbox.New("scroll.spawns", size: new(GUI.GetRemainingWidth(), 96)))
+									{
+										foreach (ref var row in region.IterateQuery<Region.GetSpawnsQuery>())
+										{
+											row.Run((ISystem.Info info, Entity entity, [Source.Owned] in Spawn.Data spawn, [Source.Owned, Optional] in Nameable.Data nameable, [Source.Owned] in Transform.Data transform, [Source.Owned, Optional] in Faction.Data faction) =>
+											{
+												if (faction.id == h_faction)
+												{
+													using (GUI.ID.Push(entity))
+													{
+														using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32)))
+														{
+															group_row.DrawBackground(GUI.tex_panel);
+
+															GUI.TitleCentered(entity.GetFullName(), size: 20, pivot: new(0.00f, 0.50f), offset: new(6, 0));
+
+															var selected = ref_selected_dormitory == entity;
+															if (GUI.Selectable3("select", group_row.GetOuterRect(), selected))
+															{
+																ref_selected_dormitory = selected ? default : entity;
+															}
+														}
+													}
+												}
+											});
+										}
+									}
+
+									GUI.SeparatorThick();
+
 									if (selected_dormitory.IsNotNull())
 									{
 										var h_species_kobold = new ISpecies.Handle("kobold");
@@ -683,16 +687,14 @@ namespace TC2.Siege
 
 										var ent_dormitory = ref_selected_dormitory.entity;
 
-										using (var group_title = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32), padding: new(4)))
-										{
-											//GUI.TitleCentered(ent_dormitory.GetFullName(), size: 24, pivot: new(0.00f, 0.00f), offset: new(6, 2));
-										}
-
-										GUI.SeparatorThick();
+										//using (var group_title = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 32), padding: new(4)))
+										//{
+										//	//GUI.TitleCentered(ent_dormitory.GetFullName(), size: 24, pivot: new(0.00f, 0.00f), offset: new(6, 2));
+										//}
 
 										if (character_data.IsNotNull())
 										{
-											using (var group_kits = GUI.Group.New(size: GUI.GetRemainingSpace(y: -40)))
+											using (var group_kits = GUI.Group.New(size: GUI.GetRemainingSpace()))
 											{
 												GUI.DrawBackground(GUI.tex_panel, group_kits.GetOuterRect(), new(8, 8, 8, 8));
 
@@ -708,15 +710,15 @@ namespace TC2.Siege
 												}
 											}
 
-											if (GUI.DrawButton("Spawn", size: new(GUI.GetRemainingWidth(), 40)))
-											{
-												var rpc = new Siege.DEV_SpawnUnitRPC()
-												{
-													h_character = h_selected_character,
-													ent_squad = ent_selected_squad
-												};
-												rpc.Send(ent_dormitory);
-											}
+											//if (GUI.DrawButton("Spawn", size: new(GUI.GetRemainingWidth(), 40)))
+											//{
+											//	var rpc = new Siege.DEV_SpawnUnitRPC()
+											//	{
+											//		h_character = h_selected_character,
+											//		ent_squad = ent_selected_squad
+											//	};
+											//	rpc.Send(ent_dormitory);
+											//}
 										}
 										else
 										{
@@ -749,7 +751,7 @@ namespace TC2.Siege
 
 																using (var group_button = group_row.Split(size: new(64, GUI.GetRemainingHeight()), align_x: GUI.AlignX.Right, align_y: GUI.AlignY.Center))
 																{
-																	if (GUI.DrawButton("Buy", size: GUI.GetRemainingSpace(), color: GUI.col_button_yellow))
+																	if (GUI.DrawButton("Hire", size: GUI.GetRemainingSpace(), color: GUI.col_button_yellow))
 																	{
 																		var rpc = new Siege.DEV_BuyUnitRPC()
 																		{
@@ -757,6 +759,23 @@ namespace TC2.Siege
 																		};
 																		rpc.Send(ent_dormitory);
 																	}
+
+																	if (GUI.IsHoveringRect(group_button.GetOuterRect()))
+																	{
+																		using (var tooltip = GUI.Tooltip.New())
+																		{
+																			GUI.TextShaded("Hire this unit.");
+																		}
+																	}
+																}
+															}
+
+
+															if (!GUI.IsAnyTooltipVisible() && GUI.IsItemHovered())
+															{
+																using (var tooltip = GUI.Tooltip.New())
+																{
+
 																}
 															}
 														}
