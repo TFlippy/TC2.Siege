@@ -1,0 +1,39 @@
+{
+	name: "Helmet (Soldier)"
+	desc: ""
+	
+	flags: required
+	slot: head
+	categories: armor, defensive, heavy
+	faction: "defenders"
+	species: "human"
+	
+	character_flags:
+	{
+		require: none
+		include: none
+		exclude: medical
+		weight: 1.000
+	}
+
+	amount_multiplier_min: 1.000
+	amount_multiplier_max: 1.000
+	
+	shipment:
+	{
+		items:
+		[
+			{
+				type: prefab
+				prefab: "helmet.00"
+				quantity: 1.000
+				mass_per_unit: 0.000
+				flags: equip, despawn, no_consume
+			}
+			null
+			null
+			null
+		]
+		flags: dirty, unpack
+	}
+}

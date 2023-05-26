@@ -1,0 +1,43 @@
+﻿{
+	name: "Auto-Shotgun"
+	desc: ""
+	
+	flags: none
+	slot: primary
+	categories: weapon, gun, short_range, powerful, inaccurate
+	faction: "defenders"
+	species: "human"
+	
+	character_flags:
+	{
+		require: military, technician
+		include: military, technician
+		exclude: none
+		weight: 1.700
+	}
+	
+	amount_multiplier_min: 1.000
+	amount_multiplier_max: 1.000
+	
+	shipment:
+	{
+		items:
+		[
+			{
+				type: prefab
+				prefab: "auto_shotgun"
+				quantity: 1.000
+				flags: pickup, despawn
+			}
+			{
+				type: resource
+				material: "ammo_sg.buck"
+				quantity: 32.000
+				flags: none
+			}
+			null
+			null
+		]
+		flags: dirty, unpack
+	}
+}

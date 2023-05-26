@@ -1,0 +1,39 @@
+﻿{
+	name: "Dynamite"
+	desc: ""
+	
+	flags: none
+	slot: utility
+	categories: weapon, dangerous, explosive, powerful, destructive, small
+	faction: "defenders"
+	species: "human"
+	
+	character_flags:
+	{
+		require: none
+		include: engineer
+		exclude: none
+		weight: 1.100
+	}
+	
+	amount_multiplier_min: 1.000
+	amount_multiplier_max: 1.000
+	
+	shipment:
+	{
+		items:
+		[
+			{
+				type: prefab
+				prefab: "dynamite"
+				quantity: 4.000
+				max: 4.000
+				flags: none
+			}
+			null
+			null
+			null
+		]
+		flags: dirty, allow_withdraw, allow_deposit, storable
+	}
+}

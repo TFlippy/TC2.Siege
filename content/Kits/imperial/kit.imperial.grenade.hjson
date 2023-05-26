@@ -1,0 +1,39 @@
+﻿{
+	name: "Grenade"
+	desc: ""
+	
+	flags: none
+	slot: utility
+	categories: weapon, dangerous, explosive, powerful, destructive, small
+	faction: "defenders"
+	species: "human"
+	
+	character_flags:
+	{
+		require: none
+		include: soldier
+		exclude: none
+		weight: 1.100
+	}
+	
+	amount_multiplier_min: 1.000
+	amount_multiplier_max: 1.000
+	
+	shipment:
+	{
+		items:
+		[
+			{
+				type: prefab
+				prefab: "grenade"
+				quantity: 2.000
+				max: 2.000
+				flags: none
+			}
+			null
+			null
+			null
+		]
+		flags: dirty, allow_withdraw, allow_deposit, storable
+	}
+}
