@@ -1,4 +1,4 @@
-{
+﻿{
 	name: "Soldier"
 	desc:
 		'''
@@ -10,8 +10,73 @@
 	genders: male
 	gender_ratio: 0.000
 	species: "human"
-	kit_default: "soldier.armor"
-	character_flags: military, professional, armed, hunter, soldier, middle_class
+	kit_default: "null"
+	character_flags: military, armed, hunter, soldier, outdoor, strong, middle_class
+	
+	kit_filter_primary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: weapon, gun
+			include: weapon, dangerous, heavy, gun
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_secondary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: weapon
+			include: armor, weapon, melee, gun, defensive
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_head:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: armor, heavy
+			include: armor, heavy
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_chest:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: armor, heavy
+			include: armor, heavy
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_utility:
+	{
+		chance: 0.600
+		
+		categories:
+		{
+			require: none
+			include: none
+			exclude: none
+			weight: 1.000
+		}
+	}
 	
 	conditions:
 	{

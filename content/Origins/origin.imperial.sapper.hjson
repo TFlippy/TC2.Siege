@@ -1,17 +1,82 @@
-{
+﻿{
 	name: "Sapper"
 	desc:
 		'''
 		TODO: Desc
 		'''
 	
-	money: 50.000
+	money: 60.000
 	age: [18.000, 20.000, 22.000, 24.000, 35.000]
-	genders: male
-	gender_ratio: 0.000
+	genders: male, female
+	gender_ratio: 0.050
 	species: "human"
-	kit_default: "sapper.armor"
+	kit_default: "null"
 	character_flags: construction, military, professional, armed, technician, engineer, soldier, middle_class
+	
+	kit_filter_primary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: weapon
+			include: weapon, dangerous, heavy, explosive, gun, machine
+			exclude: none
+			weight: 2.000
+		}
+	}
+	
+	kit_filter_secondary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: none
+			include: tools, weapon, dangerous, explosive, gun, destructive
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_head:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: armor
+			include: armor
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_chest:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: armor
+			include: armor
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_utility:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: none
+			include: tools, explosive
+			exclude: none
+			weight: 1.000
+		}
+	}
 	
 	conditions:
 	{

@@ -1,4 +1,4 @@
-{
+﻿{
 	name: "Medic"
 	desc:
 		'''
@@ -10,8 +10,73 @@
 	genders: male, female
 	gender_ratio: 0.850
 	species: "human"
-	kit_default: "medic.armor"
+	kit_default: "null"
 	character_flags: educated, military, medical, professional, armed, chemist, soldier, middle_class
+	
+	kit_filter_primary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: weapon, gun
+			include: weapon, gun, long_range, defensive, small
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_secondary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: healing
+			include: defensive, healing
+			exclude: weapon, gun
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_head:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: armor
+			include: armor
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_chest:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: armor
+			include: armor
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_utility:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: drug
+			include: drug
+			exclude: none
+			weight: 1.000
+		}
+	}
 	
 	conditions:
 	{

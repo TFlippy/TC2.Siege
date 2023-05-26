@@ -2,7 +2,7 @@
 	name: "Turtle"
 	desc:
 		'''
-		TODO: Desc
+		Heavily-armored kobold to be used as cover.
 		'''
 	
 	money: 3.000

@@ -1,8 +1,8 @@
 ﻿{
-	name: "Driller"
+	name: "Rat"
 	desc:
 		'''
-		TODO: Desc
+		Tough kobold armed with heavy-duty equipment.
 		'''
 	
 	money: 3.000
