@@ -69,28 +69,9 @@ namespace TC2.Siege
 				ref var player = ref connection.GetPlayer();
 				var random = XorRandom.New(true);
 
-				if (region.IsNotNull() && player.IsNotNull())
+				if (region.IsNotNull() && player.IsNotNull() && entity.GetFaction() == player.faction_id && this.ent_squad.GetFaction() == player.faction_id)
 				{
-					var ent_squad_tmp = this.ent_squad;
-
-					ref var transform = ref entity.GetComponent<Transform.Data>();
-					if (transform.IsNotNull())
-					{
-						//if (Dormitory.TryGenerateKits(ref data, ref random, this.h_character))
-						//{
-						//	App.WriteLine("ok");
-						//}
-
-						Dormitory.SpawnCharacterWithKits(ref region, position: transform.position, ent_dormitory: entity, h_character: this.h_character, kits: in this.kits, h_faction: player.faction_id).ContinueWith((ent_unit) =>
-						{
-							ent_unit.AddRel<Squad.Relation>(ent_squad_tmp);
-
-							foreach (var h_inventory in ent_unit.GetInventories())
-							{
-								h_inventory.Flags |= Inventory.Flags.Unlimited | Inventory.Flags.No_Drop;
-							}
-						});
-					}
+					SpawnUnit(ref region, ref random, this.ent_squad, entity, ref data, this.kits.AsSpan(), this.h_character, player.faction_id);
 				}
 			}
 #endif
@@ -107,26 +88,55 @@ namespace TC2.Siege
 				ref var player = ref connection.GetPlayer();
 				var random = XorRandom.New(true);
 
-				if (region.IsNotNull() && player.IsNotNull())
+				if (region.IsNotNull() && player.IsNotNull() && entity.GetFaction() == player.faction_id)
 				{
-					var span_characters = data.GetCharacterSpan();
-					if (span_characters.TryGetEmptyIndex(out var index))
-					{
-						var h_character = Dormitory.CreateCharacter(ref region, ref random, this.h_origin, h_faction: player.faction_id);
-
-						if (Dormitory.TryGenerateKits(ref data, ref random, h_character))
-						{
-							App.WriteLine("ok");
-						}
-
-						span_characters[index] = h_character;
-
-						data.Sync(entity, true);
-					}
+					BuyUnit(ref region, ref random, entity, ref data, this.h_origin, player.faction_id);
 				}
 			}
 #endif
 		}
+
+#if SERVER
+		public static void SpawnUnit(ref Region.Data region, ref XorRandom random, Entity ent_squad, Entity ent_dormitory, ref Dormitory.Data dormitory, Span<IKit.Handle> kits, ICharacter.Handle h_character, IFaction.Handle h_faction = default)
+		{
+			ref var transform = ref ent_dormitory.GetComponent<Transform.Data>();
+			if (transform.IsNotNull())
+			{
+				//if (Dormitory.TryGenerateKits(ref data, ref random, this.h_character))
+				//{
+				//	App.WriteLine("ok");
+				//}
+
+				Dormitory.SpawnCharacterWithKits(ref region, position: transform.position, ent_dormitory: ent_dormitory, h_character: h_character, kits: kits, h_faction: h_faction).ContinueWith((ent_unit) =>
+				{
+					ent_unit.AddRel<Squad.Relation>(ent_squad);
+
+					foreach (var h_inventory in ent_unit.GetInventories())
+					{
+						h_inventory.Flags |= Inventory.Flags.Unlimited | Inventory.Flags.No_Drop;
+					}
+				});
+			}
+		}
+
+		public static void BuyUnit(ref Region.Data region, ref XorRandom random, Entity ent_dormitory, ref Dormitory.Data dormitory, IOrigin.Handle h_origin, IFaction.Handle h_faction = default)
+		{
+			var span_characters = dormitory.GetCharacterSpan();
+			if (span_characters.TryGetEmptyIndex(out var index))
+			{
+				var h_character = Dormitory.CreateCharacter(ref region, ref random, h_origin, h_faction: h_faction);
+
+				if (Dormitory.TryGenerateKits(ref dormitory, ref random, h_character))
+				{
+					App.WriteLine("ok");
+				}
+
+				span_characters[index] = h_character;
+
+				dormitory.Sync(ent_dormitory, true);
+			}
+		}
+#endif
 
 #if SERVER
 		[ISystem.Event<Despawn.DespawnEvent>(ISystem.Mode.Single, order: -10)]
