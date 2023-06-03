@@ -31,7 +31,7 @@
 			}
 			{
 				type: resource
-				material: "ammo_sg.buck"
+				material: "ammo_sg.buck.hv"
 				quantity: 32.000
 				flags: none
 			}
