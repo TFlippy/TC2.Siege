@@ -10,6 +10,8 @@ namespace TC2.Siege
 			[IComponent.Data(Net.SendType.Unreliable)]
 			public partial struct Data: IComponent
 			{
+				[Save.Ignore, Net.Ignore] public float current_capture_progress_norm;
+				[Save.Ignore, Net.Ignore] public float current_capture_progress;
 				[Save.Ignore, Net.Ignore] public float last_capture_progress;
 
 				[Save.Ignore, Net.Ignore] public float t_next_notification;
@@ -37,17 +39,18 @@ namespace TC2.Siege
 				public static void OnUpdateCapturable(ISystem.Info info, ref Region.Data region, Entity entity,
 				[Source.Owned] ref Capturable.Data capturable, [Source.Owned] ref Faction.Data faction, [Source.Owned] ref Siege.Target.Data siege_target, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state)
 				{
+					ref var work = ref capturable.order.work[0];
+					siege_target.current_capture_progress = work.current;
+					siege_target.current_capture_progress_norm = Maths.NormalizeClamp(work.current, work.required);
+
 					if (info.WorldTime >= siege_target.t_next_notification_capture)
 					{
 						if (siege_target.t_next_notification_capture > 0.00f)
 						{
-							ref var work = ref capturable.order.work[0];
-							var capture_progress = work.current;
-
-							var delta = capture_progress - siege_target.last_capture_progress;
+							var delta = siege_target.current_capture_progress - siege_target.last_capture_progress;
 							if (MathF.Abs(delta) >= 10.00f)
 							{
-								siege_target.last_capture_progress = capture_progress;
+								siege_target.last_capture_progress = siege_target.current_capture_progress;
 
 								if (float.IsNegative(delta))
 								{

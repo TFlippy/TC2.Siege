@@ -509,7 +509,7 @@ namespace TC2.Siege
 		[Source.Owned] in Player.Data player, [Source.Owned] in Respawn.Data respawn,
 		[Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state, [Source.Global] in Siege.Bounty.Global g_bounty)
 		{
-			if (player.IsLocal() && player.faction_id == g_siege_state.faction_defenders)
+			if (player.faction_id == g_siege_state.faction_defenders)
 			{
 				Spawn.RespawnGUI.enabled = true;
 
@@ -775,7 +775,10 @@ namespace TC2.Siege
 															{
 																using (var tooltip = GUI.Tooltip.New())
 																{
-
+																	using (GUI.Wrap.Push(200))
+																	{
+																		GUI.TextShaded(origin_data.desc);
+																	}
 																}
 															}
 														}
@@ -795,7 +798,7 @@ namespace TC2.Siege
 		[ISystem.EarlyGUI(ISystem.Mode.Single), HasTag("local", true, Source.Modifier.Owned)]
 		public static void OnGUIAttacker(Entity entity, [Source.Owned] in Player.Data player, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state)
 		{
-			if (player.IsLocal() && player.faction_id == g_siege_state.faction_attackers)
+			if (player.faction_id == g_siege_state.faction_attackers)
 			{
 				Spawn.RespawnGUI.enabled = false;
 				Editor.show_respawn_menu = false; // TODO: workaround for testing
