@@ -13,7 +13,7 @@
 		require: none
 		include: none
 		exclude: none
-		weight: 0.800
+		weight: 0.400
 	}
 	
 	amount_multiplier_min: 1.000

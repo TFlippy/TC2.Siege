@@ -1,19 +1,19 @@
 ﻿{
-	name: "Bobel-5"
+	name: "Medimax Emergency Kit"
 	desc: ""
 	
 	flags: none
-	slot: primary
-	categories: weapon, gun, powerful
+	slot: secondary
+	categories: tools, defensive, usable, small, healing
 	faction: "defenders"
 	species: "human"
 	
 	character_flags:
 	{
-		require: military
-		include: military
+		require: medical
+		include: medical
 		exclude: none
-		weight: 1.400
+		weight: 3.000
 	}
 	
 	amount_multiplier_min: 1.000
@@ -25,16 +25,11 @@
 		[
 			{
 				type: prefab
-				prefab: "bp.bobel.5"
+				prefab: "bp.medimax"
 				quantity: 1.000
 				flags: pickup, despawn
 			}
-			{
-				type: resource
-				material: "ammo_hc.hv"
-				quantity: 200.000
-				flags: none
-			}
+			null
 			null
 			null
 		]

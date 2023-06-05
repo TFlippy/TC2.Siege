@@ -30,8 +30,8 @@ namespace TC2.Siege
 			public int wave_size;
 			public int wave_size_rem;
 
-			public int pref_size_assault = 6;
-			public int pref_size_defense = 6;
+			public int pref_size_assault = 4;
+			public int pref_size_defense = 3;
 			public int pref_size_support = 6;
 
 			//public float wave_interval = 60.00f;
@@ -111,6 +111,20 @@ namespace TC2.Siege
 			ref var squad = ref oc_squad.data;
 			if (squad.IsNotNull())
 			{
+				var positions_span = squad.positions.AsSpan();
+
+				var pos_b = squad.position_a ?? target_pos;
+
+				//if () // && Vector2.DistanceSquared(pos_a, pos_b) > (6 * 6))
+				{
+					region.Repath(target_pos, pos_b, ref positions_span, out var repath_result, air: false, include: Terrain.PathFlags.Ground, require: Terrain.PathFlags.Ground, exclude: Terrain.PathFlags.Solid | Terrain.PathFlags.Ladder | Terrain.PathFlags.Wall, max_depth: 8);
+				}
+				//else
+				//{
+				//	region.RepathWander(pos_a, ref positions_span, out var repath_result, air: false, include: Terrain.PathFlags.Ground, require: Terrain.PathFlags.Ground, exclude: Terrain.PathFlags.Solid | Terrain.PathFlags.Ladder | Terrain.PathFlags.Wall, max_depth: 8);
+				//}
+
+
 				squad.position_a = target_pos;
 				squad.position_b = target_pos;
 
@@ -722,7 +736,7 @@ namespace TC2.Siege
 				row.Run((ISystem.Info info, Entity entity, in Siege.Target.Data target, in Transform.Data transform, in Faction.Data faction) =>
 				{
 					var dist_sq = Vector2.DistanceSquared(transform.position, arg.position);
-					if ((faction.id == 0 || faction.id != arg.faction_id) && dist_sq < arg.target_dist_nearest_sq && target.current_capture_progress_norm >= 0.25f)
+					if ((faction.id != arg.faction_id) && dist_sq < arg.target_dist_nearest_sq)
 					{
 						arg.ent_target = entity;
 						arg.target_dist_nearest_sq = dist_sq;
@@ -770,7 +784,7 @@ namespace TC2.Siege
 				row.Run((ISystem.Info info, Entity entity, in Siege.Target.Data target, in Transform.Data transform, in Faction.Data faction) =>
 				{
 					var dist_sq = Vector2.DistanceSquared(transform.position, arg.position);
-					if ((faction.id == arg.faction_id) && (dist_sq < arg.target_dist_nearest_sq || target.current_capture_progress_norm <= 0.90f))
+					if (dist_sq < arg.target_dist_nearest_sq && ((faction.id == 0 && target.current_capture_progress_norm < 1.00f) || (faction.id == arg.faction_id && target.current_capture_progress_norm <= 0.90f)))
 					{
 						arg.ent_target = entity;
 						arg.target_dist_nearest_sq = dist_sq;
@@ -831,7 +845,7 @@ namespace TC2.Siege
 			return arg.ent_spawn.IsAlive();
 		}
 
-		[ISystem.Update(ISystem.Mode.Single, interval: 0.10f)]
+		[ISystem.LateUpdate(ISystem.Mode.Single, interval: 0.10f)]
 		public static void OnUpdate(ref Region.Data region, ref XorRandom random, ISystem.Info info, Entity entity, [Source.Owned] ref Transform.Data transform,
 		[Source.Owned] ref Control.Data control, [Source.Owned] ref Selection.Data selection, [Source.Owned] ref Siege.Coordinator coordinator, [Source.Owned] ref Dormitory.Data dormitory, [Source.Owned] ref Stockpile.Data stockpile,
 		[Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state,
@@ -880,8 +894,8 @@ namespace TC2.Siege
 							if (squad.IsNotNull())
 							{
 								squad.color = 0xff1cc29a;
-								squad.movement_flags = AI.Behavior.MovementFlags.Hold;
-								squad.combat_flags = AI.Behavior.CombatFlags.Attack_Visible | AI.Behavior.CombatFlags.Attack_When_Hit | AI.Behavior.CombatFlags.Cover | AI.Behavior.CombatFlags.Evade | AI.Behavior.CombatFlags.Defend | AI.Behavior.CombatFlags.Flee;
+								squad.movement_flags = AI.Behavior.MovementFlags.Wander;
+								squad.combat_flags = AI.Behavior.CombatFlags.Attack_Visible | AI.Behavior.CombatFlags.Attack_When_Hit | AI.Behavior.CombatFlags.Cover | AI.Behavior.CombatFlags.Evade | AI.Behavior.CombatFlags.Defend | AI.Behavior.CombatFlags.Flee | AI.Behavior.CombatFlags.Capture;
 								//squad.flags.SetFlag(Commandable.OrderFlags.Hold, true);
 								//squad.flags.SetFlag(Commandable.OrderFlags.Wander, false);
 								//squad.order_type = Commandable.OrderType.Defend;
@@ -911,7 +925,7 @@ namespace TC2.Siege
 							if (squad.IsNotNull())
 							{
 								squad.color = 0xffff2e1a;
-								squad.movement_flags = AI.Behavior.MovementFlags.Wander;
+								squad.movement_flags = AI.Behavior.MovementFlags.Wander | AI.Behavior.MovementFlags.Hold;
 								squad.combat_flags = AI.Behavior.CombatFlags.Attack_Visible | AI.Behavior.CombatFlags.Attack_When_Hit | AI.Behavior.CombatFlags.Cover | AI.Behavior.CombatFlags.Evade | AI.Behavior.CombatFlags.Chase | AI.Behavior.CombatFlags.Capture;
 								//squad.flags.SetFlag(Commandable.OrderFlags.Hold, false);
 								//squad.flags.SetFlag(Commandable.OrderFlags.Wander, true);
@@ -1005,43 +1019,7 @@ namespace TC2.Siege
 
 					case Coordinator.Status.Waiting:
 					{
-						//for (int i = 0; i < group_size_tmp && total_count + i < g_siege.max_npc_count; i++)
-						//{
-						//	var ent_squad_front = coordinator.ref_squad_assault.entity;
 
-						//	//var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner");
-						//	//Dormitory.SpawnCharacter(ref region, h_character, pos_spawn + new Vector2(random.NextFloatRange(-5, 5), 0.00f), h_faction: faction.id).ContinueWith((ent) =>
-						//	//{
-						//	//	SetKoboldLoadout(ent, weapon_mult: weapon_mult, armor_mult: armor_mult);
-						//	//	ent.AddRel<Squad.Relation>(ent_squad_front);
-						//	//});
-
-
-						//	//var ent_spawner = entity;
-						//	//region.SpawnPrefab("kobold.male", pos_spawn + new Vector2(random.NextFloatRange(-5, 5), 0.00f), faction_id: faction.id).ContinueWith((ent) =>
-						//	//{
-						//	//	SetKoboldLoadout(ent, weapon_mult: weapon_mult, armor_mult: armor_mult);
-						//	//});
-
-						//	Siege.BuyUnit(ref region, ref random, entity, ref dormitory, h_origin: "kobold.gunner", h_faction: faction.id);
-
-						//	coordinator.wave_size_rem = Math.Max(coordinator.wave_size_rem - 1, 0);
-						//}
-
-						//if (siege.wave_current != coordinator.last_wave)
-						//{
-						//	coordinator.last_wave = siege.wave_current;
-
-						//	//coordinator.next_wave = time + coordinator.wave_interval + Maths.Clamp(difficulty * 10.00f, 0.00f, 120.00f);
-						//	coordinator.wave_size = (int)Maths.Clamp(3 + MathF.Floor(MathF.Pow(siege.difficulty, 0.80f)) * 2.00f, 0, 40);
-						//	coordinator.wave_size_rem = coordinator.wave_size;
-
-						//	coordinator.status = Coordinator.Status.Dispatching;
-
-						//	//Notification.Push(ref region, $"Group of {coordinator.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
-						//	Notification.Push(ref region, $"Group of {coordinator.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Red, lifetime: 10.00f);
-
-						//}
 					}
 					break;
 
@@ -1051,55 +1029,9 @@ namespace TC2.Siege
 						{
 							if (!g_siege_state.flags.HasAny(Siege.Gamemode.Flags.No_Dispatcher))
 							{
-								//if (match_time >= coordinator.next_search)
-								//{
-								//	//if (TryFindTarget(ref region, entity, faction.id, transform.position, out var ent_target, out var target_position))
-								//	//{
-								//	//	coordinator.ref_target.Set(ent_target);
-								//	//}
-								//	//else
-								//	//{
-
-								//	//}
-
-								//	//foreach (ref var row in region.IterateQuery<Siege.GetAllTargetsQuery>())
-								//	//{
-								//	//	row.Run((ISystem.Info info, Entity entity, in Siege.Target.Data target, in Transform.Data transform, in Faction.Data faction) =>
-								//	//	{
-								//	//		var dist_sq = Vector2.DistanceSquared(transform.position, arg.position);
-								//	//		if ((faction.id == 0 || faction.id != arg.faction_id) && dist_sq < arg.target_dist_nearest_sq)
-								//	//		{
-								//	//			arg.ent_target = entity;
-								//	//			arg.target_dist_nearest_sq = dist_sq;
-								//	//			arg.target_position = transform.position;
-
-								//	//			//if (arg.ent_root.id == 0)
-								//	//			//{
-								//	//			//	arg.ent_root = arg.ent_search.GetRoot(Relation.Type.Child);
-								//	//			//}
-
-								//	//			//var ent_root = entity.GetRoot(Relation.Type.Child);
-								//	//			//if (ent_root != arg.ent_root && ent_root.GetRoot(Relation.Type.Instance) != arg.ent_root)
-								//	//			//{
-								//	//			//	arg.ent_target = entity;
-								//	//			//	arg.target_dist_nearest_sq = dist_sq;
-								//	//			//	arg.target_position = transform.position;
-								//	//			//}
-								//	//		}
-								//	//	});
-								//	//}
-
-								//	coordinator.next_search = match_time + random.NextFloatRange(10.00f, 15.00f);
-								//}
-
 								if (match_time >= coordinator.next_dispatch)
 								{
 									coordinator.next_dispatch = match_time + random.NextFloatRange(1.00f, 3.00f);
-
-									//if (coordinator.ref_target.IsAlive() && coordinator.ref_target.TryGetHandle(out var h_target_transform))
-									//{
-									//	var ent_target = h_target_transform.entity;
-									//	var target_position = h_target_transform.data.position;
 
 									WorldNotification.Push(ref region, $"Wave: {coordinator.wave_size - coordinator.wave_size_rem}/{coordinator.wave_size};", Color32BGRA.Red, transform.position, lifetime: 4);
 
@@ -1109,35 +1041,39 @@ namespace TC2.Siege
 										ref var squad = ref coordinator.ref_squad_assault.GetValueOrNullRef();
 										if (squad.IsNotNull())
 										{
-											if ((time - squad.t_last_order) >= 15.00f)
+											//if ((time - squad.t_last_order) >= 15.00f)
+											if (time >= squad.t_next_order)
 											{
-												if (squad.unit_count > 2)
+												if (squad.unit_count >= 2)
 												{
-													if (Siege.TryFindAssaultTarget(ref region, entity, faction.id, squad.position_a ?? transform.position, out var ent_target, out var pos_target))
+													if (true) //squad.idle_count > squad.unit_count * 0.50f)
 													{
-														Siege.SetSquadOrder(ref region, new OwnedComponent<Squad.Data>(ref squad, coordinator.ref_squad_assault.entity), target_pos: pos_target, ent_target: ent_target);
+														if (Siege.TryFindAssaultTarget(ref region, entity, faction.id, squad.position_a ?? transform.position, out var ent_target, out var pos_target))
+														{
+															Siege.SetSquadOrder(ref region, new OwnedComponent<Squad.Data>(ref squad, coordinator.ref_squad_assault.entity), target_pos: pos_target, ent_target: ent_target);
+															squad.t_next_order = time + random.NextFloatRange(3.00f, 8.00f);
+														}
+														else
+														{
+															squad.t_next_order = time + random.NextFloatRange(5.00f, 10.00f);
+														}
+													}
+													else
+													{
+														squad.t_next_order = time + random.NextFloatRange(10.00f, 25.00f);
 													}
 												}
 												else
 												{
 													Siege.SetSquadOrder(ref region, new OwnedComponent<Squad.Data>(ref squad, coordinator.ref_squad_assault.entity), target_pos: transform.position, ent_target: default);
+													squad.t_next_order = time + random.NextFloatRange(5.00f, 9.00f);
 												}
-
-												//squad.position_a = target_position;
-												//squad.position_b = target_position;
-
-												//squad.ent_target = ent_target;
-												//squad.t_last_order = time;
-
-												//squad.Sync(coordinator.ref_squad_assault.entity, true);
 											}
-
-											//squad_front.order_type = Commandable.OrderType.Capture;
-											//squad_front.flags = Commandable.OrderFlags.None;
 
 											var squad_size = squad.unit_count;
 
-											for (var i = squad_size; i < coordinator.pref_size_assault && coordinator.wave_size_rem > 0; i++)
+											var num = Maths.Clamp(random.NextIntRange(1, coordinator.wave_size_rem), 0, Math.Max(0, coordinator.pref_size_assault - squad_size));
+											for (var i = 0; i < num; i++)
 											{
 												if (characters_span.TryGetValidIndex(out var character_index))
 												{
@@ -1152,33 +1088,66 @@ namespace TC2.Siege
 										ref var squad = ref coordinator.ref_squad_support.GetValueOrNullRef();
 										if (squad.IsNotNull())
 										{
-											if ((time - squad.t_last_order) >= 5.00f)
+											if (time >= squad.t_next_order)
 											{
-												if (Siege.TryFindSupportTarget(ref region, entity, faction.id, squad.position_a ?? transform.position, out var ent_target, out var pos_target))
-												{
-													Siege.SetSquadOrder(ref region, new OwnedComponent<Squad.Data>(ref squad, coordinator.ref_squad_support.entity), target_pos: pos_target, ent_target: ent_target);
-												}
-												else
-												{
-													if (squad.unit_count > 2)
-													{
-														ref var squad_assault = ref coordinator.ref_squad_assault.GetValueOrNullRef();
-														if (squad_assault.IsNotNull())
-														{
-															Span<Vector2> span_positions = stackalloc Vector2[4];
-															region.RepathHigh(squad.position_a ?? transform.position, squad_assault.position_a ?? transform.position, ref span_positions, out var repath_result, include: Terrain.PathFlags.Ground | Terrain.PathFlags.Edge | Terrain.PathFlags.Ladder, max_depth: 4);
+												// squad.idle_count > squad.unit_count * 0.50f && 
 
-															if (repath_result != Terrain.RepathResult.Unreachable)
+												//if (squad.unit_count >= 2)
+												{
+													if (squad.idle_count > squad.unit_count * 0.20f)
+													{
+														if (Siege.TryFindSupportTarget(ref region, entity, faction.id, squad.position_a ?? transform.position, out var ent_target, out var pos_target))
+														{
+															Siege.SetSquadOrder(ref region, new OwnedComponent<Squad.Data>(ref squad, coordinator.ref_squad_support.entity), target_pos: pos_target, ent_target: ent_target);
+														}
+														else
+														{
+															ref var squad_assault = ref coordinator.ref_squad_assault.GetValueOrNullRef();
+															if (squad_assault.IsNotNull())
 															{
-																Siege.SetSquadOrder(ref region, new OwnedComponent<Squad.Data>(ref squad, coordinator.ref_squad_support.entity), target_pos: span_positions[span_positions.Length - 1], ent_target: ent_target);
+																Span<Vector2> span_positions = stackalloc Vector2[4];
+																region.RepathHigh(squad.position_a ?? transform.position, squad_assault.position_a ?? transform.position, ref span_positions, out var repath_result, include: Terrain.PathFlags.Ground | Terrain.PathFlags.Edge | Terrain.PathFlags.Ladder, max_depth: 4);
+
+																if (repath_result != Terrain.RepathResult.Unreachable)
+																{
+																	Siege.SetSquadOrder(ref region, new OwnedComponent<Squad.Data>(ref squad, coordinator.ref_squad_support.entity), target_pos: span_positions[span_positions.Length - 1], ent_target: ent_target);
+																}
 															}
 														}
+
+														squad.t_next_order = time + random.NextFloatRange(3.00f, 5.00f);
 													}
 													else
 													{
-														Siege.SetSquadOrder(ref region, new OwnedComponent<Squad.Data>(ref squad, coordinator.ref_squad_support.entity), target_pos: transform.position, ent_target: default);
+														squad.t_next_order = time + random.NextFloatRange(1.00f, 2.00f);
 													}
 												}
+
+												//if (Siege.TryFindSupportTarget(ref region, entity, faction.id, squad.position_a ?? transform.position, out var ent_target, out var pos_target))
+												//{
+												//	Siege.SetSquadOrder(ref region, new OwnedComponent<Squad.Data>(ref squad, coordinator.ref_squad_support.entity), target_pos: pos_target, ent_target: ent_target);
+												//}
+												//else
+												//{
+												//	if (squad.unit_count >= 2)
+												//	{
+												//		ref var squad_assault = ref coordinator.ref_squad_assault.GetValueOrNullRef();
+												//		if (squad_assault.IsNotNull())
+												//		{
+												//			Span<Vector2> span_positions = stackalloc Vector2[4];
+												//			region.RepathHigh(squad.position_a ?? transform.position, squad_assault.position_a ?? transform.position, ref span_positions, out var repath_result, include: Terrain.PathFlags.Ground | Terrain.PathFlags.Edge | Terrain.PathFlags.Ladder, max_depth: 4);
+
+												//			if (repath_result != Terrain.RepathResult.Unreachable)
+												//			{
+												//				Siege.SetSquadOrder(ref region, new OwnedComponent<Squad.Data>(ref squad, coordinator.ref_squad_support.entity), target_pos: span_positions[span_positions.Length - 1], ent_target: ent_target);
+												//			}
+												//		}
+												//	}
+												//	else
+												//	{
+												//		Siege.SetSquadOrder(ref region, new OwnedComponent<Squad.Data>(ref squad, coordinator.ref_squad_support.entity), target_pos: transform.position, ent_target: default);
+												//	}
+												//}
 											}
 
 											//squad_front.order_type = Commandable.OrderType.Capture;
@@ -1186,7 +1155,8 @@ namespace TC2.Siege
 
 											var squad_size = squad.unit_count;
 
-											for (var i = squad_size; i < coordinator.pref_size_support && coordinator.wave_size_rem > 0; i++)
+											var num = Maths.Clamp(random.NextIntRange(1, coordinator.wave_size_rem), 0, Math.Max(0, coordinator.pref_size_support - squad_size));
+											for (var i = 0; i < num; i++)
 											{
 												if (characters_span.TryGetValidIndex(out var character_index))
 												{
@@ -1214,7 +1184,8 @@ namespace TC2.Siege
 
 											var squad_size = squad.unit_count;
 
-											for (var i = squad_size; i < coordinator.pref_size_defense && coordinator.wave_size_rem > 0; i++)
+											var num = Maths.Clamp(random.NextIntRange(1, coordinator.wave_size_rem), 0, Math.Max(0, coordinator.pref_size_defense - squad_size));
+											for (var i = 0; i < num; i++)
 											{
 												if (characters_span.TryGetValidIndex(out var character_index))
 												{
@@ -1224,145 +1195,8 @@ namespace TC2.Siege
 											}
 										}
 									}
-
-									//var arg = new GetAllUnitsQueryArgs(entity, ent_target, faction.id, transform.position, target_position, 0, coordinator.wave_size_rem, default);
-
-									//foreach (ref var row in region.IterateQuery<Siege.GetAllUnitsQuery>())
-									//{
-									//	row.Run((ISystem.Info info, Entity entity, [Source.Owned] in Commandable.Data commandable, [Source.Owned, Override] in AI.Movement movement, [Source.Owned, Override] in AI.Behavior behavior, [Source.Owned] in Transform.Data transform, [Source.Owned] in Faction.Data faction, [Source.Owned, Pair.Any, Optional(true)] in Squad.Relation squad_rel, [Source.Parent<Squad.Relation>, Optional(true)] in Squad.Data squad) =>
-									//	{
-									//		if (faction.id == arg.faction_id)
-									//		{
-									//			App.WriteLine(entity.GetFullName());
-									//		}
-
-									//		//App.WriteLine(behavior.idle_timer);
-									//		//if (faction.id == arg.faction_id && !commandable.flags.HasAny(Commandable.Data.Flags.No_Select) && (behavior.idle_timer >= 2.00f || !behavior.ref_target_body.entity.IsValid() || behavior.type == AI.Behavior.Type.Idle || movement.type == AI.Movement.Type.None))
-									//		//{
-									//		//	//if (Vector2.DistanceSquared(transform.position, arg.target_position) <= (128 * 128))
-									//		//	//{
-									//		//	//	if (arg.wave_size_rem > 0)
-									//		//	//	{
-									//		//	//		arg.wave_size_rem--;
-									//		//	//	}
-									//		//	//	else
-									//		//	//	{
-									//		//	//		return;
-									//		//	//	}
-									//		//	//}
-
-									//		//	//ref var region = ref info.GetRegion();
-									//		//	arg.selection[arg.selection_count++].Set(entity);
-									//		//	//App.WriteLine(entity);
-									//		//}
-									//	});
-									//}
-
-
-
-									////coordinator.wave_size_rem = arg.wave_size_rem;
-
-									//if (arg.selection_count > 0)
-									//{
-									//	//selection.units = arg.selection;
-
-									//	selection.order_type = Commandable.OrderType.Attack;
-
-									//	control.mouse.position = target_position;
-									//	control.mouse.SetKeyPressed(Mouse.Key.Right, true);
-									//}
-									//}
-									//else
-									//{
-									//	coordinator.ref_target.Set(default);
-									//}
 								}
 							}
-
-							//if (coordinator.wave_size_rem > 0 && time >= coordinator.next_spawn)
-							//{
-							//	coordinator.next_spawn = time + random.NextFloatRange(4.00f, 8.00f);
-
-							//	//var total_count = region.GetTotalTagCount("kobold", "dead");
-							//	var total_count = region.GetTotalTagCount("kobold", "dead");
-							//	if (total_count < g_siege.max_npc_count)
-							//	{
-							//		//var target_position = transform.position;
-
-							//		//if (coordinator.ref_target.IsAlive() && coordinator.ref_target.TryGetHandle(out var h_target_transform))
-							//		//{
-							//		//	target_position = h_target_transform.data.position;
-							//		//}
-
-							//		//if (TryFindNearestSpawn(ref region, faction.id, target_position, out var ent_spawn, out var pos_spawn))
-							//		{
-							//			var weapon_mult = 1.00f;
-							//			var armor_mult = 1.00f;
-
-							//			armor_mult = g_siege_state.difficulty * 0.02f;
-
-							//			//ref var squad = ref coordinator.ref_squad_defense.GetValueOrNullRef();
-							//			//if (squad.IsNotNull())
-							//			//{
-							//			//	squad.position_a = pos_spawn;
-							//			//	squad.position_b = pos_spawn;
-
-							//			//	squad.ent_target = ent_spawn;
-							//			//	squad.t_last_order = region.GetWorldTime();
-
-							//			//	//squad_front.order_type = Commandable.OrderType.Capture;
-							//			//	//squad_front.flags = Commandable.OrderFlags.None;
-
-							//			//	var characters_span = dormitory.GetCharacterSpan();
-							//			//	var squad_size = squad.unit_count;
-
-							//			//	//for (var i = squad_size; i < coordinator.wave_size && coordinator.wave_size_rem > 0; i++)
-							//			//	//{
-							//			//	//	if (characters_span.TryGetValidIndex(out var character_index))
-							//			//	//	{
-							//			//	//		Siege.SpawnUnit(ref region, ref random, coordinator.ref_squad_assault.entity, entity, ref dormitory, default, h_character: characters_span[character_index], h_faction: faction.id);
-							//			//	//		coordinator.wave_size_rem--;
-							//			//	//	}
-							//			//	//}
-
-							//			//	squad.Sync(coordinator.ref_squad_assault.entity, true);
-							//			//}
-
-
-							//			var group_size_tmp = 1 + random.NextIntRange(0, 2);
-							//			for (int i = 0; i < group_size_tmp && total_count + i < g_siege.max_npc_count; i++)
-							//			{
-							//				var ent_squad_front = coordinator.ref_squad_assault.entity;
-
-							//				//var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner");
-							//				//Dormitory.SpawnCharacter(ref region, h_character, pos_spawn + new Vector2(random.NextFloatRange(-5, 5), 0.00f), h_faction: faction.id).ContinueWith((ent) =>
-							//				//{
-							//				//	SetKoboldLoadout(ent, weapon_mult: weapon_mult, armor_mult: armor_mult);
-							//				//	ent.AddRel<Squad.Relation>(ent_squad_front);
-							//				//});
-
-
-							//				//var ent_spawner = entity;
-							//				//region.SpawnPrefab("kobold.male", pos_spawn + new Vector2(random.NextFloatRange(-5, 5), 0.00f), faction_id: faction.id).ContinueWith((ent) =>
-							//				//{
-							//				//	SetKoboldLoadout(ent, weapon_mult: weapon_mult, armor_mult: armor_mult);
-							//				//});
-
-							//				Siege.BuyUnit(ref region, ref random, entity, ref dormitory, h_origin: "kobold.gunner", h_faction: faction.id);
-
-							//				coordinator.wave_size_rem = Math.Max(coordinator.wave_size_rem - 1, 0);
-							//			}
-
-							//			coordinator.next_dispatch = time + 0.50f;
-							//		}
-							//		//else
-							//		//{
-							//		//	App.WriteLine("Failed to find an NPC spawn point!");
-							//		//}
-							//	}
-
-							//	//App.WriteLine($"Spawning reinforcements... ({coordinator.wave_size_rem} left)");
-							//}
 						}
 						else
 						{

@@ -32,7 +32,7 @@
 			{
 				type: resource
 				material: "ammo_ac"
-				quantity: 20.000
+				quantity: 40.000
 				flags: none
 			}
 			null

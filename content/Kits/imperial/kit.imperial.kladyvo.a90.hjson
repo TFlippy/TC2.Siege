@@ -1,19 +1,19 @@
 ﻿{
-	name: "Bobel-5"
+	name: "Kladyvo A90"
 	desc: ""
 	
 	flags: none
 	slot: primary
-	categories: weapon, gun, powerful
+	categories: weapon, dangerous, rare, heavy, gun, advanced, powerful
 	faction: "defenders"
 	species: "human"
 	
 	character_flags:
 	{
-		require: military
-		include: military
+		require: technician
+		include: technician
 		exclude: none
-		weight: 1.400
+		weight: 1.200
 	}
 	
 	amount_multiplier_min: 1.000
@@ -25,14 +25,14 @@
 		[
 			{
 				type: prefab
-				prefab: "bp.bobel.5"
+				prefab: "bp.kladyvo.a90"
 				quantity: 1.000
 				flags: pickup, despawn
 			}
 			{
 				type: resource
-				material: "ammo_hc.hv"
-				quantity: 200.000
+				material: "ammo_mg"
+				quantity: 80.000
 				flags: none
 			}
 			null

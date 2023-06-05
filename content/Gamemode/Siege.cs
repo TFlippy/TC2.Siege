@@ -44,7 +44,7 @@ namespace TC2.Siege
 			[Save.Ignore] public int wave_size_max = 50;
 			[Save.Ignore] public float wave_size_mult = 1.00f;
 
-			[Save.Ignore] public float wave_interval = 60.00f;
+			[Save.Ignore] public float wave_interval = 120.00f;
 			[Save.Ignore] public float wave_interval_difficulty_mult = 1.00f;
 
 			[Save.Ignore] public uint max_npc_count = 32;

@@ -33,7 +33,7 @@
 		categories:
 		{
 			require: weapon
-			include: armor, weapon, melee, gun, defensive
+			include: armor, weapon, melee, gun, defensive, small, healing
 			exclude: none
 			weight: 1.000
 		}

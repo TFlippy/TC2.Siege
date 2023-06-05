@@ -3,7 +3,7 @@
 	desc: ""
 	
 	flags: none
-	slot: secondary
+	slot: utility
 	categories: tools, defensive, usable, small, healing
 	faction: "defenders"
 	species: "human"
@@ -11,9 +11,9 @@
 	character_flags:
 	{
 		require: none
-		include: medical
-		exclude: none
-		weight: 1.000
+		include: soldier
+		exclude: medical
+		weight: 1.500
 	}
 	
 	amount_multiplier_min: 1.000
