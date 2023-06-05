@@ -1,12 +1,12 @@
 ﻿{
-	name: "Sapper"
+	name: "Engineer"
 	desc:
 		'''
 		TODO: Desc
 		'''
 	
-	money: 60.000
-	age: [18.000, 20.000, 22.000, 24.000, 35.000]
+	money: 250.000
+	age: [24.000, 28.000, 30.000, 35.000, 50.000]
 	genders: male, female
 	gender_ratio: 0.050
 	species: "human"
@@ -127,34 +127,34 @@
 	
 	experience:
 	{
-		handguns: 12
-		rifles: 14
-		explosives: 7
-		mining: 1
-		woodcutting: 3
-		construction: 3
-		masonry: 1
-		carpentry: 3
-		engineering: 3
-		blacksmithing: 1
-		arcanology: 3
+		handguns: 8
+		rifles: 11
+		explosives: 12
+		mining: 8
+		woodcutting: 5
+		construction: 8
+		masonry: 5
+		carpentry: 6
+		engineering: 8
+		blacksmithing: 5
+		arcanology: 6
 		strength: 10
 		dexterity: 7
-		endurance: 14
-		intellect: 4
-		geology: 1
-		metallurgy: 1
-		medicine: 6
-		commerce: 2
+		endurance: 10
+		intellect: 7
+		geology: 6
+		metallurgy: 7
+		medicine: 5
+		commerce: 5
 		charisma: 5
-		leadership: 12
-		blades: 9
-		axes: 3
+		leadership: 10
+		blades: 3
+		axes: 7
 		clubs: 7
-		chemistry: 2
-		farming: 0
+		chemistry: 6
+		farming: 1
 		animals: 4
-		scavenging: 5
-		law: 6
+		scavenging: 9
+		law: 3
 	}
 }

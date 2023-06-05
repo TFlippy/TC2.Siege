@@ -1,18 +1,18 @@
 ﻿{
-	name: "Majzl B-749"
+	name: "Carbine"
 	desc: ""
 	
 	flags: none
 	slot: primary
-	categories: weapon, gun, powerful, small
-	faction: "defenders"
-	species: "human"
+	categories: weapon, gun, long_range, small
+	faction: "attackers"
+	species: "kobold"
 	
 	character_flags:
 	{
-		require: military
-		include: military, strong, soldier
-		exclude: medical
+		require: none
+		include: criminal, military, soldier, armed
+		exclude: none
 		weight: 1.400
 	}
 	
@@ -25,14 +25,14 @@
 		[
 			{
 				type: prefab
-				prefab: "bp.majzl.b749"
+				prefab: "carbine"
 				quantity: 1.000
 				flags: pickup, despawn
 			}
 			{
 				type: resource
-				material: "ammo_mg"
-				quantity: 80.000
+				material: "ammo_hc.hv"
+				quantity: 30.000
 				flags: none
 			}
 			null

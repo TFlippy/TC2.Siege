@@ -5,7 +5,7 @@
 		TODO: Desc
 		'''
 	
-	money: 50.000
+	money: 75.000
 	age: [18.000, 20.000, 22.000, 24.000, 35.000]
 	genders: male
 	gender_ratio: 0.000
@@ -130,31 +130,31 @@
 		handguns: 12
 		rifles: 14
 		explosives: 7
-		mining: 1
+		mining: 3
 		woodcutting: 3
 		construction: 3
 		masonry: 1
-		carpentry: 3
+		carpentry: 5
 		engineering: 3
 		blacksmithing: 1
 		arcanology: 3
-		strength: 10
-		dexterity: 7
+		strength: 12
+		dexterity: 8
 		endurance: 14
 		intellect: 4
 		geology: 1
 		metallurgy: 1
-		medicine: 6
+		medicine: 4
 		commerce: 2
-		charisma: 5
-		leadership: 12
+		charisma: 3
+		leadership: 9
 		blades: 9
-		axes: 3
-		clubs: 7
+		axes: 9
+		clubs: 4
 		chemistry: 2
-		farming: 0
+		farming: 4
 		animals: 4
 		scavenging: 5
-		law: 6
+		law: 3
 	}
 }

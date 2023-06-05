@@ -1,0 +1,43 @@
+﻿{
+	name: "Hromus 500"
+	desc: ""
+	
+	flags: none
+	slot: secondary
+	categories: weapon, dangerous, rare, illegal, explosive, gun, short_range, advanced, powerful, small
+	faction: "attackers"
+	species: "kobold"
+	
+	character_flags:
+	{
+		require: insane, evil, terrorist
+		include: construction, scientist, military, armed, technician, engineer, soldier, insane, arcane, evil, murderer, terrorist, fanatic
+		exclude: slave, unskilled
+		weight: 0.300
+	}
+	
+	amount_multiplier_min: 1.000
+	amount_multiplier_max: 1.000
+	
+	shipment:
+	{
+		items:
+		[
+			{
+				type: prefab
+				prefab: "bp.hromus.500"
+				quantity: 1.000
+				flags: pickup, despawn
+			}
+			{
+				type: resource
+				material: "ammo_ac"
+				quantity: 20.000
+				flags: none
+			}
+			null
+			null
+		]
+		flags: dirty, unpack
+	}
+}

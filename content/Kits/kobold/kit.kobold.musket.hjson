@@ -1,19 +1,19 @@
 ﻿{
-	name: "Majzl B-749"
+	name: "Musket"
 	desc: ""
 	
 	flags: none
 	slot: primary
-	categories: weapon, gun, powerful, small
-	faction: "defenders"
-	species: "human"
+	categories: weapon, junk, gun, long_range, primitive, weak
+	faction: "attackers"
+	species: "kobold"
 	
 	character_flags:
 	{
-		require: military
-		include: military, strong, soldier
-		exclude: medical
-		weight: 1.400
+		require: lowlife
+		include: slave, unskilled, lowlife, poor, hunter, outdoor
+		exclude: none
+		weight: 1.500
 	}
 	
 	amount_multiplier_min: 1.000
@@ -25,14 +25,14 @@
 		[
 			{
 				type: prefab
-				prefab: "bp.majzl.b749"
+				prefab: "musket"
 				quantity: 1.000
 				flags: pickup, despawn
 			}
 			{
 				type: resource
-				material: "ammo_mg"
-				quantity: 80.000
+				material: "ammo_musket"
+				quantity: 30.000
 				flags: none
 			}
 			null

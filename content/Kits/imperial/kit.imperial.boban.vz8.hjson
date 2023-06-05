@@ -1,10 +1,10 @@
-{
-	name: "Helmet (Sapper)"
+﻿{
+	name: "Boban vz.8"
 	desc: ""
 	
-	flags: required
-	slot: head
-	categories: armor, defensive
+	flags: none
+	slot: utility
+	categories: weapon, dangerous, explosive, powerful, destructive, small
 	faction: "defenders"
 	species: "human"
 	
@@ -13,9 +13,9 @@
 		require: none
 		include: engineer
 		exclude: none
-		weight: 1.000
+		weight: 1.100
 	}
-
+	
 	amount_multiplier_min: 1.000
 	amount_multiplier_max: 1.000
 	
@@ -25,15 +25,15 @@
 		[
 			{
 				type: prefab
-				prefab: "helmet.03"
-				quantity: 1.000
-				mass_per_unit: 0.000
-				flags: equip, despawn, no_consume
+				prefab: "bp.boban.vz8"
+				quantity: 3.000
+				max: 3.000
+				flags: none
 			}
 			null
 			null
 			null
 		]
-		flags: dirty, unpack
+		flags: dirty, allow_withdraw, allow_deposit, storable
 	}
 }

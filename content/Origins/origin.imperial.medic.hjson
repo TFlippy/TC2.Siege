@@ -5,7 +5,7 @@
 		TODO
 		'''
 	
-	money: 85.000
+	money: 110.000
 	age: [20.000, 22.000, 26.000, 28.000, 30.000, 40.000]
 	genders: male, female
 	gender_ratio: 0.850
@@ -128,7 +128,7 @@
 	experience:
 	{
 		handguns: 10
-		rifles: 6
+		rifles: 8
 		explosives: 3
 		mining: 1
 		woodcutting: 2
@@ -137,19 +137,19 @@
 		carpentry: 2
 		engineering: 5
 		blacksmithing: 3
-		arcanology: 0
+		arcanology: 4
 		strength: 6
 		dexterity: 12
 		endurance: 8
 		intellect: 10
 		geology: 2
 		metallurgy: 1
-		medicine: 10
+		medicine: 11
 		commerce: 4
 		charisma: 8
 		leadership: 9
-		blades: 11
-		axes: 7
+		blades: 12
+		axes: 8
 		clubs: 4
 		chemistry: 9
 		farming: 5
