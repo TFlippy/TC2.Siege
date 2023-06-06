@@ -13,11 +13,40 @@ namespace TC2.Siege
 			ref var player = ref context.GetPlayer();
 			var random = XorRandom.New(true);
 
-			var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner", h_faction: faction_id.GetValueOrDefault());
+			var h_species_kobold = new ISpecies.Handle("kobold");
+
+			Span<IOrigin.Handle> origins = stackalloc IOrigin.Handle[16];
+			IOrigin.Database.GetHandlesFiltered(ref origins, in h_species_kobold, (IOrigin.Definition d_origin, in ISpecies.Handle h_species) =>
+			{
+				return d_origin.data.species == h_species;
+			});
+
+			//var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner", h_faction: faction_id.GetValueOrDefault());
+			//Dormitory.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
+			//{
+			//	SetKoboldLoadout(ent);
+			//});
+
+			var h_character = Dormitory.CreateCharacter(ref region, ref random, h_origin: origins.GetRandom(ref random), h_faction: faction_id.GetValueOrDefault());
+
+			Dormitory.TryGenerateKits2(ref random, h_character);
+
+
 			Dormitory.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
 			{
-				SetKoboldLoadout(ent);
+				ref var character = ref h_character.GetData();
+				if (character.IsNotNull())
+				{
+					Loadout.Spawn(ent, character.kits);
+				}
 			});
+
+			//return SpawnCharacter(ref region, h_character, position, h_faction: h_faction, h_player: h_player).ContinueWith((ent) =>
+			//{
+			//	Loadout.Spawn(ent, kits_arr.AsSpan());
+			//	return ent;
+			//});
+
 
 			//region.SpawnPrefab("kobold.male", player.control.mouse.position, faction_id: faction_id ?? player.faction_id).ContinueWith((ent) =>
 			//{

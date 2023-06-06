@@ -12,8 +12,9 @@ body:
 		offset: [-0.750, -3.500]
 		friction: 0.500
 		elasticity: 0.500
+		mass: 10000.000
 		material: metal
-		layer: entity, building
+		layer: entity, building, ignore_melee, ignore_bullet
 		mask: world
 	}
 }
@@ -36,7 +37,7 @@ siege.target:
 
 capturable:
 {
-	max_distance: 8.000
+	max_distance: 12.000
 	amount: 400.000
 	difficulty: 2.000
 }
@@ -100,6 +101,11 @@ claimer:
 
 // }
 
+spawn:
+{
+	flags: faction
+}
+
 minimap.marker:
 {
 	sprite:
@@ -109,7 +115,7 @@ minimap.marker:
 		frame: [1, 0]
 	}
 
-	flags: faction
+	flags: faction, spawner
 }
 
 lamp:
@@ -126,6 +132,50 @@ lamp:
 		intensity: 1.000
 		texture: "light_invsqr"
 	}
+}
+
+dormitory:
+{
+	species: "human"
+	flags: no_hiring, no_kit_selection, no_kit_requirements
+	kits_max: 5
+	characters_capacity: 8
+	characters_initial_count: 2
+
+	repopulate_interval: 120.000
+
+	repopulate_num: 2
+	repopulate_num_extra: 0
+
+	character_flags_filter: 
+	{
+		require: none
+		include: military, armed, soldier
+		exclude: none
+		weight: 5.000
+	}
+}
+
+armory:
+{
+	@inventory4:
+	{
+		name: "Ammo"
+		stack_size_multiplier: 20.000
+		filter_flags: ammo
+		type: ammo
+		flags: ignore_mass
+	}
+}
+
+shipment:
+{
+	flags: keep_items, no_gui, allow_deposit, allow_withdraw
+}
+
+stockpile:
+{
+	
 }
 
 // dormitory:

@@ -78,6 +78,13 @@ namespace TC2.Siege
 				ref var player = ref connection.GetPlayer();
 				var random = XorRandom.New(true);
 
+				//var characters = data.GetCharacterSpan();
+				//var ts = Timestamp.Now();
+				//characters.Compact();
+				//var ts_elapsed = ts.GetMilliseconds();
+				//App.WriteLine($"Compacted in {ts_elapsed:0.00000} ms");
+				//data.Sync(entity, true);
+
 				if (region.IsNotNull() && player.IsNotNull() && entity.GetFaction() == player.faction_id && this.ent_squad.GetFaction() == player.faction_id)
 				{
 					SpawnUnit(ref region, ref random, this.ent_squad, entity, ref data, this.kits.AsSpan(), this.h_character, player.faction_id);

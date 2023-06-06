@@ -216,7 +216,7 @@ namespace TC2.Siege
 
 									if (dormitory.IsNotNull())
 									{
-										if (h_selected_character_tmp.id != 0 && !dormitory.characters.Contains(h_selected_character_tmp))
+										if (h_selected_character_tmp.id != 0 && !dormitory.GetCharacterSpan().Contains(h_selected_character_tmp))
 										{
 											h_selected_character_tmp = default;
 										}
@@ -239,10 +239,8 @@ namespace TC2.Siege
 										{
 											if (dormitory.IsNotNull())
 											{
-												var characters = dormitory.characters.AsSpan();
-
-												var characters_count_max = Math.Min(characters.Length, dormitory.characters_capacity);
-												for (var i = 0; i < characters_count_max; i++)
+												var characters = dormitory.GetCharacterSpan();
+												for (var i = 0; i < characters.Length; i++)
 												{
 													//DrawCharacter(characters[i].GetHandle());
 
@@ -333,61 +331,74 @@ namespace TC2.Siege
 
 											using (var scrollable = GUI.Scrollbox.New("kits", size: GUI.GetRemainingSpace(), padding: new(4, 4), force_scrollbar: true))
 											{
-												if (character_data.IsNotNull() && armory.IsNotNull() && shipment.IsNotNull() && h_inventory.IsValid())
+												if (dormitory.IsNotNull() && dormitory.flags.HasAny(Dormitory.Flags.No_Kit_Selection))
 												{
-													var shipment_armory_span = shipment.items.AsSpan();
-
-													var kits_unavailable_count = 0;
-													Span<IKit.Handle> kits_unavailable = stackalloc IKit.Handle[32];
-
-													foreach (var asset in IKit.Database.GetAssets())
+													if (character_data.IsNotNull())
 													{
-														if (asset.id == 0) continue;
-														ref var kit_data = ref asset.GetData();
-														var h_kit = asset.GetHandle();
-
-														if (kit_data.character_flags.Evaluate(character_data.flags) < 0.50f) continue;
-
-														var valid = false;
-
-														if (h_kit.Evaluate(ref character_data))
+														foreach (var h_kit in character_data.kits)
 														{
-															Span<Crafting.Requirement> requirements = stackalloc Crafting.Requirement[8];
-
-															foreach (ref var item in kit_data.shipment.items)
-															{
-																if (!item.IsValid()) continue;
-																if (item.flags.HasAny(Shipment.Item.Flags.No_Consume)) continue;
-
-																requirements.Add(item.ToRequirement());
-															}
-
-															if (Crafting.Evaluate2(ref crafting_context, requirements, Crafting.EvaluateFlags.None))
-															{
-																valid = true;
-															}
-														}
-
-														//GUI.Text($"{valid}");
-
-														if (valid)
-														{
-															DrawKit(ref h_kit, ref kit_data, ref h_inventory, ref shipment_armory_span, true, selected_items);
-														}
-														else
-														{
-															kits_unavailable.Add(h_kit, ref kits_unavailable_count);
+															Dormitory.DrawKit(in h_kit, true, true, force_readonly: true, ignore_requirements: dormitory.flags.HasAny(Dormitory.Flags.No_Kit_Requirements));
 														}
 													}
-
-													for (var i = 0; i < kits_unavailable_count; i++)
+												}
+												else
+												{
+													if (character_data.IsNotNull() && armory.IsNotNull() && shipment.IsNotNull() && h_inventory.IsValid())
 													{
-														var h_kit_unavailable = kits_unavailable[i];
-														ref var kit_unavailable_data = ref h_kit_unavailable.GetData();
+														var shipment_armory_span = shipment.items.AsSpan();
 
-														if (kit_unavailable_data.IsNotNull())
+														var kits_unavailable_count = 0;
+														Span<IKit.Handle> kits_unavailable = stackalloc IKit.Handle[32];
+
+														foreach (var asset in IKit.Database.GetAssets())
 														{
-															DrawKit(ref h_kit_unavailable, ref kit_unavailable_data, ref h_inventory, ref shipment_armory_span, false, selected_items);
+															if (asset.id == 0) continue;
+															ref var kit_data = ref asset.GetData();
+															var h_kit = asset.GetHandle();
+
+															if (kit_data.character_flags.Evaluate(character_data.flags) < 0.50f) continue;
+
+															var valid = false;
+
+															if (h_kit.Evaluate(ref character_data))
+															{
+																Span<Crafting.Requirement> requirements = stackalloc Crafting.Requirement[8];
+
+																foreach (ref var item in kit_data.shipment.items)
+																{
+																	if (!item.IsValid()) continue;
+																	if (item.flags.HasAny(Shipment.Item.Flags.No_Consume)) continue;
+
+																	requirements.Add(item.ToRequirement());
+																}
+
+																if (Crafting.Evaluate2(ref crafting_context, requirements, Crafting.EvaluateFlags.None))
+																{
+																	valid = true;
+																}
+															}
+
+															//GUI.Text($"{valid}");
+
+															if (valid)
+															{
+																DrawKit(ref h_kit, ref kit_data, ref h_inventory, ref shipment_armory_span, true, selected_items);
+															}
+															else
+															{
+																kits_unavailable.Add(h_kit, ref kits_unavailable_count);
+															}
+														}
+
+														for (var i = 0; i < kits_unavailable_count; i++)
+														{
+															var h_kit_unavailable = kits_unavailable[i];
+															ref var kit_unavailable_data = ref h_kit_unavailable.GetData();
+
+															if (kit_unavailable_data.IsNotNull())
+															{
+																DrawKit(ref h_kit_unavailable, ref kit_unavailable_data, ref h_inventory, ref shipment_armory_span, false, selected_items);
+															}
 														}
 													}
 												}
@@ -704,7 +715,7 @@ namespace TC2.Siege
 													{
 														foreach (var h_kit in character_data.kits)
 														{
-															Dormitory.DrawKit(in h_kit, true, true, force_readonly: true);
+															Dormitory.DrawKit(in h_kit, true, true, force_readonly: true, ignore_requirements: true);
 														}
 													}
 												}

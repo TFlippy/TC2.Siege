@@ -1,0 +1,43 @@
+﻿{
+	name: "Vejcar"
+	desc: ""
+	
+	flags: none
+	slot: primary
+	categories: weapon, dangerous, heavy, gun, advanced, powerful, destructive
+	faction: "attackers"
+	species: "giant"
+	
+	character_flags:
+	{
+		require: none
+		include: construction, scientist, military, armed, technician, engineer, soldier, insane, arcane, evil, murderer, terrorist, fanatic
+		exclude: none
+		weight: 1.000
+	}
+	
+	amount_multiplier_min: 1.000
+	amount_multiplier_max: 1.000
+	
+	shipment:
+	{
+		items:
+		[
+			{
+				type: prefab
+				prefab: "bp.vejcar"
+				quantity: 1.000
+				flags: pickup, despawn
+			}
+			{
+				type: resource
+				material: "ammo_musket"
+				quantity: 800.000
+				flags: none
+			}
+			null
+			null
+		]
+		flags: dirty, unpack
+	}
+}

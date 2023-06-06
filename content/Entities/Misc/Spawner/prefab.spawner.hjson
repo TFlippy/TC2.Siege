@@ -119,7 +119,7 @@ dormitory:
 	species: "kobold"
 	kit_default: "kobold"
 	flags: no_hiring, no_repopulate
-	kits_max: 3
+	kits_max: 5
 	characters_capacity: 16
 	characters_initial_count: 4
 
