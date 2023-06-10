@@ -589,6 +589,26 @@ namespace TC2.Siege
 							//using (var group_bottom = GUI.Group.New(size: GUI.GetRemainingSpace()))
 							{
 								ref var selected_dormitory = ref ref_selected_dormitory.GetValueOrNullRef();
+								if (selected_dormitory.IsNull())
+								{
+									//Span<Entity> span_dormitories_tmp = stackalloc Entity[1];
+									//region.GetEntsWithComponent<>
+
+									App.WriteLine("Finding default spawner...");
+
+									foreach (ref var row in region.IterateQuery<Region.GetSpawnsQuery>())
+									{
+										row.Run((ISystem.Info info, Entity entity, [Source.Owned] in Spawn.Data spawn, [Source.Owned, Optional] in Nameable.Data nameable, [Source.Owned] in Transform.Data transform, [Source.Owned, Optional] in Faction.Data faction) =>
+										{
+											if (faction.id == h_faction)
+											{
+												ref_selected_dormitory = entity;													
+											}
+										});
+
+										if (ref_selected_dormitory.IsValid()) break;
+									}
+								}
 
 								using (var group_left = GUI.Group.New(size: new(320, GUI.GetRemainingHeight())))
 								{
@@ -627,6 +647,13 @@ namespace TC2.Siege
 														GUI.SameLine();
 
 														var is_valid = h_character.IsValid();
+
+														ref var character_data = ref h_character.GetData();
+														if (character_data.IsNotNull())
+														{
+															is_valid &= character_data.faction == 0 || character_data.faction == h_faction;
+														}
+
 														if (GUI.DrawButton("Spawn", size: GUI.GetRemainingSpace(), enabled: is_valid, color: is_valid ? GUI.col_button_ok : GUI.col_button))
 														{
 															var rpc = new Siege.DEV_SpawnUnitRPC()
@@ -671,7 +698,8 @@ namespace TC2.Siege
 															var selected = ref_selected_dormitory == entity;
 															if (GUI.Selectable3("select", group_row.GetOuterRect(), selected))
 															{
-																ref_selected_dormitory = selected ? default : entity;
+																//ref_selected_dormitory = selected ? default : entity;
+																if (ref_selected_dormitory.entity != entity) ref_selected_dormitory = entity; // selected ? default : entity;
 															}
 														}
 													}
@@ -691,9 +719,10 @@ namespace TC2.Siege
 										ref var character_data = ref h_selected_character.GetData();
 
 										Span<IOrigin.Handle> origins = stackalloc IOrigin.Handle[16];
-										IOrigin.Database.GetHandlesFiltered(ref origins, in h_species_kobold, (IOrigin.Definition d_origin, in ISpecies.Handle h_species) =>
+										IOrigin.Database.GetHandlesFiltered(ref origins, arg: (h_species: h_species_kobold, h_faction: h_faction), 
+											predicate: static (IOrigin.Definition d_origin, in (ISpecies.Handle h_species, IFaction.Handle h_faction) arg) =>
 										{
-											return d_origin.data.species == h_species;
+											return d_origin.data.species == arg.h_species && (d_origin.data.faction == 0 || d_origin.data.faction == arg.h_faction);
 										});
 
 										var ent_dormitory = ref_selected_dormitory.entity;

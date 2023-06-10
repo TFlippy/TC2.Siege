@@ -27,12 +27,12 @@ namespace TC2.Siege
 			//	SetKoboldLoadout(ent);
 			//});
 
-			var h_character = Dormitory.CreateCharacter(ref region, ref random, h_origin: origins.GetRandom(ref random), h_faction: faction_id.GetValueOrDefault());
+			var h_character = Spawner.CreateCharacter(ref region, ref random, h_origin: origins.GetRandom(ref random), h_faction: faction_id.GetValueOrDefault());
 
-			Dormitory.TryGenerateKits2(ref random, h_character);
+			Spawner.TryGenerateKits(ref random, h_character);
 
 
-			Dormitory.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
+			Spawner.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
 			{
 				ref var character = ref h_character.GetData();
 				if (character.IsNotNull())
@@ -61,8 +61,8 @@ namespace TC2.Siege
 			ref var player = ref context.GetPlayer();
 			var random = XorRandom.New(true);
 
-			var h_character = Dormitory.CreateCharacter(ref region, ref random, "giant.artillerist", h_faction: faction_id.GetValueOrDefault());
-			Dormitory.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
+			var h_character = Spawner.CreateCharacter(ref region, ref random, "giant.artillerist", h_faction: faction_id.GetValueOrDefault());
+			Spawner.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
 			{
 				SetGiantLoadout(ent);
 			});
@@ -97,8 +97,8 @@ namespace TC2.Siege
 				ref var region = ref ent_vehicle.GetRegion();
 				var random = XorRandom.New(true);
 
-				var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner", h_faction: h_faction_tmp);
-				Dormitory.SpawnCharacter(ref region, h_character, pos_tmp, h_faction: h_faction_tmp).ContinueWith((ent_kobold) =>
+				var h_character = Spawner.CreateCharacter(ref region, ref random, "kobold.gunner", h_faction: h_faction_tmp);
+				Spawner.SpawnCharacter(ref region, h_character, pos_tmp, h_faction: h_faction_tmp).ContinueWith((ent_kobold) =>
 				{
 					ref var region = ref ent_vehicle.GetRegion();
 

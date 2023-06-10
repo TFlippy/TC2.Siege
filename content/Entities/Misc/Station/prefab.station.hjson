@@ -44,8 +44,10 @@ capturable:
 
 interactable:
 {
-	window_size: [344.000, 96.000]
+	// window_size: [344.000, 96.000]
 	// window_size: [900.000, 600.000]
+	// window_size: [600.000, 328.000]
+	window_size: [680.000, 400.000]
 }
 
 animated.renderer:
@@ -137,7 +139,7 @@ lamp:
 dormitory:
 {
 	species: "human"
-	flags: no_hiring, no_kit_selection, no_kit_requirements
+	flags: no_hiring, no_kit_selection, no_kit_requirements, hide_xp
 	kits_max: 5
 	characters_capacity: 8
 	characters_initial_count: 2

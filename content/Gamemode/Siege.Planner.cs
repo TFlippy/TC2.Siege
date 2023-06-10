@@ -76,7 +76,6 @@ namespace TC2.Siege
 			{
 				ref var region = ref connection.GetRegion();
 				ref var player = ref connection.GetPlayer();
-				var random = XorRandom.New(true);
 
 				//var characters = data.GetCharacterSpan();
 				//var ts = Timestamp.Now();
@@ -85,9 +84,20 @@ namespace TC2.Siege
 				//App.WriteLine($"Compacted in {ts_elapsed:0.00000} ms");
 				//data.Sync(entity, true);
 
-				if (region.IsNotNull() && player.IsNotNull() && entity.GetFaction() == player.faction_id && this.ent_squad.GetFaction() == player.faction_id)
+				ref var character_data = ref this.h_character.GetData();
+				if (character_data.IsNotNull() && region.IsNotNull() && player.IsNotNull())
 				{
-					SpawnUnit(ref region, ref random, this.ent_squad, entity, ref data, this.kits.AsSpan(), this.h_character, player.faction_id);
+					var h_faction_player = player.faction_id;
+					var h_faction_ent = entity.GetFaction();
+					var h_faction_squad = this.ent_squad.GetFaction();
+					var h_faction_character = character_data.faction;
+
+					if (h_faction_ent == h_faction_player && h_faction_squad == h_faction_player && (h_faction_character == 0 || h_faction_character == h_faction_player))
+					{
+						var random = XorRandom.New(true);
+
+						SpawnUnit(ref region, ref random, this.ent_squad, entity, ref data, this.kits.AsSpan(), this.h_character, player.faction_id);
+					}
 				}
 			}
 #endif
@@ -169,9 +179,9 @@ namespace TC2.Siege
 			var span_characters = dormitory.GetCharacterSpan();
 			if (span_characters.TryGetEmptyIndex(out var index))
 			{
-				var h_character = Dormitory.CreateCharacter(ref region, ref random, h_origin, h_faction: h_faction);
+				var h_character = Spawner.CreateCharacter(ref region, ref random, h_origin, h_faction: h_faction);
 
-				if (Dormitory.TryGenerateKits(ref dormitory, ref random, h_character))
+				if (Spawner.TryGenerateKits(ref random, h_character))
 				{
 					//App.WriteLine("ok");
 				}

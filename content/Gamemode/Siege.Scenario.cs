@@ -27,7 +27,13 @@ namespace TC2.Siege
 		[Serializable]
 		public partial struct Data
 		{
+
 			public IScenario.Wave[] waves;
+
+			public Data()
+			{
+
+			}
 		}
 
 		[Serializable]
