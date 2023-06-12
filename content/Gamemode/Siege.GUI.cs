@@ -553,7 +553,7 @@ namespace TC2.Siege
 				var window_pos = (GUI.CanvasSize * new Vector2(0.50f, 0.00f)) + new Vector2(0, 80);
 
 				//using (var window = GUI.Window.Standalone("Siege2", position: window_pos, size: new Vector2(650, 540), pivot: new Vector2(0.50f, 0.00f), padding: new(6, 6), force_position: false))
-				using (var widget = Sidebar.Widget.New("siege.attackers", "Siege", new Sprite(GUI.tex_icons_widget, 16, 16, 3, 0), new Vector2(600, 400), lockable: false, order: 5.00f, flags: Sidebar.Widget.Flags.Align_Right))
+				using (var widget = Sidebar.Widget.New("siege.attackers", "Siege", new Sprite(GUI.tex_icons_widget, 16, 16, 3, 0), new Vector2(650, 400), lockable: false, order: 5.00f, flags: Sidebar.Widget.Flags.Align_Right))
 				{
 					//this.StoreCurrentWindowTypeID();
 					//if (window.show)
@@ -582,7 +582,7 @@ namespace TC2.Siege
 							//GUI.Title($"{this.g_siege_state.faction_defenders.id}");
 							//GUI.Title($"{total_count}/{this.g_siege.max_npc_count} kobolds");
 
-							
+
 
 							GUI.SeparatorThick();
 
@@ -602,7 +602,7 @@ namespace TC2.Siege
 										{
 											if (faction.id == h_faction)
 											{
-												ref_selected_dormitory = entity;													
+												ref_selected_dormitory = entity;
 											}
 										});
 
@@ -627,7 +627,7 @@ namespace TC2.Siege
 												{
 													using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 40)))
 													{
-														using (var group_row_left = GUI.Group.New(size: GUI.GetRemainingSpace(x: -64)))
+														using (var group_row_left = GUI.Group.New(size: GUI.GetRemainingSpace(x: -76)))
 														{
 															group_row_left.DrawBackground(GUI.tex_panel);
 
@@ -647,21 +647,51 @@ namespace TC2.Siege
 														GUI.SameLine();
 
 														var is_valid = h_character.IsValid();
+														var is_enemy = false;
 
 														ref var character_data = ref h_character.GetData();
 														if (character_data.IsNotNull())
 														{
+															is_enemy = character_data.faction != h_faction;
 															is_valid &= character_data.faction == 0 || character_data.faction == h_faction;
 														}
 
-														if (GUI.DrawButton("Spawn", size: GUI.GetRemainingSpace(), enabled: is_valid, color: is_valid ? GUI.col_button_ok : GUI.col_button))
+														var col_button = GUI.col_button_ok;
+														if (is_valid)
 														{
-															var rpc = new Siege.DEV_SpawnUnitRPC()
+															col_button = GUI.col_button_ok;
+														}
+														else if (is_enemy)
+														{
+															col_button = GUI.col_button_error;
+														}
+														else
+														{
+															col_button = GUI.col_button;
+														}
+
+														if (is_enemy)
+														{
+															if (GUI.DrawButton("Execute", size: GUI.GetRemainingSpace(), enabled: false, color: GUI.col_button_error))
 															{
-																h_character = h_character,
-																ent_squad = ent_selected_squad
-															};
-															rpc.Send(ref_selected_dormitory);
+	
+															}
+
+															GUI.DrawHoverTooltip("Execute this captured unit.");
+														}
+														else
+														{
+															if (GUI.DrawButton("Deploy", size: GUI.GetRemainingSpace(), enabled: is_valid, color: col_button))
+															{
+																var rpc = new Siege.DEV_SpawnUnitRPC()
+																{
+																	h_character = h_character,
+																	ent_squad = ent_selected_squad
+																};
+																rpc.Send(ref_selected_dormitory);
+															}
+
+															GUI.DrawHoverTooltip("Deploy this unit at the selected spawn point.");
 														}
 													}
 
@@ -719,7 +749,7 @@ namespace TC2.Siege
 										ref var character_data = ref h_selected_character.GetData();
 
 										Span<IOrigin.Handle> origins = stackalloc IOrigin.Handle[16];
-										IOrigin.Database.GetHandlesFiltered(ref origins, arg: (h_species: h_species_kobold, h_faction: h_faction), 
+										IOrigin.Database.GetHandlesFiltered(ref origins, arg: (h_species: h_species_kobold, h_faction: h_faction),
 											predicate: static (IOrigin.Definition d_origin, in (ISpecies.Handle h_species, IFaction.Handle h_faction) arg) =>
 										{
 											return d_origin.data.species == arg.h_species && (d_origin.data.faction == 0 || d_origin.data.faction == arg.h_faction);
@@ -738,14 +768,11 @@ namespace TC2.Siege
 											{
 												GUI.DrawBackground(GUI.tex_panel, group_kits.GetOuterRect(), new(8, 8, 8, 8));
 
-												using (var scrollable = GUI.Scrollbox.New("kits", size: GUI.GetRemainingSpace(), padding: new(4, 4), force_scrollbar: true))
+												using (var scrollbox = GUI.Scrollbox.New("kits", size: GUI.GetRemainingSpace(), padding: new(4, 4), force_scrollbar: true))
 												{
-													if (character_data.IsNotNull())
+													foreach (var h_kit in character_data.kits)
 													{
-														foreach (var h_kit in character_data.kits)
-														{
-															Dormitory.DrawKit(in h_kit, true, true, force_readonly: true, ignore_requirements: true);
-														}
+														Dormitory.DrawKit(in h_kit, true, true, force_readonly: true, ignore_requirements: true);
 													}
 												}
 											}
@@ -762,62 +789,76 @@ namespace TC2.Siege
 										}
 										else
 										{
-											using (var scrollbox = GUI.Scrollbox.New("scroll.origins", size: GUI.GetRemainingSpace()))
+											using (var group_origins = GUI.Group.New(size: GUI.GetRemainingSpace()))
 											{
-												foreach (var h_origin in origins)
+												GUI.DrawBackground(GUI.tex_panel, group_origins.GetOuterRect(), new(8, 8, 8, 8));
+
+												using (var scrollbox = GUI.Scrollbox.New("scroll.origins", size: GUI.GetRemainingSpace(), force_scrollbar: true))
 												{
-													ref var origin_data = ref h_origin.GetData();
-													if (origin_data.IsNotNull())
+													foreach (var h_origin in origins)
 													{
-														using (GUI.ID.Push(h_origin))
+														ref var origin_data = ref h_origin.GetData();
+														if (origin_data.IsNotNull())
 														{
-															using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 40)))
+															using (GUI.ID.Push(h_origin))
 															{
-																group_row.DrawBackground(GUI.tex_panel);
-
-																//Dormitory.DormitoryGUI.DrawCharacterSmall(h_character);
-
-																GUI.TitleCentered(origin_data.name, size: 16, pivot: new(0.00f, 0.00f), offset: new(6, 2));
-
-																//var selected = ref_selected_dormitory == entity;
-																//var selected = false;
-																//if (GUI.Selectable3("select", group_row.GetOuterRect(), selected))
-																//{
-																//	//dormitory_selected_index = selected ? null : index;
-																//	//ref_selected_dormitory = selected ? default : entity;
-																//}
-
-																//GUI.SameLine();
-
-																using (var group_button = group_row.Split(size: new(64, GUI.GetRemainingHeight()), align_x: GUI.AlignX.Right, align_y: GUI.AlignY.Center))
+																using (var group_row = GUI.Group.New(size: new(GUI.GetRemainingWidth(), 40)))
 																{
-																	if (GUI.DrawButton("Hire", size: GUI.GetRemainingSpace(), color: GUI.col_button_yellow))
-																	{
-																		var rpc = new Siege.DEV_BuyUnitRPC()
-																		{
-																			h_origin = h_origin
-																		};
-																		rpc.Send(ent_dormitory);
-																	}
+																	group_row.DrawBackground(GUI.tex_panel);
 
-																	if (GUI.IsHoveringRect(group_button.GetOuterRect()))
+																	//Dormitory.DormitoryGUI.DrawCharacterSmall(h_character);
+
+																	GUI.TitleCentered(origin_data.name, size: 16, pivot: new(0.00f, 0.00f), offset: new(6, 2));
+
+																	//var selected = ref_selected_dormitory == entity;
+																	//var selected = false;
+																	//if (GUI.Selectable3("select", group_row.GetOuterRect(), selected))
+																	//{
+																	//	//dormitory_selected_index = selected ? null : index;
+																	//	//ref_selected_dormitory = selected ? default : entity;
+																	//}
+
+																	//GUI.SameLine();
+
+																	using (var group_button = group_row.Split(size: new(64, GUI.GetRemainingHeight()), align_x: GUI.AlignX.Right, align_y: GUI.AlignY.Center))
 																	{
-																		using (var tooltip = GUI.Tooltip.New())
+																		if (GUI.DrawButton("Hire", size: GUI.GetRemainingSpace(), color: GUI.col_button_yellow))
 																		{
-																			GUI.TextShaded("Hire this unit.");
+																			var rpc = new Siege.DEV_BuyUnitRPC()
+																			{
+																				h_origin = h_origin
+																			};
+																			rpc.Send(ent_dormitory);
+																		}
+
+																		//if (GUI.DrawButton("Hire", size: GUI.GetRemainingSpace(), color: GUI.col_button_yellow))
+																		//{
+																		//	var rpc = new Siege.DEV_BuyUnitRPC()
+																		//	{
+																		//		h_origin = h_origin
+																		//	};
+																		//	rpc.Send(ent_dormitory);
+																		//}
+
+																		if (GUI.IsHoveringRect(group_button.GetOuterRect()))
+																		{
+																			using (var tooltip = GUI.Tooltip.New())
+																			{
+																				GUI.TextShaded("Hire this unit.");
+																			}
 																		}
 																	}
 																}
-															}
 
 
-															if (!GUI.IsAnyTooltipVisible() && GUI.IsItemHovered())
-															{
-																using (var tooltip = GUI.Tooltip.New())
+																if (!GUI.IsAnyTooltipVisible() && GUI.IsItemHovered())
 																{
-																	using (GUI.Wrap.Push(200))
+																	using (var tooltip = GUI.Tooltip.New())
 																	{
-																		GUI.TextShaded(origin_data.desc);
+																		using (GUI.Wrap.Push(200))
+																		{
+																			GUI.TextShaded(origin_data.desc);
+																		}
 																	}
 																}
 															}

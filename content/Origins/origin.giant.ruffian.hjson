@@ -10,6 +10,7 @@
 	genders: male, female
 	gender_ratio: 0.150
 	species: "giant"
+	faction: "attackers"
 	kit_default: "null"
 	character_flags: bureaucrat, construction, artisan, laborer, civillian, social, technician, engineer, middle_class
 	

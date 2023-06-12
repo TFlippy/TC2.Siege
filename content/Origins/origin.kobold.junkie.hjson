@@ -10,6 +10,7 @@
 	genders: male, female
 	gender_ratio: 0.100
 	species: "kobold"
+	faction: "attackers"
 	kit_default: "null"
 	character_flags: slave, criminal, unskilled, lowlife, poor, chemist, culinary, insane, alcoholic, nomad, pet, entertainer, illiterate, artist, feral, pest, animal, brawler, strong, junkie, thief, murderer, terrorist, fanatic, lower_class
 	
@@ -38,7 +39,7 @@
 			weight: 1.000
 		}
 	}
-
+	
 	kit_filter_head:
 	{
 		chance: 0.500

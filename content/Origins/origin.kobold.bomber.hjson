@@ -10,8 +10,9 @@
 	genders: male, female
 	gender_ratio: 0.100
 	species: "kobold"
+	faction: "attackers"
 	kit_default: "null"
-	character_flags: construction, scientist, armed, lowlife, technician, engineer, poor, miner, chemist, soldier, insane, alcoholic, nomad, evil, terrorist, fanatic, lower_middle_class, strong
+	character_flags: construction, scientist, armed, lowlife, technician, engineer, poor, miner, chemist, soldier, insane, alcoholic, nomad, strong, evil, terrorist, fanatic, lower_middle_class
 	
 	kit_filter_primary:
 	{
@@ -33,12 +34,12 @@
 		categories:
 		{
 			require: weapon
-			include: tools, weapon, dangerous, explosive, melee, gun, defensive, armor
+			include: armor, tools, weapon, dangerous, explosive, melee, gun, defensive
 			exclude: rare
 			weight: 1.000
 		}
 	}
-
+	
 	kit_filter_head:
 	{
 		chance: 1.000

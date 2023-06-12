@@ -10,6 +10,7 @@
 	genders: male, female
 	gender_ratio: 0.100
 	species: "kobold"
+	faction: "attackers"
 	kit_default: "null"
 	character_flags: criminal, military, armed, technician, poor, hunter, soldier, nomad, sedentary, outdoor, strong, evil, murderer, terrorist, lower_class
 	
@@ -38,7 +39,7 @@
 			weight: 1.000
 		}
 	}
-
+	
 	kit_filter_head:
 	{
 		chance: 0.500

@@ -10,6 +10,7 @@
 	genders: male, female
 	gender_ratio: 0.050
 	species: "human"
+	faction: "defenders"
 	kit_default: "null"
 	character_flags: construction, military, professional, armed, technician, engineer, soldier, middle_class
 	

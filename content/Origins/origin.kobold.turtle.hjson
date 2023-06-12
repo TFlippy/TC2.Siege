@@ -10,6 +10,7 @@
 	genders: male, female
 	gender_ratio: 0.100
 	species: "kobold"
+	faction: "attackers"
 	kit_default: "null"
 	character_flags: construction, criminal, military, laborer, armed, technician, engineer, poor, miner, culinary, soldier, insane, alcoholic, nomad, pet, entertainer, illiterate, brawler, strong, junkie, fanatic, lower_class
 	

@@ -1,4 +1,4 @@
-{
+﻿{
 	name: "Artillerist"
 	desc:
 		'''
@@ -6,10 +6,12 @@
 		'''
 	
 	money: 50.000
-	age: [35, 40, 45, 50, 60, 80, 150]
+	age: [35.000, 40.000, 45.000, 50.000, 60.000, 80.000, 150.000]
 	genders: male, female
 	gender_ratio: 0.500
 	species: "giant"
+	faction: "attackers"
+	kit_default: "null"
 	character_flags: bureaucrat, construction, artisan, laborer, civillian, social, technician, engineer, middle_class
 	
 	conditions:

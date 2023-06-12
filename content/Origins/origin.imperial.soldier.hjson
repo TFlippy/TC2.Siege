@@ -10,6 +10,7 @@
 	genders: male
 	gender_ratio: 0.000
 	species: "human"
+	faction: "defenders"
 	kit_default: "null"
 	character_flags: military, armed, hunter, soldier, outdoor, strong, middle_class
 	
