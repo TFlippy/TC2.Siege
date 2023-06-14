@@ -168,7 +168,7 @@ namespace TC2.Siege
 
 				IRecipe.Database.AddAssetPostProcessor((IRecipe.Definition definition, ref IRecipe.Data data) =>
 				{
-					//App.WriteLine($"{definition.Identifier}: {definition.mod_info?.Identifier}");
+					App.WriteLine($"{definition.Identifier}: {definition.mod_info?.Identifier}");
 
 					if (definition.mod_info != mod_siege)
 					{
@@ -177,8 +177,96 @@ namespace TC2.Siege
 							data.flags.SetFlag(Crafting.Recipe.Flags.Hidden, true);
 							data.type = Crafting.Recipe.Type.Buy;
 							data.tags = Crafting.Recipe.Tags.Manufactory;
+
+							var products = data.products.AsSpan();
+
+							if (data.flags.HasAny(Crafting.Recipe.Flags.Blueprintable) && products[0].type == Crafting.Product.Type.Prefab)
+							{
+								if (products[0].prefab.TryGetPrefab(out var prefab))
+								{
+									var requirements = data.requirements.AsSpan();
+									requirements.GetTotalCost(out var cost_materials, out var cost_work, out var cost_extra);
+
+									if (cost_materials > 0.00f)
+									{
+										prefab.cost_materials = cost_materials;
+									}
+
+									if (cost_work > 0.00f)
+									{
+										prefab.cost_work = cost_work;
+									}
+
+									if (cost_extra > 0.00f)
+									{
+										prefab.cost_extra = cost_extra;
+									}
+								}
+							}
 						}
 					}
+
+					//if (!data.flags.HasAny(Crafting.Recipe.Flags.Hidden))
+					//{
+					//	Span<Crafting.Requirement> requirements_old = data.requirements.AsSpan();
+					//	Span<Crafting.Requirement> requirements_new = stackalloc Crafting.Requirement[data.requirements.Length];
+
+					//	var price = 0.00f;
+					//	var complexity = 1.00f;
+
+					//	foreach (ref var req in requirements_old)
+					//	{
+					//		switch (req.type)
+					//		{
+					//			case Crafting.Requirement.Type.Money:
+					//			{
+					//				App.WriteLine($"+ money {req.amount}");
+					//				price += req.amount;
+					//			}
+					//			break;
+
+					//			case Crafting.Requirement.Type.Work:
+					//			{
+					//				App.WriteLine($"+ {req.work} {MathF.Sqrt(req.amount * req.difficulty * 0.50f) * (req.difficulty * 0.10f)}");
+					//				price += MathF.Sqrt(req.amount * req.difficulty * 0.50f) * (req.difficulty * 0.10f);
+					//				complexity += 0.05f;
+					//			}
+					//			break;
+
+					//			case Crafting.Requirement.Type.Resource:
+					//			{
+					//				ref var material = ref req.material.GetData();
+					//				if (!material.IsNull())
+					//				{
+					//					ref var commodity = ref material.commodity.GetRef();
+					//					if (commodity.IsNotNull())
+					//					{
+					//						App.WriteLine($"+ {material.name}: {req.amount} * {commodity.market_price}");
+					//						price += commodity.market_price * req.amount;
+					//					}
+					//					else
+					//					{
+					//						App.WriteLine($"+ {material.name}: 10 * {req.amount}");
+					//						price += 10.00f * req.amount;
+					//					}
+					//					complexity += 0.15f;
+					//				}
+					//			}
+					//			break;
+					//		}
+					//	}
+
+					//	var price_final = Money.ToBataPrice(price * complexity);
+					//	if (price_final >= 0.00f)
+					//	{
+					//		App.WriteLine($"{data.name}: price_final: {price_final:0.00}", App.Color.Cyan);
+
+					//		requirements_new.Add(Crafting.Requirement.Money(price_final));
+					//		requirements_old.Clear();
+					//		requirements_new.CopyTo(requirements_old);
+					//	}
+					//}
+				
 				});
 
 				IOrigin.Database.AddAssetFilter((string path, string identifier, ModInfo mod_info) =>
@@ -193,68 +281,68 @@ namespace TC2.Siege
 					else return false;
 				});
 
-				Augment.AddPostProcessor((ref IBlueprint.Data blueprint, ref Augment.Context context) =>
-				{
-					Span<Crafting.Requirement> requirements_tmp = stackalloc Crafting.Requirement[context.requirements_new.Length];
-					context.requirements_new.CopyTo(requirements_tmp);
-					context.requirements_new.Clear();
+				//Augment.AddPostProcessor((ref IBlueprint.Data blueprint, ref Augment.Context context) =>
+				//{
+				//	Span<Crafting.Requirement> requirements_tmp = stackalloc Crafting.Requirement[context.requirements_new.Length];
+				//	context.requirements_new.CopyTo(requirements_tmp);
+				//	context.requirements_new.Clear();
 
-					var price = 0.00f;
-					var complexity = 1.00f;
+				//	var price = 0.00f;
+				//	var complexity = 1.00f;
 
-					foreach (ref var req in requirements_tmp)
-					{
-						switch (req.type)
-						{
-							case Crafting.Requirement.Type.Work:
-							{
-								price += MathF.Sqrt(req.amount * req.difficulty * 0.50f) * (req.difficulty * 0.10f);
-								complexity += 0.05f;
-							}
-							break;
+				//	foreach (ref var req in requirements_tmp)
+				//	{
+				//		switch (req.type)
+				//		{
+				//			case Crafting.Requirement.Type.Work:
+				//			{
+				//				price += MathF.Sqrt(req.amount * req.difficulty * 0.50f) * (req.difficulty * 0.10f);
+				//				complexity += 0.05f;
+				//			}
+				//			break;
 
-							case Crafting.Requirement.Type.Resource:
-							{
-								ref var material = ref req.material.GetData();
-								if (!material.IsNull())
-								{
-									ref var commodity = ref material.commodity.GetRef();
-									if (commodity.IsNotNull())
-									{
-										price += commodity.market_price * req.amount;
-									}
-									else
-									{
-										price += 10.00f * req.amount;
-									}
-									complexity += 0.15f;
-								}
-							}
-							break;
-						}
-					}
+				//			case Crafting.Requirement.Type.Resource:
+				//			{
+				//				ref var material = ref req.material.GetData();
+				//				if (!material.IsNull())
+				//				{
+				//					ref var commodity = ref material.commodity.GetRef();
+				//					if (commodity.IsNotNull())
+				//					{
+				//						price += commodity.market_price * req.amount;
+				//					}
+				//					else
+				//					{
+				//						price += 10.00f * req.amount;
+				//					}
+				//					complexity += 0.15f;
+				//				}
+				//			}
+				//			break;
+				//		}
+				//	}
 
-					var price_final = Money.ToBataPrice(price * complexity);
-					if (price_final >= 0.00f)
-					{
-						context.requirements_new.Add(Crafting.Requirement.Money(price_final));
+				//	var price_final = Money.ToBataPrice(price * complexity);
+				//	if (price_final >= 0.00f)
+				//	{
+				//		context.requirements_new.Add(Crafting.Requirement.Money(price_final));
 
-						ref var recipe_new = ref context.GetRecipeNew();
+				//		ref var recipe_new = ref context.GetRecipeNew();
 
-						if (recipe_new.tags.TrySetFlag(Crafting.Recipe.Tags.Gunsmith | Crafting.Recipe.Tags.Forge | Crafting.Recipe.Tags.Munitions, false))
-						{
-							recipe_new.tags.SetFlag(Crafting.Recipe.Tags.Manufactory, true);
-						}
+				//		if (recipe_new.tags.TrySetFlag(Crafting.Recipe.Tags.Gunsmith | Crafting.Recipe.Tags.Forge | Crafting.Recipe.Tags.Munitions, false))
+				//		{
+				//			recipe_new.tags.SetFlag(Crafting.Recipe.Tags.Manufactory, true);
+				//		}
 
-						recipe_new.type = Crafting.Recipe.Type.Buy;
+				//		recipe_new.type = Crafting.Recipe.Type.Buy;
 
-						return true;
-					}
-					else
-					{
-						return false;
-					}
-				});
+				//		return true;
+				//	}
+				//	else
+				//	{
+				//		return false;
+				//	}
+				//});
 
 #if SERVER
 				Player.OnCreate += OnPlayerCreate;

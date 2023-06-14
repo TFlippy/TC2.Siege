@@ -166,6 +166,15 @@ namespace TC2.Siege
 				{
 					ent_unit.AddRel<Squad.Relation>(ent_squad);
 
+					ref var bounty_new = ref ent_unit.GetOrAddComponent<Siege.Bounty.Data>(sync: false, ignore_mask: true);
+					if (!bounty_new.IsNull())
+					{
+
+
+						//bounty_new = bounty;
+						//App.WriteLine($"add bounty {bounty_new.rewards[0].type} {bounty_new.rewards[0].amount}");
+					}
+
 					foreach (var h_inventory in ent_unit.GetInventories())
 					{
 						h_inventory.Flags |= Inventory.Flags.Unlimited | Inventory.Flags.No_Drop;
@@ -195,9 +204,33 @@ namespace TC2.Siege
 
 #if SERVER
 		[ISystem.Event<Despawn.DespawnEvent>(ISystem.Mode.Single, order: -10)]
-		public static void OnDespawn(ISystem.Info info, Entity entity, ref Region.Data region, ref Despawn.DespawnEvent data)
+		public static void OnDespawn(ISystem.Info info, Entity entity, ref Region.Data region, ref Despawn.DespawnEvent data, [Source.Owned] in Transform.Data transform, [Source.Global] ref Siege.Bounty.Global g_bounty)
 		{
-			App.WriteLine($"Despawned {entity.GetFullName()}");
+			if (entity.TryGetPrefab(out var prefab))
+			{
+				var node = Claim.GetNodeAtWorldPos(ref region.GetTerrain(), transform.position);
+				var reward = 0.00f;
+
+				reward += prefab.cost_materials * 0.90f ?? 0.00f;
+				reward += prefab.cost_work * 0.75f ?? 0.00f;
+				reward += prefab.cost_extra * 0.85f ?? 0.00f;
+
+				if (reward > 0.00f)
+				{
+					reward = MathF.Pow(reward * 25.00f, 0.65f);
+					reward = Money.ToBataPrice(reward);
+
+					if (reward > 10.00f)
+					{
+						var rewards_span = g_bounty.rewards.AsSpan();
+						rewards_span.Add(Crafting.Product.Money(reward));
+
+						region.SyncGlobal(ref g_bounty);
+					}
+				}
+
+				App.WriteLine($"Despawned {prefab.GetName()}; territory: {node.Faction}; reward: {reward:0.00} money");
+			}
 		}
 
 		public static void SetKoboldLoadout(Entity ent_kobold, float weapon_mult = 1.00f, float armor_mult = 1.00f)
