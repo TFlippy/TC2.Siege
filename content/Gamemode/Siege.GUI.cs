@@ -58,7 +58,7 @@ namespace TC2.Siege
 											if (reward.type == Crafting.Product.Type.Money)
 											{
 												var amount = Money.ToBataPrice(reward.amount * multiplier);
-												GUI.Title($"Payout of {amount:0.00} coins in {(MathF.Max(this.g_bounty.t_next_payout - this.g_siege_state.t_match_elapsed, 0.00f)):0}s", font: GUI.Font.Monaco, size: 14, color: GUI.font_color_green);
+												GUI.Title($"Payout of {amount:0.00} {Money.symbol} in {(MathF.Max(this.g_bounty.t_next_payout - this.g_siege_state.t_match_elapsed, 0.00f)):0}s", font: GUI.Font.Monaco, size: 14, color: GUI.font_color_green);
 
 												break;
 											}

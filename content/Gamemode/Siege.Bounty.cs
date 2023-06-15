@@ -18,7 +18,7 @@ namespace TC2.Siege
 			[IGlobal.Data(false, Net.SendType.Unreliable)]
 			public partial struct Global: IGlobal
 			{
-				[Save.Ignore] public FixedArray8<Crafting.Product> rewards;
+				[Save.Ignore] public FixedArray4<Crafting.Product> rewards;
 
 				public float update_interval = 10.00f;
 				public float payout_interval = 30.00f;
@@ -59,25 +59,55 @@ namespace TC2.Siege
 					{
 						g_bounty.t_next_payout = 0.00f;
 
-						if (g_bounty.rewards.AsSpan().HasAny())
+						var rewards_span = g_bounty.rewards.AsSpan();
+						if (rewards_span.HasAny())
 						{
-							var rewards_tmp = g_bounty.rewards;
-							var multiplier = Maths.Lerp(1.00f, 1.00f / (float)g_siege_state.player_count, g_siege.reward_share_ratio) * g_siege.reward_mult;
+							//var multiplier = Maths.Lerp(1.00f, 1.00f / (float)g_siege_state.player_count, g_siege.reward_share_ratio) * g_siege.reward_mult;
 
-							foreach (ref var reward in rewards_tmp.AsSpan())
+							Span<Entity> span_squads = stackalloc Entity[16];
+
+							var ts = Timestamp.Now();
+							region.GetEntsWithComponent<Squad.Data>(ref span_squads, h_faction: g_siege_state.faction_defenders);
+							var ts_elapsed = ts.GetMilliseconds();
+
+							//GUI.Title($"Squads {span_squads.Length}; {ts_elapsed:0.0000} ms");
+
+							if (span_squads.Length > 0)
 							{
-								if (reward.type == Crafting.Product.Type.Money)
+								var multiplier = Maths.Lerp(1.00f, 1.00f / (float)span_squads.Length, g_siege.reward_share_ratio) * g_siege.reward_mult;
+
+								foreach (ref var reward in rewards_span)
 								{
-									reward.amount = Money.ToBataPrice(reward.amount * multiplier);
-									Notification.Push(ref region, $"Received payment of {reward.amount:0.00} coins.", Color32BGRA.Green, lifetime: 10.00f, sound: "quest_complete", volume: 0.25f, pitch: 0.90f);
+									if (reward.type == Crafting.Product.Type.Money)
+									{
+										reward.amount = Money.ToBataPrice(reward.amount * multiplier);
+										Notification.Push(ref region, $"Received payment of {reward.amount:0.00} {Money.symbol}.", Color32BGRA.Green, lifetime: 10.00f, sound: "quest_complete", volume: 0.25f, pitch: 0.90f);
+									}
+								}
+
+								foreach (var ent_squad in span_squads)
+								{
+									Crafting.Context.New(ref region, ent_squad, ent_squad, out var context, money: ent_squad);
+									Crafting.Produce(ref context, rewards_span);
+									//Notification.Push(ref region, $"Received payment of {reward.amount:0.00} coins.", Color32BGRA.Green, lifetime: 10.00f, sound: "quest_complete", volume: 0.25f, pitch: 0.90f);
 								}
 							}
 
-							for (var i = 0u; i < g_siege_state.player_count; i++)
-							{
-								var ent_player = region.GetConnectedPlayerEntityByIndex(i);
-								Crafting.Produce(ref region, ent_player, ref rewards_tmp);
-							}
+
+							//foreach (ref var reward in rewards_tmp.AsSpan())
+							//{
+							//	if (reward.type == Crafting.Product.Type.Money)
+							//	{
+							//		reward.amount = Money.ToBataPrice(reward.amount * multiplier);
+							//		Notification.Push(ref region, $"Received payment of {reward.amount:0.00} coins.", Color32BGRA.Green, lifetime: 10.00f, sound: "quest_complete", volume: 0.25f, pitch: 0.90f);
+							//	}
+							//}
+
+							//for (var i = 0u; i < g_siege_state.player_count; i++)
+							//{
+							//	var ent_player = region.GetConnectedPlayerEntityByIndex(i);
+							//	Crafting.Produce(ref region, ent_player, ref rewards_tmp);
+							//}
 
 							g_bounty.rewards = default;
 							region.SyncGlobal(ref g_bounty);
@@ -99,6 +129,36 @@ namespace TC2.Siege
 				}
 
 				region.SyncGlobal(ref g_bounty);
+			}
+
+			[ISystem.Event<Despawn.DespawnEvent>(ISystem.Mode.Single, order: -10)]
+			public static void OnDespawn(ISystem.Info info, Entity entity, ref Region.Data region, ref Despawn.DespawnEvent data, [Source.Owned] in Transform.Data transform, [Source.Global] ref Siege.Bounty.Global g_bounty)
+			{
+				if (entity.TryGetPrefab(out var prefab))
+				{
+					var node = Claim.GetNodeAtWorldPos(ref region.GetTerrain(), transform.position);
+					var reward = 0.00f;
+
+					reward += prefab.cost_materials * 1.00f ?? 0.00f;
+					reward += prefab.cost_work * 0.75f ?? 0.00f;
+					reward += prefab.cost_extra * 0.90f ?? 0.00f;
+
+					if (reward > 0.00f)
+					{
+						reward = MathF.Pow(reward * 25.00f, 0.65f);
+						reward = Money.ToBataPrice(reward);
+
+						if (reward > 10.00f)
+						{
+							var rewards_span = g_bounty.rewards.AsSpan();
+							rewards_span.Add(Crafting.Product.Money(reward));
+
+							region.SyncGlobal(ref g_bounty);
+						}
+					}
+
+					App.WriteLine($"Despawned {prefab.GetName()}; territory: {node.Faction}; reward: {reward:0.00} money");
+				}
 			}
 #endif
 		}

@@ -5,6 +5,16 @@ namespace TC2.Siege
 {
 	public static partial class Siege
 	{
+		//public static partial class PlayerExt
+		//{
+		//	[IComponent.Data(Net.SendType.Unreliable)]
+		//	public partial struct Data: IComponent
+		//	{
+		//		public 
+
+		//	}
+		//}
+
 		[ISystem.AddFirst(ISystem.Mode.Single)]
 		public static void OnAddGuninventory(ISystem.Info info, Entity entity,
 		[Source.Owned, Pair.Of<Gun.Data>] ref Inventory1.Data inventory_magazine)

@@ -5,6 +5,9 @@ namespace TC2.Siege
 {
 	public static partial class Siege
 	{
+		//[Query]
+		//public delegate void GetAllSquadsQuery(ISystem.Info info, Entity entity, [Source.Owned] in Squad.Data squad, [Source.Owned, Optional] in Faction.Data faction);
+
 		[Query]
 		public delegate void GetAllTargetsQuery(ISystem.Info info, Entity entity, [Source.Owned] in Siege.Target.Data target, [Source.Owned] in Transform.Data transform, [Source.Owned, Optional] in Faction.Data faction);
 

@@ -13,25 +13,17 @@ namespace TC2.Siege
 			ref var player = ref context.GetPlayer();
 			var random = XorRandom.New(true);
 
-			var h_species_kobold = new ISpecies.Handle("kobold");
+			var h_species = new ISpecies.Handle("kobold");
 
 			Span<IOrigin.Handle> origins = stackalloc IOrigin.Handle[16];
-			IOrigin.Database.GetHandlesFiltered(ref origins, in h_species_kobold, (IOrigin.Definition d_origin, in ISpecies.Handle h_species) =>
+			IOrigin.Database.GetHandlesFiltered(ref origins, in h_species, (IOrigin.Definition d_origin, in ISpecies.Handle h_species) =>
 			{
 				return d_origin.data.species == h_species;
 			});
 
-			//var h_character = Dormitory.CreateCharacter(ref region, ref random, "kobold.gunner", h_faction: faction_id.GetValueOrDefault());
-			//Dormitory.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
-			//{
-			//	SetKoboldLoadout(ent);
-			//});
-
 			var h_character = Spawner.CreateCharacter(ref region, ref random, h_origin: origins.GetRandom(ref random), h_faction: faction_id.GetValueOrDefault());
 
 			Spawner.TryGenerateKits(ref random, h_character);
-
-
 			Spawner.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
 			{
 				ref var character = ref h_character.GetData();
@@ -40,18 +32,34 @@ namespace TC2.Siege
 					Loadout.Spawn(ent, character.kits);
 				}
 			});
+		}
 
-			//return SpawnCharacter(ref region, h_character, position, h_faction: h_faction, h_player: h_player).ContinueWith((ent) =>
-			//{
-			//	Loadout.Spawn(ent, kits_arr.AsSpan());
-			//	return ent;
-			//});
+		[ChatCommand.Region("human", "", creative: true)]
+		public static void HumanCommand(ref ChatCommand.Context context, byte? faction_id = null)
+		{
+			ref var region = ref context.GetRegion();
+			ref var player = ref context.GetPlayer();
+			var random = XorRandom.New(true);
 
+			var h_species = new ISpecies.Handle("human");
 
-			//region.SpawnPrefab("kobold.male", player.control.mouse.position, faction_id: faction_id ?? player.faction_id).ContinueWith((ent) =>
-			//{
-			//	SetKoboldLoadout(ent);
-			//});
+			Span<IOrigin.Handle> origins = stackalloc IOrigin.Handle[16];
+			IOrigin.Database.GetHandlesFiltered(ref origins, in h_species, (IOrigin.Definition d_origin, in ISpecies.Handle h_species) =>
+			{
+				return d_origin.data.species == h_species;
+			});
+
+			var h_character = Spawner.CreateCharacter(ref region, ref random, h_origin: origins.GetRandom(ref random), h_faction: faction_id.GetValueOrDefault());
+
+			Spawner.TryGenerateKits(ref random, h_character);
+			Spawner.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
+			{
+				ref var character = ref h_character.GetData();
+				if (character.IsNotNull())
+				{
+					Loadout.Spawn(ent, character.kits);
+				}
+			});
 		}
 
 		[ChatCommand.Region("giant", "", creative: true)]
@@ -61,23 +69,25 @@ namespace TC2.Siege
 			ref var player = ref context.GetPlayer();
 			var random = XorRandom.New(true);
 
-			var h_character = Spawner.CreateCharacter(ref region, ref random, "giant.artillerist", h_faction: faction_id.GetValueOrDefault());
-			Spawner.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
+			var h_species = new ISpecies.Handle("giant");
+
+			Span<IOrigin.Handle> origins = stackalloc IOrigin.Handle[16];
+			IOrigin.Database.GetHandlesFiltered(ref origins, in h_species, (IOrigin.Definition d_origin, in ISpecies.Handle h_species) =>
 			{
-				SetGiantLoadout(ent);
+				return d_origin.data.species == h_species;
 			});
 
+			var h_character = Spawner.CreateCharacter(ref region, ref random, h_origin: origins.GetRandom(ref random), h_faction: faction_id.GetValueOrDefault());
 
-			//ref var region = ref context.GetRegion();
-			//ref var player = ref context.GetPlayer();
-
-			//App.WriteLine(faction_id);
-
-
-			//region.SpawnPrefab("giant.male", player.control.mouse.position, faction_id: faction_id ?? player.faction_id).ContinueWith((ent) =>
-			//{
-			//	SetGiantLoadout(ent);
-			//});
+			Spawner.TryGenerateKits(ref random, h_character);
+			Spawner.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
+			{
+				ref var character = ref h_character.GetData();
+				if (character.IsNotNull())
+				{
+					Loadout.Spawn(ent, character.kits);
+				}
+			});
 		}
 
 		[ChatCommand.Region("tank", "", creative: true)]
@@ -172,6 +182,32 @@ namespace TC2.Siege
 				//if (map_handle.id != 0)
 				{
 					Siege.ChangeMap(ref region, map);
+				}
+			}
+		}
+
+		[ChatCommand.Region("reward", "", admin: true)]
+		public static void RewardCommand(ref ChatCommand.Context context, float amount)
+		{
+			ref var region = ref context.GetRegion();
+			if (!region.IsNull())
+			{
+				ref var g_siege_bounty = ref region.GetSingletonComponent<Siege.Bounty.Global>();
+				if (!g_siege_bounty.IsNull())
+				{
+					var rewards_span = g_siege_bounty.rewards.AsSpan();
+					rewards_span.Add(Crafting.Product.Money(amount));
+					region.SyncGlobal(ref g_siege_bounty);
+
+					if (context.GetConnection().IsNotNull())
+					{
+						Server.SendChatMessage($"Added {amount:0.00} {Money.symbol} to payout.", channel: Chat.Channel.System, target_player_id: context.GetConnection().GetPlayerID());
+					}
+
+					//else
+					//{
+					//	Server.SendChatMessage($"Current difficulty: {g_siege_state.difficulty:0.00}.", channel: Chat.Channel.System, target_player_id: context.GetConnection().GetPlayerID());
+					//}
 				}
 			}
 		}
