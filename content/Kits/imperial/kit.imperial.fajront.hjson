@@ -31,7 +31,7 @@
 			}
 			{
 				type: resource
-				material: "ammo_hc.hv"
+				material: "ammo_hc.arc.mt"
 				quantity: 100.000
 				flags: none
 			}

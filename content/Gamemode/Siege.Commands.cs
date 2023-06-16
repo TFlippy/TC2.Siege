@@ -21,7 +21,7 @@ namespace TC2.Siege
 				return d_origin.data.species == h_species;
 			});
 
-			var h_character = Spawner.CreateCharacter(ref region, ref random, h_origin: origins.GetRandom(ref random), h_faction: faction_id.GetValueOrDefault());
+			var h_character = Spawner.CreateCharacter(ref region, ref random, h_origin: origins.GetRandom(ref random), h_faction: faction_id ?? player.faction_id);
 
 			Spawner.TryGenerateKits(ref random, h_character);
 			Spawner.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
@@ -49,7 +49,7 @@ namespace TC2.Siege
 				return d_origin.data.species == h_species;
 			});
 
-			var h_character = Spawner.CreateCharacter(ref region, ref random, h_origin: origins.GetRandom(ref random), h_faction: faction_id.GetValueOrDefault());
+			var h_character = Spawner.CreateCharacter(ref region, ref random, h_origin: origins.GetRandom(ref random), h_faction: faction_id ?? player.faction_id);
 
 			Spawner.TryGenerateKits(ref random, h_character);
 			Spawner.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>
@@ -77,7 +77,7 @@ namespace TC2.Siege
 				return d_origin.data.species == h_species;
 			});
 
-			var h_character = Spawner.CreateCharacter(ref region, ref random, h_origin: origins.GetRandom(ref random), h_faction: faction_id.GetValueOrDefault());
+			var h_character = Spawner.CreateCharacter(ref region, ref random, h_origin: origins.GetRandom(ref random), h_faction: faction_id ?? player.faction_id);
 
 			Spawner.TryGenerateKits(ref random, h_character);
 			Spawner.SpawnCharacter(ref region, h_character, player.control.mouse.position, h_faction: faction_id ?? player.faction_id).ContinueWith((ent) =>

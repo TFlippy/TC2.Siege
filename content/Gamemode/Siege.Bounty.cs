@@ -34,6 +34,21 @@ namespace TC2.Siege
 			}
 
 #if SERVER
+			[ISystem.RemoveLast(ISystem.Mode.Single)]
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			//public static void OnCharacterRemove(ISystem.Info info, Entity entity, [Source.Shared] ref Character.Data character, [Source.Shared] ref Money.Data money, [Source.Owned] in Organic.State organic_state)
+			public static void OnCharacterRemove(ISystem.Info info, Entity ent_money_character, Entity ent_money_squad, [Source.Shared] ref Character.Data character, [Source.Parent<Squad.Relation>] ref Money.Data money_squad, [Source.Shared] ref Money.Data money_character)
+			{
+				var amount = money_character.amount;
+				money_character.amount -= amount;
+				money_squad.amount += amount;
+
+				money_character.Sync(ent_money_character, true);
+				money_squad.Sync(ent_money_squad, true);
+
+				App.WriteLine($"OnCharacterRemove; {ent_money_character.GetName()} to {ent_money_squad.GetName()}; {amount} coins");
+			}
+
 			[ISystem.LateUpdate(ISystem.Mode.Single, interval: 0.50f)]
 			public static void OnUpdateRewards(ref Region.Data region, ISystem.Info info, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state, [Source.Global] ref Siege.Bounty.Global g_bounty)
 			{
