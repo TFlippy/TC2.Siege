@@ -276,11 +276,11 @@ namespace TC2.Siege
 					{
 						g_siege_state.status = Gamemode.Status.Running;
 					}
-					
+
 					g_siege_state.wave_current = (ushort)(wave - 1);
 					g_siege_state.t_next_wave = g_siege_state.t_match_elapsed;
 					Server.SendChatMessage($"Set wave to {wave}.", channel: Chat.Channel.System);
-					
+
 					region.SyncGlobal(ref g_siege_state);
 				}
 			}

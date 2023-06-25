@@ -168,7 +168,7 @@ namespace TC2.Siege
 
 				IRecipe.Database.AddAssetPostProcessor((IRecipe.Definition definition, ref IRecipe.Data data) =>
 				{
-					App.WriteLine($"{definition.Identifier}: {definition.mod_info?.Identifier}");
+					//App.WriteLine($"{definition.Identifier}: {definition.mod_info?.Identifier}");
 
 					if (definition.mod_info != mod_siege)
 					{

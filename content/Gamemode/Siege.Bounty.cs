@@ -152,6 +152,8 @@ namespace TC2.Siege
 				if (entity.TryGetPrefab(out var prefab))
 				{
 					var node = Claim.GetNodeAtWorldPos(ref region.GetTerrain(), transform.position);
+					var faction_id = node.Faction;
+
 					var reward = 0.00f;
 
 					reward += prefab.cost_materials * 1.00f ?? 0.00f;
@@ -169,10 +171,12 @@ namespace TC2.Siege
 							rewards_span.Add(Crafting.Product.Money(reward));
 
 							region.SyncGlobal(ref g_bounty);
+
+							WorldNotification.Push(ref region, $"Salvaged!\n+{reward:0.00} {Money.symbol}", color: Color32BGRA.Yellow, transform.position, force: new Vector2(0.00f, -1.00f), velocity: Vector2.Zero, lifetime: 5.00f, faction_id: faction_id);
 						}
 					}
 
-					App.WriteLine($"Despawned {prefab.GetName()}; territory: {node.Faction}; reward: {reward:0.00} money");
+					//App.WriteLine($"Despawned {prefab.GetName()}; territory: {node.Faction}; reward: {reward:0.00} money");
 				}
 			}
 #endif
