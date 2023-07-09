@@ -699,7 +699,7 @@ namespace TC2.Siege
 			armor_mult = g_siege_state.difficulty * 0.04f;
 
 			//App.WriteLine($"spawn event {data.ent_target}");
-			SetKoboldLoadout(data.ent_target, weapon_mult: weapon_mult, armor_mult: armor_mult);
+			//SetKoboldLoadout(data.ent_target, weapon_mult: weapon_mult, armor_mult: armor_mult);
 
 			ref var commandable = ref data.ent_target.GetComponent<Commandable.Data>();
 			if (!commandable.IsNull())

@@ -425,7 +425,8 @@ namespace TC2.Siege
 												{
 													var rpc = new Dormitory.DEV_SpawnRPC()
 													{
-														h_character = h_selected_character_tmp
+														h_character = h_selected_character_tmp,
+														control = true
 													};
 
 													foreach (var h_kit in selected_items)
@@ -602,7 +603,7 @@ namespace TC2.Siege
 										{
 											if (faction.id == h_faction)
 											{
-												ref_selected_dormitory = entity;
+												ref_selected_dormitory.Set(entity);
 											}
 										});
 
@@ -729,7 +730,7 @@ namespace TC2.Siege
 															if (GUI.Selectable3("select", group_row.GetOuterRect(), selected))
 															{
 																//ref_selected_dormitory = selected ? default : entity;
-																if (ref_selected_dormitory.entity != entity) ref_selected_dormitory = entity; // selected ? default : entity;
+																if (ref_selected_dormitory.entity != entity) ref_selected_dormitory.Set(entity); // selected ? default : entity;
 															}
 														}
 													}

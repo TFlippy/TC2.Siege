@@ -46,7 +46,7 @@ namespace TC2.Siege
 				money_character.Sync(ent_money_character, true);
 				money_squad.Sync(ent_money_squad, true);
 
-				App.WriteLine($"OnCharacterRemove; {ent_money_character.GetName()} to {ent_money_squad.GetName()}; {amount} coins");
+				//App.WriteLine($"OnCharacterRemove; {ent_money_character.GetName()} to {ent_money_squad.GetName()}; {amount} coins");
 			}
 
 			[ISystem.LateUpdate(ISystem.Mode.Single, interval: 0.50f)]
