@@ -1,0 +1,112 @@
+$name: "Market"
+$desc: "A place to trade at."
+$tags: []
+
+body:
+{
+	type: static
+	
+	@shape.box:
+	{
+		size: [6.000, 4.000]
+		mass: 2000.000
+		radius: 0.000
+		friction: 0.950
+		elasticity: 0.500
+		material: stone
+		layer: entity, building, support, ignore_melee
+		mask: world, bounds
+	}
+}
+
+health:
+{
+	max: 75000.000
+}
+
+animated.renderer:
+{
+	sprite:
+	{
+		texture: "market"
+	}
+	offset: [0.000, -2.000]
+	z: -300.000
+	mask: "market.mask"
+}
+
+faction.colorable:
+{
+
+}
+
+transform:
+{
+
+}
+
+shop:
+{
+	name: "Market"
+	tags: market
+}
+
+interactable:
+{
+	window_size: [600.000, 422.000]
+}
+
+light:
+{
+	color: [1.000, 0.750, 0.100, 2.000]
+	offset: [-1.250, -2.600]
+	scale: [32.000, 32.000]
+	intensity: 0.800
+	texture: "light.circle.00"
+}
+
+faction:
+{
+
+}
+
+nameable:
+{
+	flags: randomize, no_rename
+}
+
+// spawn:
+// {
+// 	flags: none
+// }
+
+minimap.marker:
+{
+	sprite:
+	{
+		texture: "ui_icons_minimap"
+		size: [16, 16]
+		frame: [7, 0]
+	}
+
+	// flags: faction, spawner
+	flags: faction
+}
+
+// dormitory:
+// {
+// 	species: "human"
+// 	flags: no_hiring, no_kit_selection
+// 	max_kits: 2
+// 	kit_default: "survival"
+// 	characters_capacity: 4
+// 	characters_initial_count: 2
+// 	repopulate_interval: 120.000
+// 	character_flags_filter: 
+// 	{
+// 		require: none
+// 		include: bureaucrat, farmer, social, commerce, miner, hunter, artist, lower_middle_class, middle_class
+// 		exclude: upper_class, elite_class, lowlife, criminal, sedentary
+// 		weight: 2.000
+// 	}
+// }

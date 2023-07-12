@@ -10,6 +10,8 @@ namespace TC2.Siege
 			[IComponent.Data(Net.SendType.Unreliable)]
 			public partial struct Data: IComponent
 			{
+				[Save.Ignore, Net.Ignore] public float current_capture_progress_norm;
+				[Save.Ignore, Net.Ignore] public float current_capture_progress;
 				[Save.Ignore, Net.Ignore] public float last_capture_progress;
 
 				[Save.Ignore, Net.Ignore] public float t_next_notification;
@@ -34,22 +36,21 @@ namespace TC2.Siege
 				//}
 
 				[ISystem.LateUpdate(ISystem.Mode.Single, interval: 1.00f)]
-				public static void OnUpdateCapturable(ISystem.Info info, Entity entity,
+				public static void OnUpdateCapturable(ISystem.Info info, ref Region.Data region, Entity entity,
 				[Source.Owned] ref Capturable.Data capturable, [Source.Owned] ref Faction.Data faction, [Source.Owned] ref Siege.Target.Data siege_target, [Source.Global] in Siege.Gamemode g_siege, [Source.Global] in Siege.Gamemode.State g_siege_state)
 				{
-					ref var region = ref info.GetRegion();
+					ref var work = ref capturable.order.work[0];
+					siege_target.current_capture_progress = work.current;
+					siege_target.current_capture_progress_norm = Maths.NormalizeClamp(work.current, work.required);
 
 					if (info.WorldTime >= siege_target.t_next_notification_capture)
 					{
 						if (siege_target.t_next_notification_capture > 0.00f)
 						{
-							ref var work = ref capturable.order.work[0];
-							var capture_progress = work.current;
-
-							var delta = capture_progress - siege_target.last_capture_progress;
+							var delta = siege_target.current_capture_progress - siege_target.last_capture_progress;
 							if (MathF.Abs(delta) >= 10.00f)
 							{
-								siege_target.last_capture_progress = capture_progress;
+								siege_target.last_capture_progress = siege_target.current_capture_progress;
 
 								if (float.IsNegative(delta))
 								{
@@ -63,10 +64,8 @@ namespace TC2.Siege
 				}
 
 				[ISystem.Remove(ISystem.Mode.Single)]
-				public static void OnRemove(ISystem.Info info, Entity entity, [Source.Owned] ref Siege.Target.Data siege_target)
+				public static void OnRemove(ISystem.Info info, ref Region.Data region, Entity entity, [Source.Owned] ref Siege.Target.Data siege_target)
 				{
-					ref var region = ref info.GetRegion();
-
 					Notification.Push(ref region, $"{entity.GetFullName()} has been destroyed!", Color32BGRA.Red, lifetime: 10.00f, "buzzer.02", volume: 0.20f, pitch: 0.80f, send_type: Net.SendType.Reliable);
 				}
 #endif

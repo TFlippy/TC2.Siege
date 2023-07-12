@@ -1,0 +1,44 @@
+{
+	name: "Low-Caliber Ammo (Standard)"
+	desc:
+		'''
+		TODO: Desc
+		'''
+	
+	icon:
+	{
+		texture: "resource.ammo_lc"
+		size: [16, 16]
+		frame: [3, 0]
+	}
+
+	icon_extra:
+	{
+		texture: "ui_icons_gunsmith.mini"
+		size: [16, 16]
+		frame: [0, 0]
+	}
+	
+	min: 20
+	max: 60
+	step: 20
+	type: buy
+	tags: market
+	
+	requirements:
+	[
+		{
+			type: "money"
+			amount: 0.879
+		}
+	]
+	
+	products:
+	[
+		{
+			type: "resource"
+			material: "ammo_lc"
+			amount: 1.000
+		}
+	]
+}

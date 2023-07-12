@@ -1,0 +1,43 @@
+﻿{
+	name: "Bazooka"
+	desc: ""
+	
+	flags: none
+	slot: primary
+	categories: weapon, dangerous, heavy, explosive, gun, short_range, powerful, destructive, inaccurate
+	faction: "defenders"
+	species: "human"
+	
+	character_flags:
+	{
+		require: engineer
+		include: engineer
+		exclude: none
+		weight: 1.100
+	}
+	
+	amount_multiplier_min: 1.000
+	amount_multiplier_max: 1.000
+	
+	shipment:
+	{
+		items:
+		[
+			{
+				type: prefab
+				prefab: "bazooka"
+				quantity: 1.000
+				flags: pickup, despawn
+			}
+			{
+				type: resource
+				material: "ammo_rocket.hv"
+				quantity: 4.000
+				flags: none
+			}
+			null
+			null
+		]
+		flags: dirty, unpack
+	}
+}

@@ -1,0 +1,43 @@
+﻿{
+	name: "ABR 740"
+	desc: ""
+	
+	flags: none
+	slot: primary
+	categories: weapon, melee, gun, powerful, advanced
+	faction: "attackers"
+	species: "kobold"
+	
+	character_flags:
+	{
+		require: none
+		include: criminal, military, soldier, insane, evil
+		exclude: none
+		weight: 0.700
+	}
+	
+	amount_multiplier_min: 1.000
+	amount_multiplier_max: 1.000
+	
+	shipment:
+	{
+		items:
+		[
+			{
+				type: prefab
+				prefab: "bp.abr.740"
+				quantity: 1.000
+				flags: pickup, despawn
+			}
+			{
+				type: resource
+				material: "ammo_hc"
+				quantity: 150.000
+				flags: none
+			}
+			null
+			null
+		]
+		flags: dirty, unpack
+	}
+}

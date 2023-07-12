@@ -5,11 +5,18 @@ namespace TC2.Siege
 {
 	public static partial class Siege
 	{
+		//[Query]
+		//public delegate void GetAllSquadsQuery(ISystem.Info info, Entity entity, [Source.Owned] in Squad.Data squad, [Source.Owned, Optional] in Faction.Data faction);
+
 		[Query]
 		public delegate void GetAllTargetsQuery(ISystem.Info info, Entity entity, [Source.Owned] in Siege.Target.Data target, [Source.Owned] in Transform.Data transform, [Source.Owned, Optional] in Faction.Data faction);
 
 		[Query]
-		public delegate void GetAllUnitsQuery(ISystem.Info info, Entity entity, [Source.Owned] in Commandable.Data commandable, [Source.Owned, Override] in AI.Movement movement, [Source.Owned, Override] in AI.Behavior behavior, [Source.Owned] in Transform.Data transform, [Source.Owned] in Faction.Data faction);
+		public delegate void GetAllUnitsQuery(ISystem.Info info, Entity entity, 
+		[Source.Owned] in Commandable.Data commandable, 
+		[Source.Owned, Override] in AI.Movement movement, [Source.Owned, Override] in AI.Behavior behavior, 
+		[Source.Owned] in Transform.Data transform, [Source.Owned] in Faction.Data faction, 
+		[Source.Owned, Pair.Any, Optional(true)] in Squad.Relation squad_rel, [Source.Parent<Squad.Relation>, Optional(true)] in Squad.Data squad);
 
 		private struct FindTargetArgs
 		{
@@ -44,7 +51,7 @@ namespace TC2.Siege
 			public int wave_size_rem;
 			public FixedArray4<EntRef<Commandable.Data>> selection;
 
-			public GetAllUnitsQueryArgs(Entity ent_search, Entity ent_target, IAsset2<IFaction, IFaction.Data>.Handle faction_id, Vector2 position, Vector2 target_position, int selection_count, int wave_size_rem, FixedArray4<EntRef<Commandable.Data>> selection)
+			public GetAllUnitsQueryArgs(Entity ent_search, Entity ent_target, IFaction.Handle faction_id, Vector2 position, Vector2 target_position, int selection_count, int wave_size_rem, FixedArray4<EntRef<Commandable.Data>> selection)
 			{
 				this.ent_search = ent_search;
 				this.ent_target = ent_target;

@@ -1,0 +1,161 @@
+﻿{
+	name: "Engineer"
+	desc:
+		'''
+		TODO: Desc
+		'''
+	
+	money: 250.000
+	age: [24.000, 28.000, 30.000, 35.000, 50.000]
+	genders: male, female
+	gender_ratio: 0.050
+	species: "human"
+	faction: "defenders"
+	kit_default: "null"
+	character_flags: construction, military, professional, armed, technician, engineer, soldier, middle_class
+	
+	kit_filter_primary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: weapon
+			include: weapon, dangerous, heavy, explosive, gun, machine
+			exclude: none
+			weight: 2.000
+		}
+	}
+	
+	kit_filter_secondary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: none
+			include: tools, weapon, dangerous, explosive, gun, destructive
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_head:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: armor
+			include: armor
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_chest:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: armor
+			include: armor
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_utility:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: none
+			include: tools, explosive
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	conditions:
+	{
+		weight_mult: 0.600
+		
+		infrastructure:
+		{
+			require: military
+			include: military
+			exclude: none
+			weight: 40.000
+		}
+		
+		industry:
+		{
+			require: none
+			include: none
+			exclude: none
+			weight: 0.000
+		}
+		
+		crime:
+		{
+			require: none
+			include: none
+			exclude: none
+			weight: 0.000
+		}
+		
+		geography:
+		{
+			require: none
+			include: none
+			exclude: none
+			weight: 0.000
+		}
+		
+		urbanization: [0.000, 0.000, 0.000, 0.000]
+		industrialization: [0.000, 0.000, 0.000, 0.000]
+		education: [0.000, 0.000, 0.000, 0.000]
+		wealth: [0.000, 0.000, 0.000, 0.000]
+		wilderness: [0.000, 0.000, 0.000, 0.000]
+		devastation: [0.000, 0.000, 0.000, 0.000]
+		savagery: [0.000, 0.000, 0.000, 0.000]
+		anarchy: [0.000, 0.000, 0.000, 0.000]
+		elevation: [0.000, 0.000, 0.000, 0.000]
+	}
+	
+	experience:
+	{
+		handguns: 8
+		rifles: 11
+		explosives: 12
+		mining: 8
+		woodcutting: 5
+		construction: 8
+		masonry: 5
+		carpentry: 6
+		engineering: 8
+		blacksmithing: 5
+		arcanology: 6
+		strength: 10
+		dexterity: 7
+		endurance: 10
+		intellect: 7
+		geology: 6
+		metallurgy: 7
+		medicine: 5
+		commerce: 5
+		charisma: 5
+		leadership: 10
+		blades: 3
+		axes: 7
+		clubs: 7
+		chemistry: 6
+		farming: 1
+		animals: 4
+		scavenging: 9
+		law: 3
+	}
+}

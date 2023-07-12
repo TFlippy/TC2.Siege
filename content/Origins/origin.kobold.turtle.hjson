@@ -1,0 +1,148 @@
+﻿{
+	name: "Turtle"
+	desc:
+		'''
+		Heavily-armored kobold to be used as cover.
+		'''
+	
+	money: 3.000
+	age: [4.000, 5.000, 7.000, 8.000, 10.000, 20.000]
+	genders: male, female
+	gender_ratio: 0.100
+	species: "kobold"
+	faction: "attackers"
+	kit_default: "null"
+	character_flags: construction, criminal, military, laborer, armed, technician, engineer, poor, miner, culinary, soldier, insane, alcoholic, nomad, pet, entertainer, illiterate, brawler, strong, junkie, fanatic, lower_class
+	
+	kit_filter_primary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: weapon, short_range
+			include: weapon, dangerous, heavy, powerful
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_secondary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: armor, defensive
+			include: armor, weapon, heavy, short_range, defensive
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_head:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: heavy
+			include: armor, heavy
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_chest:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: none
+			include: armor, heavy
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	conditions:
+	{
+		weight_mult: 1.000
+		
+		infrastructure:
+		{
+			require: none
+			include: railway, highway, docks
+			exclude: none
+			weight: 7.000
+		}
+		
+		industry:
+		{
+			require: none
+			include: agricultural, mining, manufacturing, low_tech, metallurgy, scrap, logging
+			exclude: none
+			weight: 7.000
+		}
+		
+		crime:
+		{
+			require: none
+			include: slavery, vandalism, smuggling
+			exclude: none
+			weight: 5.000
+		}
+		
+		geography:
+		{
+			require: none
+			include: excavated, wasteland
+			exclude: none
+			weight: 10.000
+		}
+		
+		urbanization: [0.200, 0.000, 0.900, 10.000]
+		industrialization: [0.000, 0.000, 0.900, 80.000]
+		education: [0.000, 0.400, 0.000, 20.000]
+		wealth: [0.100, 0.000, 0.400, 5.000]
+		wilderness: [0.350, 0.000, 0.700, -5.000]
+		devastation: [0.000, 0.000, 0.500, 25.000]
+		savagery: [0.150, 0.000, 0.800, 40.000]
+		anarchy: [0.100, 0.800, 0.500, 5.000]
+		elevation: [0.000, 0.000, 0.000, 0.000]
+	}
+	
+	experience:
+	{
+		handguns: 1
+		rifles: 2
+		explosives: 3
+		mining: 8
+		woodcutting: 7
+		construction: 8
+		masonry: 6
+		carpentry: 5
+		engineering: 0
+		blacksmithing: 6
+		arcanology: 0
+		strength: 13
+		dexterity: 6
+		endurance: 10
+		intellect: 2
+		geology: 0
+		metallurgy: 0
+		medicine: 0
+		commerce: 0
+		charisma: 1
+		leadership: 1
+		blades: 3
+		axes: 7
+		clubs: 12
+		chemistry: 0
+		farming: 5
+		animals: 4
+		scavenging: 6
+		law: 0
+	}
+}

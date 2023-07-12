@@ -1,0 +1,43 @@
+﻿{
+	name: "Fajront"
+	desc: ""
+	
+	flags: none
+	slot: primary
+	categories: weapon, heavy, gun, advanced, powerful
+	faction: "defenders"
+	species: "human"
+	
+	character_flags:
+	{
+		require: strong
+		include: strong
+		exclude: none
+		weight: 1.800
+	}
+	
+	amount_multiplier_min: 1.000
+	amount_multiplier_max: 1.000
+	
+	shipment:
+	{
+		items:
+		[
+			{
+				type: prefab
+				prefab: "bp.fajront"
+				quantity: 1.000
+				flags: pickup, despawn
+			}
+			{
+				type: resource
+				material: "ammo_hc.arc.mt"
+				quantity: 100.000
+				flags: none
+			}
+			null
+			null
+		]
+		flags: dirty, unpack
+	}
+}

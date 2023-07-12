@@ -1,0 +1,44 @@
+{
+	name: "High-Caliber Ammo (Standard)"
+	desc:
+		'''
+		TODO: Desc
+		'''
+	
+	icon:
+	{
+		texture: "resource.ammo_hc"
+		size: [16, 16]
+		frame: [3, 0]
+	}
+
+	icon_extra:
+	{
+		texture: "ui_icons_gunsmith.mini"
+		size: [16, 16]
+		frame: [0, 0]
+	}
+	
+	min: 10
+	max: 50
+	step: 10
+	type: buy
+	tags: market
+	
+	requirements:
+	[
+		{
+			type: "money"
+			amount: 1.790
+		}
+	]
+	
+	products:
+	[
+		{
+			type: "resource"
+			material: "ammo_hc"
+			amount: 1.000
+		}
+	]
+}

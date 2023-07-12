@@ -1,126 +1,161 @@
-{
+﻿{
 	name: "Soldier"
 	desc:
 		'''
-		TODO
+		TODO: Desc
 		'''
 	
-	money: 500.000
-	genders: male, female
-	character_flags: military, professional, armed
+	money: 75.000
+	age: [18.000, 20.000, 22.000, 24.000, 35.000]
+	genders: male
+	gender_ratio: 0.000
+	species: "human"
+	faction: "defenders"
+	kit_default: "null"
+	character_flags: military, armed, hunter, soldier, outdoor, strong, middle_class
+	
+	kit_filter_primary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: weapon, gun
+			include: weapon, dangerous, heavy, gun
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_secondary:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: weapon
+			include: armor, weapon, melee, gun, defensive, small, healing
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_head:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: armor, heavy
+			include: armor, heavy
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_chest:
+	{
+		chance: 1.000
+		
+		categories:
+		{
+			require: armor, heavy
+			include: armor, heavy
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	kit_filter_utility:
+	{
+		chance: 0.600
+		
+		categories:
+		{
+			require: none
+			include: none
+			exclude: none
+			weight: 1.000
+		}
+	}
+	
+	conditions:
+	{
+		weight_mult: 1.000
+		
+		infrastructure:
+		{
+			require: military
+			include: military
+			exclude: none
+			weight: 40.000
+		}
+		
+		industry:
+		{
+			require: none
+			include: none
+			exclude: none
+			weight: 0.000
+		}
+		
+		crime:
+		{
+			require: none
+			include: none
+			exclude: none
+			weight: 0.000
+		}
+		
+		geography:
+		{
+			require: none
+			include: none
+			exclude: none
+			weight: 0.000
+		}
+		
+		urbanization: [0.000, 0.000, 0.000, 0.000]
+		industrialization: [0.000, 0.000, 0.000, 0.000]
+		education: [0.000, 0.000, 0.000, 0.000]
+		wealth: [0.000, 0.000, 0.000, 0.000]
+		wilderness: [0.000, 0.000, 0.000, 0.000]
+		devastation: [0.000, 0.000, 0.000, 0.000]
+		savagery: [0.000, 0.000, 0.000, 0.000]
+		anarchy: [0.000, 0.000, 0.000, 0.000]
+		elevation: [0.000, 0.000, 0.000, 0.000]
+	}
 	
 	experience:
 	{
-		levels:
-		{
-			handguns:
-			{
-				level: 14
-			}
-			rifles:
-			{
-				level: 15
-			}
-			explosives:
-			{
-				level: 7
-			}
-			mining:
-			{
-				level: 1
-			}
-			woodcutting:
-			{
-				level: 3
-			}
-			construction:
-			{
-				level: 3
-			}
-			masonry:
-			{
-				level: 1
-			}
-			carpentry:
-			{
-				level: 3
-			}
-			engineering:
-			{
-				level: 3
-			}
-			blacksmithing:
-			{
-				level: 1
-			}
-			strength:
-			{
-				level: 13
-			}
-			dexterity:
-			{
-				level: 7
-			}
-			endurance:
-			{
-				level: 14
-			}
-			intellect:
-			{
-				level: 7
-			}
-			geology:
-			{
-				level: 1
-			}
-			metallurgy:
-			{
-				level: 1
-			}
-			medicine:
-			{
-				level: 5
-			}
-			commerce:
-			{
-				level: 2
-			}
-			charisma:
-			{
-				level: 5
-			}
-			leadership:
-			{
-				level: 12
-			}
-			blades:
-			{
-				level: 7
-			}
-			axes:
-			{
-				level: 5
-			}
-			clubs:
-			{
-				level: 7
-			}
-			chemistry:
-			{
-				level: 2
-			}
-			farming:
-			{
-				level: 0
-			}
-			animals:
-			{
-				level: 4
-			}
-			scavenging:
-			{
-				level: 5
-			}
-		}
+		handguns: 12
+		rifles: 14
+		explosives: 7
+		mining: 3
+		woodcutting: 3
+		construction: 3
+		masonry: 1
+		carpentry: 5
+		engineering: 3
+		blacksmithing: 1
+		arcanology: 3
+		strength: 12
+		dexterity: 8
+		endurance: 14
+		intellect: 4
+		geology: 1
+		metallurgy: 1
+		medicine: 4
+		commerce: 2
+		charisma: 3
+		leadership: 9
+		blades: 9
+		axes: 9
+		clubs: 4
+		chemistry: 2
+		farming: 4
+		animals: 4
+		scavenging: 5
+		law: 3
 	}
 }

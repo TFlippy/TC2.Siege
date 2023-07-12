@@ -1,0 +1,33 @@
+{
+	name: "Pervitin 50mg ER"
+	desc: ""
+	
+	flags: none
+	slot: utility
+	categories: usable, small, drug, chemical, consumable
+	faction: "defenders"
+	species: "human"
+	
+	character_flags:
+	{
+		require: none
+		include: medical, engineer, scientist
+		exclude: none
+		weight: 1.000
+	}
+	
+	shipment:
+	{
+		name: "Pervitin 50mg ER"
+		items:
+		[
+			{
+				type: prefab
+				prefab: "bp.pervitin.50mg.er"
+				quantity: 1.000
+				flags: despawn
+			}
+		]
+		flags: unpack
+	}
+}

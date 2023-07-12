@@ -8,7 +8,7 @@
 			period: 1
 			weight: 0.500	
 			priority: 0
-			duration: 60.000
+			duration: 120.000
 			
 			music: "music.action.02.cue"
 			music_volume: 0.330
@@ -22,7 +22,7 @@
 			period: 2
 			weight: 0.500	
 			priority: 1
-			duration: 60.000
+			duration: 120.000
 			
 			music: "music.action.08.short"
 			music_volume: 0.600
@@ -36,7 +36,7 @@
 			period: 3
 			weight: 0.500	
 			priority: 2
-			duration: 60.000
+			duration: 120.000
 			
 			music: "music.action.05.short"
 			music_volume: 0.350

@@ -44,10 +44,11 @@ namespace TC2.Siege
 			[Save.Ignore] public int wave_size_max = 50;
 			[Save.Ignore] public float wave_size_mult = 1.00f;
 
-			[Save.Ignore] public float wave_interval = 60.00f;
+			[Save.Ignore] public float wave_interval = 120.00f;
 			[Save.Ignore] public float wave_interval_difficulty_mult = 1.00f;
 
 			[Save.Ignore] public uint max_npc_count = 32;
+			[Save.Ignore] public uint max_characters_per_player = 10;
 
 			[Flags]
 			public enum Flags: uint
@@ -55,7 +56,8 @@ namespace TC2.Siege
 				None = 0,
 
 				Active = 1 << 0,
-				Paused = 1 << 1
+				Paused = 1 << 1,
+				No_Dispatcher = 1 << 2,
 			}
 
 			public enum Status: uint
@@ -75,24 +77,24 @@ namespace TC2.Siege
 				[Save.Ignore] public IFaction.Handle faction_defenders = "defenders";
 				[Save.Ignore] public IFaction.Handle faction_attackers = "attackers";
 
-				[Save.Ignore] public ushort wave_current;
+				public ushort wave_current;
 				[Save.Ignore] public byte target_count;
 				[Save.Ignore] public byte player_count;
 
-				[Save.Ignore] public IScenario.Handle scenario = "bouda.00";
-				[Save.Ignore] public int? scenario_wave_index_current;
+				public IScenario.Handle scenario = "bouda.00";
+				public int? scenario_wave_index_current;
 
 				/// <summary>
 				/// Current match difficulty.
 				/// </summary>
-				[Save.Ignore] public float difficulty = 1.00f;
+				public float difficulty = 1.00f;
 
-				[Save.Ignore] public Siege.Gamemode.Flags flags;
-				[Save.Ignore] public Siege.Gamemode.Status status;
+				public Siege.Gamemode.Flags flags;
+				public Siege.Gamemode.Status status;
 
-				[Save.Ignore] public float t_match_elapsed;
-				[Save.Ignore] public float t_last_wave;
-				[Save.Ignore] public float t_next_wave;
+				public float t_match_elapsed;
+				public float t_last_wave;
+				public float t_next_wave;
 				[Save.Ignore, Net.Ignore] public float t_next_restart;
 				[Save.Ignore, Net.Ignore] public float t_last_notification;
 
@@ -114,14 +116,15 @@ namespace TC2.Siege
 				Constants.Block.global_yield_modifier = 0.00f;
 
 				Constants.Organic.rotting_speed *= 10.00f;
+				Rotting.enable_effects = false;
 
 				Constants.World.save_factions = false;
 				Constants.World.save_players = true;
-				Constants.World.save_characters = false;
+				Constants.World.save_characters = true;
 
 				Constants.World.load_factions = false;
 				Constants.World.load_players = true;
-				Constants.World.load_characters = false;
+				Constants.World.load_characters = true;
 
 				Constants.World.enable_autosave = false;
 
@@ -159,6 +162,7 @@ namespace TC2.Siege
 					else if (identifier.StartsWith("forge.", StringComparison.OrdinalIgnoreCase)) return true;
 					else if (identifier.StartsWith("manufactory.", StringComparison.OrdinalIgnoreCase)) return true;
 					else if (identifier.StartsWith("vending.", StringComparison.OrdinalIgnoreCase)) return true;
+					else if (identifier.StartsWith("wrench.", StringComparison.OrdinalIgnoreCase)) return true;
 					else return false;
 				});
 
@@ -173,8 +177,96 @@ namespace TC2.Siege
 							data.flags.SetFlag(Crafting.Recipe.Flags.Hidden, true);
 							data.type = Crafting.Recipe.Type.Buy;
 							data.tags = Crafting.Recipe.Tags.Manufactory;
+
+							var products = data.products.AsSpan();
+
+							if (data.flags.HasAny(Crafting.Recipe.Flags.Blueprintable) && products[0].type == Crafting.Product.Type.Prefab)
+							{
+								if (products[0].prefab.TryGetPrefab(out var prefab))
+								{
+									var requirements = data.requirements.AsSpan();
+									requirements.GetTotalCost(out var cost_materials, out var cost_work, out var cost_extra);
+
+									if (cost_materials > 0.00f)
+									{
+										prefab.cost_materials = cost_materials;
+									}
+
+									if (cost_work > 0.00f)
+									{
+										prefab.cost_work = cost_work;
+									}
+
+									if (cost_extra > 0.00f)
+									{
+										prefab.cost_extra = cost_extra;
+									}
+								}
+							}
 						}
 					}
+
+					//if (!data.flags.HasAny(Crafting.Recipe.Flags.Hidden))
+					//{
+					//	Span<Crafting.Requirement> requirements_old = data.requirements.AsSpan();
+					//	Span<Crafting.Requirement> requirements_new = stackalloc Crafting.Requirement[data.requirements.Length];
+
+					//	var price = 0.00f;
+					//	var complexity = 1.00f;
+
+					//	foreach (ref var req in requirements_old)
+					//	{
+					//		switch (req.type)
+					//		{
+					//			case Crafting.Requirement.Type.Money:
+					//			{
+					//				App.WriteLine($"+ money {req.amount}");
+					//				price += req.amount;
+					//			}
+					//			break;
+
+					//			case Crafting.Requirement.Type.Work:
+					//			{
+					//				App.WriteLine($"+ {req.work} {MathF.Sqrt(req.amount * req.difficulty * 0.50f) * (req.difficulty * 0.10f)}");
+					//				price += MathF.Sqrt(req.amount * req.difficulty * 0.50f) * (req.difficulty * 0.10f);
+					//				complexity += 0.05f;
+					//			}
+					//			break;
+
+					//			case Crafting.Requirement.Type.Resource:
+					//			{
+					//				ref var material = ref req.material.GetData();
+					//				if (!material.IsNull())
+					//				{
+					//					ref var commodity = ref material.commodity.GetRef();
+					//					if (commodity.IsNotNull())
+					//					{
+					//						App.WriteLine($"+ {material.name}: {req.amount} * {commodity.market_price}");
+					//						price += commodity.market_price * req.amount;
+					//					}
+					//					else
+					//					{
+					//						App.WriteLine($"+ {material.name}: 10 * {req.amount}");
+					//						price += 10.00f * req.amount;
+					//					}
+					//					complexity += 0.15f;
+					//				}
+					//			}
+					//			break;
+					//		}
+					//	}
+
+					//	var price_final = Money.ToBataPrice(price * complexity);
+					//	if (price_final >= 0.00f)
+					//	{
+					//		App.WriteLine($"{data.name}: price_final: {price_final:0.00}", App.Color.Cyan);
+
+					//		requirements_new.Add(Crafting.Requirement.Money(price_final));
+					//		requirements_old.Clear();
+					//		requirements_new.CopyTo(requirements_old);
+					//	}
+					//}
+				
 				});
 
 				IOrigin.Database.AddAssetFilter((string path, string identifier, ModInfo mod_info) =>
@@ -183,60 +275,74 @@ namespace TC2.Siege
 					else return false;
 				});
 
-				Augment.AddPostProcessor((ref IBlueprint.Data blueprint, ref Augment.Context context) =>
+				IKit.Database.AddAssetFilter((string path, string identifier, ModInfo mod_info) =>
 				{
-					Span<Crafting.Requirement> requirements_tmp = stackalloc Crafting.Requirement[context.requirements_new.Length];
-					context.requirements_new.CopyTo(requirements_tmp);
-					context.requirements_new.Clear();
-
-					var price = 0.00f;
-					var complexity = 1.00f;
-
-					foreach (ref var req in requirements_tmp)
-					{
-						switch (req.type)
-						{
-							case Crafting.Requirement.Type.Work:
-							{
-								price += MathF.Sqrt(req.amount * req.difficulty * 0.50f) * (req.difficulty * 0.10f);
-								complexity += 0.05f;
-							}
-							break;
-
-							case Crafting.Requirement.Type.Resource:
-							{
-								ref var material = ref req.material.GetData();
-								if (!material.IsNull())
-								{
-									price += material.market_price * req.amount;
-									complexity += 0.15f;
-								}
-							}
-							break;
-						}
-					}
-
-					var price_final = Money.ToBataPrice(price * complexity);
-					if (price_final >= 0.00f)
-					{
-						context.requirements_new.Add(Crafting.Requirement.Money(price_final));
-
-						ref var recipe_new = ref context.GetRecipeNew();
-
-						if (recipe_new.tags.TrySetFlag(Crafting.Recipe.Tags.Gunsmith | Crafting.Recipe.Tags.Forge | Crafting.Recipe.Tags.Munitions, false))
-						{
-							recipe_new.tags.SetFlag(Crafting.Recipe.Tags.Manufactory, true);
-						}
-
-						recipe_new.type = Crafting.Recipe.Type.Buy;
-
-						return true;
-					}
-					else
-					{
-						return false;
-					}
+					if (mod_info == mod_siege) return true;
+					else return false;
 				});
+
+				//Augment.AddPostProcessor((ref IBlueprint.Data blueprint, ref Augment.Context context) =>
+				//{
+				//	Span<Crafting.Requirement> requirements_tmp = stackalloc Crafting.Requirement[context.requirements_new.Length];
+				//	context.requirements_new.CopyTo(requirements_tmp);
+				//	context.requirements_new.Clear();
+
+				//	var price = 0.00f;
+				//	var complexity = 1.00f;
+
+				//	foreach (ref var req in requirements_tmp)
+				//	{
+				//		switch (req.type)
+				//		{
+				//			case Crafting.Requirement.Type.Work:
+				//			{
+				//				price += MathF.Sqrt(req.amount * req.difficulty * 0.50f) * (req.difficulty * 0.10f);
+				//				complexity += 0.05f;
+				//			}
+				//			break;
+
+				//			case Crafting.Requirement.Type.Resource:
+				//			{
+				//				ref var material = ref req.material.GetData();
+				//				if (!material.IsNull())
+				//				{
+				//					ref var commodity = ref material.commodity.GetRef();
+				//					if (commodity.IsNotNull())
+				//					{
+				//						price += commodity.market_price * req.amount;
+				//					}
+				//					else
+				//					{
+				//						price += 10.00f * req.amount;
+				//					}
+				//					complexity += 0.15f;
+				//				}
+				//			}
+				//			break;
+				//		}
+				//	}
+
+				//	var price_final = Money.ToBataPrice(price * complexity);
+				//	if (price_final >= 0.00f)
+				//	{
+				//		context.requirements_new.Add(Crafting.Requirement.Money(price_final));
+
+				//		ref var recipe_new = ref context.GetRecipeNew();
+
+				//		if (recipe_new.tags.TrySetFlag(Crafting.Recipe.Tags.Gunsmith | Crafting.Recipe.Tags.Forge | Crafting.Recipe.Tags.Munitions, false))
+				//		{
+				//			recipe_new.tags.SetFlag(Crafting.Recipe.Tags.Manufactory, true);
+				//		}
+
+				//		recipe_new.type = Crafting.Recipe.Type.Buy;
+
+				//		return true;
+				//	}
+				//	else
+				//	{
+				//		return false;
+				//	}
+				//});
 
 #if SERVER
 				Player.OnCreate += OnPlayerCreate;
@@ -244,14 +350,14 @@ namespace TC2.Siege
 				{
 					player.SetFaction("defenders");
 
-					if (!player.GetControlledCharacter().IsValid())
-					{
-						var ent_character_soldier = Character.Create(ref region, "Soldier", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Military, origin: "imperial.soldier", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 5, beard_frame: 1);
-						var ent_character_sapper = Character.Create(ref region, "Sapper", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Engineering | Character.Flags.Military, origin: "imperial.sapper", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 2, beard_frame: 7);
-						var ent_character_medic = Character.Create(ref region, "Medic", prefab: "human.female", flags: Character.Flags.Human | Character.Flags.Medical | Character.Flags.Military, origin: "imperial.medic", gender: Organic.Gender.Female, player_id: player.id, hair_frame: 10);
+					//if (!player.GetControlledCharacter().IsValid())
+					//{
+					//	var ent_character_soldier = Character.Create(ref region, "Soldier", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Military, origin: "imperial.soldier", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 5, beard_frame: 1);
+					//	var ent_character_sapper = Character.Create(ref region, "Sapper", prefab: "human.male", flags: Character.Flags.Human | Character.Flags.Engineering | Character.Flags.Military, origin: "imperial.sapper", gender: Organic.Gender.Male, player_id: player.id, hair_frame: 2, beard_frame: 7);
+					//	var ent_character_medic = Character.Create(ref region, "Medic", prefab: "human.female", flags: Character.Flags.Human | Character.Flags.Medical | Character.Flags.Military, origin: "imperial.medic", gender: Organic.Gender.Female, player_id: player.id, hair_frame: 10);
 
-						player.SetControlledCharacter(ent_character_soldier);
-					}
+					//	player.SetControlledCharacter(ent_character_soldier);
+					//}
 				}
 #endif
 
@@ -300,11 +406,9 @@ namespace TC2.Siege
 		}
 
 		[ISystem.VeryLateUpdate(ISystem.Mode.Single)]
-		public static void UpdateSiegeLate(ISystem.Info info, [Source.Global] ref Siege.Gamemode g_siege, [Source.Global] ref Siege.Gamemode.State g_siege_state)
+		public static void UpdateSiegeLate(ISystem.Info info, ref Region.Data region, ref XorRandom random, [Source.Global] ref Siege.Gamemode g_siege, [Source.Global] ref Siege.Gamemode.State g_siege_state)
 		{
 			//App.WriteLine(siege.target_count);
-
-			ref var region = ref info.GetRegion();
 
 #if SERVER
 			var sync = false;
@@ -324,7 +428,7 @@ namespace TC2.Siege
 				{
 					case Gamemode.Status.Undefined:
 					{
-						if (!Constants.World.disable_gameplay)
+						if (!Constants.World.edit_mode)
 						{
 							g_siege_state.status = Gamemode.Status.Preparing;
 						}
@@ -378,7 +482,7 @@ namespace TC2.Siege
 								g_siege_state.scenario_wave_index_current = null;
 
 								var duration = g_siege.wave_interval;
-						
+
 								ref var scenario = ref g_siege_state.scenario.GetData(out var scenario_asset);
 								if (!scenario.IsNull())
 								{
@@ -419,7 +523,7 @@ namespace TC2.Siege
 										var wave_info_current = waves_filtered.Where(x => x.priority >= priority_max).FirstOrDefault();
 										g_siege_state.scenario_wave_index_current = wave_info_current.index;
 
-										App.WriteLine(wave_info_current.index);
+										//App.WriteLine(wave_info_current.index);
 									}
 
 									//Span<WaveInfo> waves_filtered = stackalloc WaveInfo[waves_tmp_count];
@@ -461,7 +565,7 @@ namespace TC2.Siege
 
 								sync |= true;
 
-								//Notification.Push(ref region, $"Group of {planner.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
+								//Notification.Push(ref region, $"Group of {coordinator.wave_size} kobolds approaching from the {((transform.position.X / region.GetTerrain().GetWidth()) < 0.50f ? "west" : "east")}!", Color32BGRA.Yellow, lifetime: 10.00f, "ui.alert.02", volume: 0.60f, pitch: 0.75f);
 								//Notification.Push(ref region, $"Wave #{g_siege_state.wave_current}!", Color32BGRA.Red, lifetime: 30.00f, "ui.alert.11", volume: 0.60f, pitch: 0.80f);
 								Notification.Push(ref region, $"Wave #{g_siege_state.wave_current}!", Color32BGRA.Red, lifetime: 30.00f, "siren.00", volume: 0.20f, pitch: 1.00f, send_type: Net.SendType.Reliable);
 							}

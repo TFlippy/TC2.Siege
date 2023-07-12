@@ -1,0 +1,43 @@
+﻿{
+	name: "ABR 740-Protektor"
+	desc: ""
+	
+	flags: none
+	slot: primary
+	categories: weapon, gun, armor, defensive, heavy
+	faction: "defenders"
+	species: "human"
+	
+	character_flags:
+	{
+		require: military
+		include: military
+		exclude: none
+		weight: 1.400
+	}
+	
+	amount_multiplier_min: 1.000
+	amount_multiplier_max: 1.000
+	
+	shipment:
+	{
+		items:
+		[
+			{
+				type: prefab
+				prefab: "bp.abr.740.protektor"
+				quantity: 1.000
+				flags: pickup, despawn
+			}
+			{
+				type: resource
+				material: "ammo_hc.hv"
+				quantity: 150.000
+				flags: none
+			}
+			null
+			null
+		]
+		flags: dirty, unpack
+	}
+}
