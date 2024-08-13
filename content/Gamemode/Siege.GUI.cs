@@ -372,7 +372,7 @@ namespace TC2.Siege
 																	requirements.Add(item.ToRequirement());
 																}
 
-																if (Crafting.Evaluate2(ref crafting_context, requirements, Crafting.EvaluateFlags.None))
+																if (crafting_context.Evaluate(requirements, Crafting.EvaluateFlags.None))
 																{
 																	valid = true;
 																}
@@ -501,7 +501,7 @@ namespace TC2.Siege
 
 								}
 
-								GUI.DrawItem(ref item, is_readonly: true, text_color: has_item ? GUI.font_color_default : GUI.col_button_error.WithAlphaMult(0.50f), icon_color: has_item ? Color32BGRA.White : GUI.col_button_error.WithAlphaMult(0.50f));
+								GUI.DrawItem(ref item, size: new(40), is_readonly: true, text_color: has_item ? GUI.font_color_default : GUI.col_button_error.WithAlphaMult(0.50f), icon_color: has_item ? Color32BGRA.White : GUI.col_button_error.WithAlphaMult(0.50f));
 							}
 
 							var selected = selected_items.Contains(h_kit);

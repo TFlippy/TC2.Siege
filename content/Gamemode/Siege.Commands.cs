@@ -123,9 +123,9 @@ namespace TC2.Siege
 					ref var vehicle = ref ent_vehicle.GetComponent<Vehicle.Data>();
 					if (vehicle.IsNotNull())
 					{
-						App.WriteLine(vehicle.ent_seat_test);
+						App.WriteLine(vehicle.ent_seat);
 
-						Vehicle.AddPassenger(vehicle.ent_seat_test, ent_kobold);
+						Vehicle.AddPassenger(vehicle.ent_seat, ent_kobold);
 					}
 				});
 			});
@@ -162,9 +162,9 @@ namespace TC2.Siege
 					ref var vehicle = ref ent_vehicle.GetComponent<Vehicle.Data>();
 					if (vehicle.IsNotNull())
 					{
-						App.WriteLine(vehicle.ent_seat_test);
+						App.WriteLine(vehicle.ent_seat);
 
-						Vehicle.AddPassenger(vehicle.ent_seat_test, ent_kobold);
+						Vehicle.AddPassenger(vehicle.ent_seat, ent_kobold);
 					}
 				});
 			});
@@ -328,7 +328,7 @@ namespace TC2.Siege
 			}
 		}
 
-		public static void ChangeMap(ref Region.Data region, MapInfo map)
+		public static void ChangeMap(ref Region.Data region, MapAsset map)
 		{
 			//ref var region = ref world.GetAnyRegion();
 			if (!region.IsNull())

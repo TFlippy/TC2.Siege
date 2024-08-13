@@ -85,8 +85,8 @@
 		
 		infrastructure:
 		{
-			require: military
-			include: military
+			require: none
+			include: none
 			exclude: none
 			weight: 40.000
 		}
